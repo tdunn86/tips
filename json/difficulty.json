@@ -1,3 +1,5 @@
-{
-  "difficulties": ["EASY", "MEDIUM", "HARD"]
-}
+[
+  "EASY",
+  "MEDIUM",
+  "HARD"
+]

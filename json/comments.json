@@ -1,0 +1,14 @@
+[
+  { 
+    "commentId": "c1", 
+    "solutionId": "s1", 
+    "authorUserId": 1, 
+    "content": "Clear solution." 
+  },
+  { 
+    "commentId": "c2", 
+    "solutionId": "s2", 
+    "authorUserId": 2, 
+    "content": "Edge cases matter." 
+  }
+]

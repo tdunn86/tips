@@ -1,0 +1,18 @@
+[
+{
+    "solutionId": 1,
+    "questionId": "q1",
+    "authorUserId": 2,
+    "content": "Use an array and track the top index.",
+    "upvotes": 3,
+    "isAccepted": true
+  },
+  {
+    "solutionId": 2,
+    "questionId": "q2",
+    "authorUserId": 2,
+    "content": "Divide the array in half each recursive call.",
+    "upvotes": 1,
+    "isAccepted": false
+  }
+]

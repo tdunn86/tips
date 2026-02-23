@@ -1,3 +1,7 @@
-{
-  "courses": ["CSCE145", "CSCE146", "CSCE240", "CSCE242", "CSCE247"]
-}
+[
+  "CSCE145", 
+  "CSCE146", 
+  "CSCE240", 
+  "CSCE242", 
+  "CSCE247"
+]
