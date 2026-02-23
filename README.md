@@ -1,1 +1,1 @@
-T.I.P.S (Technical Interview Preperation System) is an java app designed to help students prepare for technical interviews.
+T.I.P.S (Technical Interview Preperation System) is a java app designed to help students prepare for technical interviews.
