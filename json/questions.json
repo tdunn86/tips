@@ -1,26 +1,92 @@
-[
-  {
-    "questionId": "q1",
-    "title": "Implement a Stack",
-    "prompt": "Create a stack using an array.",
-    "difficulty": "EASY",
-    "language": "JAVA",
-    "course": "CSCE146",
-    "authorUserId": 2,
-    "isSolutionRevealed": false,
-    "solutions": [1],
-    "replies": [1]
-  },
-  {
-    "questionId": "q2",
-    "title": "Binary Search",
-    "prompt": "Implement binary search recursively.",
-    "difficulty": "MEDIUM",
-    "language": "PYTHON",
-    "course": "CSCE247",
-    "authorUserId": 2,
-    "isSolutionRevealed": false,
-    "solutions": [2],
-    "replies": [2]
-  }
-]
+{
+  "courses": [
+    "CSCE145",
+    "CSCE146",
+    "CSCE240",
+    "CSCE242",
+    "CSCE247"
+  ],
+  "difficulties": [
+    "EASY",
+    "MEDIUM",
+    "HARD"
+  ],
+  "languages": [
+    "JAVA",
+    "PYTHON",
+    "CPP",
+    "JAVASCRIPT",
+    "HTML",
+    "CSS"
+  ],
+  "questions": [
+    {
+      "questionId": "q1",
+      "title": "Implement a Stack",
+      "prompt": "Create a stack using an array.",
+      "difficulty": "EASY",
+      "language": "JAVA",
+      "course": "CSCE146",
+      "authorUserId": 2,
+      "isSolutionRevealed": false,
+      "solutions": [
+        {
+          "solutionId": 1,
+          "questionId": "q1",
+          "authorUserId": 2,
+          "content": "Use an array and track the top index.",
+          "upvotes": 3,
+          "isAccepted": true,
+          "comments": [
+            {
+              "commentId": "c1",
+              "authorUserId": 1,
+              "content": "Clear solution."
+            }
+          ]
+        }
+      ],
+      "replies": [
+        {
+          "replyId": "r1",
+          "authorUserId": 1,
+          "content": "Why track top?"
+        }
+      ]
+    },
+    {
+      "questionId": "q2",
+      "title": "Binary Search",
+      "prompt": "Implement binary search recursively.",
+      "difficulty": "MEDIUM",
+      "language": "PYTHON",
+      "course": "CSCE247",
+      "authorUserId": 2,
+      "isSolutionRevealed": false,
+      "solutions": [
+        {
+          "solutionId": 2,
+          "questionId": "q2",
+          "authorUserId": 2,
+          "content": "Divide the array in half each recursive call.",
+          "upvotes": 1,
+          "isAccepted": false,
+          "comments": [
+            {
+              "commentId": "c2",
+              "authorUserId": 2,
+              "content": "Edge cases matter."
+            }
+          ]
+        }
+      ],
+      "replies": [
+        {
+          "replyId": "r2",
+          "authorUserId": 1,
+          "content": "What's the complexity?"
+        }
+      ]
+    }
+  ]
+}
