@@ -7,6 +7,7 @@ import java.util.ArrayList;
  * @author Thomas Dunn, James Gessler
  */
 public abstract class UserList {
+    private UserList instance;
     private ArrayList users;
 
     private UserList() {
@@ -18,7 +19,7 @@ public abstract class UserList {
      * @return The single instance of the UserList
      */
     public UserList getInstance() {
-        return new UserList();
+        return instance;
     }
 
     /**
