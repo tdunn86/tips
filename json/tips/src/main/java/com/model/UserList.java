@@ -6,11 +6,11 @@ import java.util.ArrayList;
  * A singleton class that manages the collection of all users
  * @author Thomas Dunn, James Gessler
  */
-public class UserList {
+public abstract class UserList {
     private ArrayList users;
 
     private UserList() {
-        // todo
+
     }
 
     /**
@@ -58,7 +58,7 @@ public class UserList {
     }
 
     public void save() {
-        
+
     }
 
 
