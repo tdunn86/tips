@@ -1,6 +1,7 @@
 package tips;
 
 /**
+ * @author Oliver Benjamin
  * This class is responsible for saving user data and questions.
  * It contains methods to save user information and questions to a database or file.
  */
