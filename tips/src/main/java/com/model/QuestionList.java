@@ -29,7 +29,7 @@ public abstract class QuestionList {
      * @return The matching question object
      */
     public Question getQuestion(String keyword) {
-        return new Question(101, "Stub Question", "What is a stub?", Difficult.EASY, Language.PYTHON, Course.CSCE146);
+        return new Question(101, "Stub Question", "What is a stub?", Difficulty.EASY, Language.PYTHON, Course.CSCE146);
     }
 
     /**
