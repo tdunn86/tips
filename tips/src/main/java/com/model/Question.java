@@ -1,6 +1,8 @@
 package com.model;
 
 import java.util.UUID;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Represents a coding challenge or academic problem

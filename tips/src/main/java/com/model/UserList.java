@@ -1,6 +1,7 @@
 package com.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A singleton class that manages the collection of all users
