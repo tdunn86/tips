@@ -21,7 +21,11 @@ public abstract class User {
      */
     public User(int userId, String username, String password, String email, 
         accountType accountType) {
-
+            this.userId = userId;
+            this.username = username;
+            this.password = password;
+            this.email = email;
+            this.accountType = accountType;
     }
 
     /**
@@ -29,6 +33,7 @@ public abstract class User {
      * @return The newly created user object
      */
     public User createAccount() {
+        return null;
         
     }
 
