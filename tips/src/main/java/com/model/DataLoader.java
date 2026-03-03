@@ -1,4 +1,5 @@
 package com.model;
+
 import java.io.FileReader;
 import java.util.ArrayList;
 
@@ -9,48 +10,86 @@ import org.json.simple.parser.JSONParser;
 public class DataLoader extends DataConstants {
 
     public static ArrayList<User> getUsers() {
+
         ArrayList<User> users = new ArrayList<>();
 
         try {
-            String path = System.getProperty("user.dir") + "/" + USER_FILE_NAME;
-            FileReader reader = new FileReader(path);
-
+            FileReader reader = new FileReader(USER_FILE_NAME);
             JSONParser parser = new JSONParser();
-            JSONArray usersJSON = (JSONArray) parser.parse(reader);
+            JSONArray userJSON = (JSONArray) parser.parse(reader);
 
-            for (int i = 0; i < usersJSON.size(); i++) {
+            for (Object obj : userJSON) {
 
-                JSONObject userJSON = (JSONObject) usersJSON.get(i);
+                JSONObject userObject = (JSONObject) obj;
 
-                int userId = ((Long) userJSON.get("userId")).intValue();
-                String username = (String) userJSON.get("username");
-                String password = (String) userJSON.get("password");
-                String email = (String) userJSON.get("email");
-                String accountType = (String) userJSON.get("accountType");
-                int streak = ((Long) userJSON.get("streak")).intValue();
+                int userId = ((Long) userObject.get("userId")).intValue();
+                String username = (String) userObject.get("username");
+                String password = (String) userObject.get("password");
+                String email = (String) userObject.get("email");
+                String userType = (String) userObject.get("userType");
 
-                JSONArray favArray = (JSONArray) userJSON.get("favQuestions");
-                ArrayList<String> favQuestions = new ArrayList<>();
-                for (int j = 0; j < favArray.size(); j++) {
-                    favQuestions.add((String) favArray.get(j));
+                User user = null;
+
+                switch (userType) {
+                    case "Student":
+                        user = new Student(userId, username, password, email);
+                        break;
+
+                    case "Editor":
+                        user = new Editor(userId, username, password, email);
+                        break;
+
+                    case "Admin":
+                        user = new Admin(userId, username, password, email);
+                        break;
                 }
 
-                JSONArray commentArray = (JSONArray) userJSON.get("comments");
-                ArrayList<Integer> comments = new ArrayList<>();
-                for (int j = 0; j < commentArray.size(); j++) {
-                    comments.add(((Long) commentArray.get(j)).intValue());
-                }
-
-                users.add(new User(userId, username, password, email,
-                    accountType, streak, favQuestions, comments));
+                users.add(user);
             }
 
-            return users;
-
         } catch (Exception e) {
-            e.printStackTrace();
         }
 
-        return null;
+        return users;
+    }
+
+    public static ArrayList<Question> getQuestions() {
+
+        ArrayList<Question> questions = new ArrayList<>();
+
+        try {
+            FileReader reader = new FileReader(QUESTION_FILE_NAME);
+            JSONParser parser = new JSONParser();
+            JSONArray questionJSON = (JSONArray) parser.parse(reader);
+
+            for (Object obj : questionJSON) {
+
+                JSONObject questionObject = (JSONObject) obj;
+
+                String title = (String) questionObject.get("title");
+                String prompt = (String) questionObject.get("prompt");
+                String difficultyStr = (String) questionObject.get("difficulty");
+                String languageStr = (String) questionObject.get("language");
+                String courseStr = (String) questionObject.get("course");
+
+                Difficulty difficulty = Difficulty.valueOf(difficultyStr);
+                Language language = Language.valueOf(languageStr);
+                Course course = Course.valueOf(courseStr);
+
+                Question question = new Question(
+                        title,
+                        prompt,
+                        difficulty,
+                        language,
+                        course
+                );
+
+                questions.add(question);
+            }
+
+        } catch (Exception e) {
+        }
+
+        return questions;
     }
 }
