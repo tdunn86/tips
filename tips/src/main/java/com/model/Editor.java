@@ -1,5 +1,7 @@
 package com.model;
 
+import java.util.List;
+
 /**
  * A user role with permissions to manage educational content
  */

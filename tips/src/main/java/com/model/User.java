@@ -27,6 +27,24 @@ public abstract class User {
             this.email = email;
             this.accountType = accountType;
     }
+    public int getUserId() {
+        return userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+    public accountType getAccountType() {
+        return accountType;
+    }
 
     /**
      * Facilitates the account creation process
