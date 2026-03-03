@@ -13,7 +13,7 @@ public class Solution {
     private Solution solution;
     private int upvotes;
     private boolean isAccepted;
-    private ArrayList<comments> comments;
+    private ArrayList<reply> comments;
 
     /**
      * The solution to the current question
