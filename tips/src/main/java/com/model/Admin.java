@@ -7,7 +7,7 @@ import java.util.List;
  * @author Thomas Dunn, James Gessler
  */
 public class Admin {
-    public List<Questions> createdQuestions;
+    public List<Question> createdQuestions;
     public int totalQuestionsCreated;
 
     /**
