@@ -2,9 +2,6 @@ package com.model;
 
 import java.util.ArrayList;
 
-import main.java.com.model.AccountType;
-import main.java.com.model.Question;
-
 /**
  * A student user
  * @author Samuel Britton
@@ -12,7 +9,7 @@ import main.java.com.model.Question;
 public class Student extends User {
     private int streak;
     private ArrayList<Question> favQuestions;
-    private ArrayList<Comment> Comments;
+    private ArrayList<Reply> Comments;
     private String classification;
 
     public Student(int userId, String username, String password, String email) {
@@ -32,7 +29,7 @@ public class Student extends User {
     public ArrayList<Question> getFavQuestions() { 
         return favQuestions; 
     }
-    public ArrayList<Comment> getComments() { 
+    public ArrayList<Reply> getComments() { 
         return Comments; 
     }
     public String getClassification() { 

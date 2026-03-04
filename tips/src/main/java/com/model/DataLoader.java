@@ -154,3 +154,4 @@ public class DataLoader extends DataConstants {
     private static java.util.Optional<User> findUserById(ArrayList<User> users, int userId) {
         return users.stream().filter(u -> u.getUserId() == userId).findFirst();
     }
+}

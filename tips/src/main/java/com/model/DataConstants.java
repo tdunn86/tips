@@ -1,4 +1,4 @@
-ackage com.model;
+package com.model;
 
 public class DataConstants {
     // File paths
