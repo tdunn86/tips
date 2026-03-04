@@ -10,40 +10,32 @@ public class Solution {
     protected User author;
     protected Question question;
     private String content;
-    private Solution solution;
     private int upvotes;
     private boolean isAccepted;
     private ArrayList<Reply> comments;
 
-    /**
-     * The solution to the current question
-     * @param author The author of the question
-     * @param questionID The ID of the solution
-     * @param content The content of the solution
-     */
-    public Solution(User author, int questionID, String content) {
-
+    public Solution(User author, Question question, String content) {
+        this.author = author;
+        this.question = question;
+        this.content = content;
+        this.upvotes = 0;
+        this.isAccepted = false;
+        this.comments = new ArrayList<>();
     }
 
-    /**
-     * Edit an existing solution
-     * @param content The content of the solution to edit
-     */
-    public void edit(String content) {
+    public User getAuthor() { return author; }
+    public Question getQuestion() { return question; }
+    public String getContent() { return content; }
+    public int getUpvotes() { return upvotes; }
+    public boolean isAccepted() { return isAccepted; }
+    public ArrayList<Reply> getComments() { return comments; }
 
-    }
+    public void setContent(String content) { this.content = content; }
+    public void setUpvotes(int upvotes) { this.upvotes = upvotes; }
+    public void setAccepted(boolean accepted) { this.isAccepted = accepted; }
 
-    /**
-     * Allows a user to upvote a solution
-     */
-    public void upvote() {
-
-    }
-
-    /**
-     * Delete a solution
-     */
-    public void delete() {
-
-    }
+    public void edit(String content) { this.content = content; }
+    public void upvote() { this.upvotes++; }
+    public void delete() { this.content = "[deleted]"; this.isAccepted = false; }
+    public void addComment(Reply reply) { if (reply != null) comments.add(reply); }
 }

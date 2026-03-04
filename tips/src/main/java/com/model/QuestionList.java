@@ -7,58 +7,58 @@ import java.util.List;
  * A singleton manager for all questions
  * @author Thomas Dunn, James Gessler
  */
-public abstract class QuestionList {
-    private QuestionList instance;
+public class QuestionList {
+    private static QuestionList instance;
     private ArrayList<Question> questions;
 
     private QuestionList() {
-
+        questions = DataLoader.getQuestions();
     }
 
-    /**
-     * Provides access to single instance of the question list
-     * @return The static question list instance
-     */
-    public QuestionList getInstance() {
+    public static QuestionList getInstance() {
+        if (instance == null) instance = new QuestionList();
         return instance;
     }
 
-    /**
-     * Finds a question using a search keyword
-     * @param keyword The text used to filter questions
-     * @return The matching question object
-     */
     public Question getQuestion(String keyword) {
-        return new Question(101, "Stub Question", "What is a stub?", Difficulty.EASY, Language.PYTHON, Course.CSCE146);
+        if (keyword == null || keyword.isEmpty()) return null;
+        String lower = keyword.toLowerCase();
+        for (Question q : questions) {
+            if (q.getTitle().toLowerCase().contains(lower)
+                    || q.getPrompt().toLowerCase().contains(lower)) return q;
+        }
+        return null;
     }
 
-    /**
-     * Adds a question to the list
-     * @param q The question to add
-     */
     public void addQuestion(Question q) {
-
+        if (q != null && !questions.contains(q)) questions.add(q);
     }
 
-    /**
-     * Removes a question from the list
-     * @param q The question to remove
-     */
     public void removeQuestion(Question q) {
-
+        questions.remove(q);
     }
 
-    /**
-     * Retrieves all available questions
-     * @return A list of all questions
-     */
-    public List<Question> getAllQuestions() {
-        ArrayList<Question> questions = new ArrayList<>();
-        questions.add(new Question(1, "Sample Title", "Sample Prompt", Difficulty.EASY, Language.JAVA, Course.CSCE247));
-        return questions;
+    public ArrayList<Question> getAllQuestions() {
+        return new ArrayList<>(questions);
+    }
+
+    public List<Question> getFilteredQuestions(String filter) {
+        if (filter == null || filter.isEmpty()) return getAllQuestions();
+        List<Question> results = new ArrayList<>();
+        String lower = filter.toLowerCase();
+        for (Question q : questions) {
+            if (q.getTitle().toLowerCase().contains(lower)
+                    || q.getPrompt().toLowerCase().contains(lower)
+                    || q.getDifficulty().name().equalsIgnoreCase(filter)
+                    || q.getLanguage().name().equalsIgnoreCase(filter)
+                    || q.getCourse().name().equalsIgnoreCase(filter)) {
+                results.add(q);
+            }
+        }
+        return results;
     }
 
     public void save() {
-
+        DataWriter.saveQuestions();
     }
 }

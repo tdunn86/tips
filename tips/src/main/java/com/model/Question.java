@@ -1,19 +1,21 @@
 package com.model;
 
-import java.util.UUID;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
- * Represents a coding challenge or academic problem
- * @author Thomas Dunn, James Gessler
+ * Represents a technical interview question
+ * @author Samuel Britton
  */
 public class Question {
-    private String Title;
-    private String Prompt;
+    private String title;
+    private String prompt;
+    private String hint;
     private UUID questionID;
     private Difficulty difficulty;
     private Language language;
+    private Course course;
     private ArrayList<Course> courses;
     private User author;
     private boolean isSolutionRevealed;
@@ -25,32 +27,71 @@ public class Question {
     private List<Reply> replies;
 
     /**
-     * Constructor for a full question entry
-     * @param quesitonID The ID of the question
+     * Constructor for a question entry
      * @param title The title of the question
      * @param prompt The content of the question
      * @param difficulty The difficulty of the question
      * @param language The programming language of the question
      * @param course The course the question is from
      */
-    public Question(int quesitonID, String title, String prompt, 
+    public Question(String title, String prompt,
         Difficulty difficulty, Language language, Course course) {
-
+        this.title = title;
+        this.prompt = prompt;
+        this.difficulty = difficulty;
+        this.language = language;
+        this.course = course;
+        this.questionID = UUID.randomUUID();
+        this.isSolutionRevealed = false;
+        this.solutions = new ArrayList<>();
+        this.courses = new ArrayList<>();
+        this.images = new ArrayList<>();
+        this.attachments = new ArrayList<>();
+        this.replies = new ArrayList<>();
     }
 
     /**
-     * Displays the solution for the given ID
+     * Getters
      */
-    public void showSolution(questionID) {
-
-    }
+    public String getTitle() { return title; }
+    public String getPrompt() { return prompt; }
+    public String getHint() { return hint; }
+    public UUID getQuestionID() { return questionID; }
+    public Difficulty getDifficulty() { return difficulty; }
+    public Language getLanguage() { return language; }
+    public Course getCourse() { return course; }
+    public ArrayList<Course> getCourses() { return courses; }
+    public User getAuthor() { return author; }
+    public boolean isSolutionRevealed() { return isSolutionRevealed; }
+    public ArrayList<Solution> getSolutionID() { return solutions; }
+    public String getSampleSolution() { return sampleSolution; }
+    public String getSampleExplanation() { return sampleExplanation; }
+    public List<String> getImages() { return images; }
+    public List<String> getAttachments() { return attachments; }
+    public List<Reply> getReplies() { return replies; }
 
     /**
-     * Retrieves a hint to help solve the question
-     * @return The hint text
+     * Setters
      */
-    public String getHint() {
-        return "Think harder!";
+    public void setTitle(String title) { this.title = title; }
+    public void setPrompt(String prompt) { this.prompt = prompt; }
+    public void setHint(String hint) { this.hint = hint; }
+    public void setDifficulty(Difficulty difficulty) { this.difficulty = difficulty; }
+    public void setLanguage(Language language) { this.language = language; }
+    public void setCourse(Course course) { this.course = course; }
+    public void setAuthor(User author) { this.author = author; }
+    public void setSampleSolution(String sampleSolution) { this.sampleSolution = sampleSolution; }
+    public void setSampleExplanation(String sampleExplanation) { this.sampleExplanation = sampleExplanation; }
+
+    /**
+     * Displays the solution
+     */
+    public void showSolution() {
+        this.isSolutionRevealed = true;
+    }
+
+    public void revealSolution() {
+        this.isSolutionRevealed = true;
     }
 
     /**
@@ -64,22 +105,29 @@ public class Question {
      * Clears current input on the question
      */
     public void reset() {
-
+        this.isSolutionRevealed = false;
+        this.solutions.clear();
     }
 
     /**
-     * Checks if the quesiton has been finished
-     * @return True if finished, false otherwise
+     * Checks if the question is finished
+     * @return True if solution is done, false if not
      */
     public boolean isComplete() {
-        return false;
+        return true;
     }
 
-    /**
-     * Unhides the hidden solution for the user
-     */
-    public void revealSolution() {
-
+    public void addSolution(Solution solution) {
+        if (solution != null) solutions.add(solution);
     }
 
+    public void addReply(Reply reply) {
+        if (reply != null) replies.add(reply);
+    }
+
+    @Override
+    public String toString() {
+        return "Question{id=" + questionID + ", title='" + title + 
+               "', difficulty=" + difficulty + ", course=" + course + "}";
+    }
 }

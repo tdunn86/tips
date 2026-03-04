@@ -1,67 +1,59 @@
 package com.model;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A singleton class that manages the collection of all users
  * @author Thomas Dunn, James Gessler
  */
-public abstract class UserList {
-    private UserList instance;
-    private ArrayList users;
+public class UserList {
+    private static UserList instance;
+    private ArrayList<User> users;
 
     private UserList() {
-
+        this.users = DataLoader.getUsers();
     }
 
-    /**
-     * Provides access to the singelton instance
-     * @return The single instance of the UserList
-     */
-    public UserList getInstance() {
+    public static UserList getInstance() {
+        if (instance == null) instance = new UserList();
         return instance;
     }
 
-    /**
-     * Finds a user by their unique username
-     * @param userName The username string to search for
-     * @return The matching User object
-     */
     public User getUser(String userName) {
-        return new User(1, "TestUser", "password", "test@gmail.com", AccountType.STUDENT);
+        for (User user : users) {
+            if (user.getUsername().equalsIgnoreCase(userName)) return user;
+        }
+        return null;
     }
 
-    /**
-     * Appends a new user to the list
-     * @param user The User object to add
-     */
+    public User getUserById(int userId) {
+        for (User user : users) {
+            if (user.getUserId() == userId) return user;
+        }
+        return null;
+    }
+
     public void addUser(User user) {
-
+        if (user != null && getUser(user.getUsername()) == null) users.add(user);
     }
 
-    /**
-     * Removes an existing user to from the list
-     * @param user The User object to remove
-     */
     public void removeUser(User user) {
-
+        users.remove(user);
     }
 
-    /**
-     * Retrieves the full collection of users
-     * @return A list containing all system users
-     */
-    public List<User> getAllUsers() {
-        ArrayList<User> stubUsers = new ArrayList<>();
-        stubUsers.add(new User(1, "Steve", "password1", "steve@gmail.com", AccountType.ADMIN));
-        stubUsers.add(new User(2, "Sarah", "passwrod2", "sarah@gmail.com", AccountType.SUDENT));
-        return stubUsers;
+    public ArrayList<User> getAllUsers() {
+        return new ArrayList<>(users);
+    }
+
+    public boolean hasUser(String username) {
+        return getUser(username) != null;
+    }
+
+    public int getNextUserId() {
+        return users.stream().mapToInt(User::getUserId).max().orElse(0) + 1;
     }
 
     public void save() {
-
+        DataWriter.saveUsers();
     }
-
-
 }
