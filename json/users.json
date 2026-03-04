@@ -4,19 +4,15 @@
     "username": "alice",
     "password": "hashed_password_1",
     "email": "alice@email.com",
-    "accountType": "Student",
+    "userType": "Student",
     "streak": 5,
-    "favQuestions": ["q1"],
-    "comments": [1]
+    "classification": "Sophomore"
   },
   {
     "userId": 2,
     "username": "bob",
     "password": "hashed_password_2",
     "email": "bob@email.com",
-    "accountType": "Editor",
-    "streak": 2,
-    "favQuestions": ["q1", "q2"],
-    "comments": [2]
+    "userType": "Editor"
   }
 ]

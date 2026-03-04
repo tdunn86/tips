@@ -18,15 +18,21 @@ public class DataLoader extends DataConstants {
             JSONParser parser = new JSONParser();
             JSONArray userJSON = (JSONArray) parser.parse(reader);
 
+            System.out.println("JSON array size: " + userJSON.size());
+
             for (Object obj : userJSON) {
 
                 JSONObject userObject = (JSONObject) obj;
+
+                System.out.println("Processing: " + userObject.toJSONString());
 
                 int userId      = ((Long) userObject.get(USER_ID)).intValue();
                 String username = (String) userObject.get(USER_USERNAME);
                 String password = (String) userObject.get(USER_PASSWORD);
                 String email    = (String) userObject.get(USER_EMAIL);
                 String userType = (String) userObject.get(USER_TYPE);
+
+                System.out.println("userType value: " + userType);
 
                 User user = null;
 
@@ -54,6 +60,8 @@ public class DataLoader extends DataConstants {
             }
 
         } catch (Exception e) {
+            System.out.println("EXCEPTION: " + e.getMessage());
+            e.printStackTrace();
         }
 
         return users;
@@ -86,6 +94,9 @@ public class DataLoader extends DataConstants {
                 Question question = new Question(title, prompt, difficulty, language, course);
 
                 // Optional fields
+                if (questionObject.containsKey("hint"))
+                    question.setHint((String) questionObject.get("hint"));
+
                 if (questionObject.containsKey(QUESTION_SAMPLE_SOL))
                     question.setSampleSolution((String) questionObject.get(QUESTION_SAMPLE_SOL));
 

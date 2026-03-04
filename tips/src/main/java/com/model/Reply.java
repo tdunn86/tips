@@ -5,45 +5,37 @@ package com.model;
  * @author Thomas Dunn, James Gessler
  */
 public class Reply {
-    /** The user who authored this reply. */
     protected User author;
-    /** The question this reply is associated with. */
     protected Question question;
-    /** The title of the reply. */
     private String title;
-    /** The content of the reply. */
     private String content;
-    /** The number of upvotes this reply has received. */
     private int upvotes;
-    /** Whether this reply has been accepted. */
     private boolean isAccepted;
 
-    /**
-     * Constructs a new Reply.
-     * @param author the user who wrote the reply
-     * @param question the question being replied to
-     * @param content the content of the reply
-     */
     public Reply(User author, Question question, String content) {
-        // TODO
+        this.author = author;
+        this.question = question;
+        this.content = content;
+        this.title = "";
+        this.upvotes = 0;
+        this.isAccepted = false;
     }
 
-    /**
-     * Adds a comment to this reply.
-     * @param title the title of the comment
-     * @param content the content of the comment
-     * @return the newly created comment
-     */
-    public Comment addComment(String title, String content) {
-        // TODO
-        return null;
-    }
+    public User getAuthor() { return author; }
+    public Question getQuestion() { return question; }
+    public String getTitle() { return title; }
+    public String getContent() { return content; }
+    public int getUpvotes() { return upvotes; }
+    public boolean isAccepted() { return isAccepted; }
 
-    /**
-     * Reports this reply for a given reason.
-     * @param reason the reason for reporting
-     */
+    public void setTitle(String title) { this.title = title; }
+    public void setContent(String content) { this.content = content; }
+    public void setUpvotes(int upvotes) { this.upvotes = upvotes; }
+    public void setAccepted(boolean accepted) { this.isAccepted = accepted; }
+
+    public void upvote() { this.upvotes++; }
+
     public void report(String reason) {
-        // TODO
+        System.out.println("Reply by '" + author.getUsername() + "' reported. Reason: " + reason);
     }
 }

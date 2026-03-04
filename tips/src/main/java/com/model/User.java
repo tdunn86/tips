@@ -79,18 +79,7 @@ public abstract class User {
         if (password == null) return input == null;
         return password.equals(input);
     }
-
-    /**
-     * Logs the user in.
-     * @return Session if authentication succeeds, otherwise null
-     */
-    public Session login(String inputPassword) {
-        if (!validatePassword(inputPassword)) {
-            return null;
-        }
-        return new Session(this); // Requires Session class
-    }
-
+    
     /** Logs the user out. */
     public void logout() {
         // Add session cleanup logic if needed

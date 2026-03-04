@@ -90,6 +90,10 @@ public class Question {
         this.isSolutionRevealed = true;
     }
 
+    public void revealSolution() {
+        this.isSolutionRevealed = true;
+    }
+
     /**
      * Submits the user's answer for evaluation
      */
