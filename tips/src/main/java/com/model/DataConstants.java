@@ -1,89 +1,81 @@
 package com.model;
 
-<<<<<<< HEAD
 /**
  * @author: Oliver Benjamin
  * Constants for data writing and reading
  * 
- * 
+ * Merged data constants NEEDS TO BE FIXED - currently contains all constants from both files, including duplicates and variants.
 **/
-public abstract class DataConstants {
 
-    // ===================== FILE NAMES =====================
-    protected static final String USER_FILE_NAME     = "data/users.json";
-    protected static final String QUESTION_FILE_NAME = "data/questions.json";
-
-    // ===================== USER FIELDS =====================
-    protected static final String USER_ID           = "userId";
-    protected static final String USER_USERNAME     = "username";
-    protected static final String USER_PASSWORD     = "password";
-    protected static final String USER_EMAIL        = "email";
-    protected static final String USER_ACCOUNT_TYPE = "accountType";
-
-    // ===================== QUESTION FIELDS =====================
-    protected static final String QUESTION_ID                  = "questionID";
-    protected static final String QUESTION_TITLE               = "title";
-    protected static final String QUESTION_PROMPT              = "prompt";
-    protected static final String QUESTION_DIFFICULTY          = "difficulty";
-    protected static final String QUESTION_LANGUAGE            = "language";
-    protected static final String QUESTION_AUTHOR              = "author";
-    protected static final String QUESTION_IS_SOLUTION_REVEALED = "isSolutionRevealed";
-    protected static final String QUESTION_SAMPLE_SOLUTION     = "sampleSolution";
-    protected static final String QUESTION_SAMPLE_EXPLANATION  = "sampleExplanation";
-    protected static final String QUESTION_COURSES             = "courses";
-    protected static final String QUESTION_IMAGES              = "images";
-    protected static final String QUESTION_ATTACHMENTS         = "attachments";
-    protected static final String QUESTION_SOLUTIONS           = "solutions";
-    protected static final String QUESTION_REPLIES             = "replies";
-
-    // ===================== SOLUTION FIELDS =====================
-    protected static final String SOLUTION_ID      = "solutionId";
-    protected static final String SOLUTION_CONTENT = "content";
-    protected static final String SOLUTION_AUTHOR  = "author";
-
-    // ===================== REPLY FIELDS =====================
-    protected static final String REPLY_ID      = "replyId";
-    protected static final String REPLY_CONTENT = "content";
-    protected static final String REPLY_AUTHOR  = "author";
-}
-=======
-public class DataConstants {
-    // File paths
+public final class DataConstants {
+    // ===================== FILE PATHS =====================
     public static final String USER_FILE_NAME     = "json/users.json";
     public static final String QUESTION_FILE_NAME = "json/questions.json";
 
-    // User JSON keys
-    public static final String USER_ID             = "userId";
-    public static final String USER_USERNAME       = "username";
-    public static final String USER_PASSWORD       = "password";
-    public static final String USER_EMAIL          = "email";
-    public static final String USER_TYPE           = "userType";
+    // ===================== USER FIELDS =====================
+    public static final String USER_ID           = "userId";
+    public static final String USER_USERNAME     = "username";
+    public static final String USER_PASSWORD     = "password";
+    public static final String USER_EMAIL        = "email";
+
+    // account / type related fields (both forms retained)
+    public static final String USER_ACCOUNT_TYPE = "accountType"; // original name from first file
+    public static final String USER_TYPE         = "userType";    // alternative from second file
+
+    // additional user fields present only in second file
     public static final String USER_CLASSIFICATION = "classification";
     public static final String USER_STREAK         = "streak";
 
-    // Question JSON keys
-    public static final String QUESTION_ID         = "questionID";
-    public static final String QUESTION_TITLE      = "title";
-    public static final String QUESTION_PROMPT     = "prompt";
-    public static final String QUESTION_DIFFICULTY = "difficulty";
-    public static final String QUESTION_LANGUAGE   = "language";
-    public static final String QUESTION_COURSE     = "course";
-    public static final String QUESTION_AUTHOR_ID  = "authorId";
-    public static final String QUESTION_SAMPLE_SOL = "sampleSolution";
-    public static final String QUESTION_SAMPLE_EXP = "sampleExplanation";
-    public static final String QUESTION_REVEALED   = "isSolutionRevealed";
+    // ===================== QUESTION FIELDS =====================
+    public static final String QUESTION_ID                  = "questionID";
+    public static final String QUESTION_TITLE               = "title";
+    public static final String QUESTION_PROMPT              = "prompt";
+    public static final String QUESTION_DIFFICULTY          = "difficulty";
+    public static final String QUESTION_LANGUAGE            = "language";
 
-    // Solution JSON keys
-    public static final String SOLUTION_AUTHOR_ID  = "authorId";
-    public static final String SOLUTION_CONTENT    = "content";
-    public static final String SOLUTION_UPVOTES    = "upvotes";
-    public static final String SOLUTION_ACCEPTED   = "isAccepted";
+    public static final String QUESTION_COURSE              = "course";   // singular (second file)
 
-    // Reply JSON keys
-    public static final String REPLY_AUTHOR_ID     = "authorId";
-    public static final String REPLY_TITLE         = "title";
-    public static final String REPLY_CONTENT       = "content";
-    public static final String REPLY_UPVOTES       = "upvotes";
-    public static final String REPLY_ACCEPTED      = "isAccepted";
+    // author fields (variants)
+    public static final String QUESTION_AUTHOR              = "author";    // original (this could be the username of the author)
+    public static final String QUESTION_AUTHOR_ID           = "authorId";  // alternative
+
+    public static final String QUESTION_IS_SOLUTION_REVEALED = "isSolutionRevealed";
+    public static final String QUESTION_SAMPLE_SOLUTION     = "sampleSolution";
+    public static final String QUESTION_SAMPLE_EXPLANATION  = "sampleExplanation";
+
+    // attachments / images / solutions / replies
+    public static final String QUESTION_IMAGES              = "images";
+    public static final String QUESTION_ATTACHMENTS         = "attachments";
+    public static final String QUESTION_SOLUTIONS           = "solutions";
+    public static final String QUESTION_REPLIES             = "replies";
+
+    // shorter variant names included (from second file)
+    public static final String QUESTION_SAMPLE_SOL = "sampleSolution";      // alias (same value)
+    public static final String QUESTION_SAMPLE_EXP = "sampleExplanation";   // alias (same value)
+    public static final String QUESTION_REVEALED   = "isSolutionRevealed";  // alias (same value)
+
+    // ===================== SOLUTION FIELDS =====================
+    public static final String SOLUTION_ID      = "solutionId";
+    public static final String SOLUTION_CONTENT = "content";
+
+    // author / authorId variants (keep both)
+    public static final String SOLUTION_AUTHOR  = "author";
+    public static final String SOLUTION_AUTHOR_ID = "authorId";
+
+    // additional solution metadata (from second file)
+    public static final String SOLUTION_UPVOTES  = "upvotes";
+    public static final String SOLUTION_ACCEPTED = "isAccepted";
+
+    // ===================== REPLY FIELDS =====================
+    public static final String REPLY_ID      = "replyId";
+    public static final String REPLY_CONTENT = "content";
+
+    // author / authorId / title variants for replies
+    public static final String REPLY_AUTHOR  = "author";
+    public static final String REPLY_AUTHOR_ID = "authorId";
+    public static final String REPLY_TITLE   = "title";
+
+    // additional reply metadata
+    public static final String REPLY_UPVOTES  = "upvotes";
+    public static final String REPLY_ACCEPTED = "isAccepted";
 }
->>>>>>> a2b0fd6ab3e665dfb5acac889736d555555cf0cd
