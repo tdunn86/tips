@@ -1,9 +1,9 @@
-package com.model;
+ackage com.model;
 
 public class DataConstants {
     // File paths
-    public static final String USER_FILE_NAME     = "data/users.json";
-    public static final String QUESTION_FILE_NAME = "data/questions.json";
+    public static final String USER_FILE_NAME     = "json/users.json";
+    public static final String QUESTION_FILE_NAME = "json/questions.json";
 
     // User JSON keys
     public static final String USER_ID             = "userId";
