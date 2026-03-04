@@ -8,19 +8,23 @@ import java.util.List;
  * @author Thomas Dunn, James Gessler
  */
 public abstract class UserList {
-    private UserList instance;
-    private ArrayList users;
+    private ArrayList<User> users;;
+    private static UserList userList;
 
+    /**
+     * Private constructor to prevent direct instantiation
+     */
     private UserList() {
-
+        this.users = DataLoader.getUser();
     }
 
     /**
      * Provides access to the singelton instance
      * @return The single instance of the UserList
      */
-    public UserList getInstance() {
-        return instance;
+    public static UserList getInstance() {
+        if (userList == null) userList = new UserList();
+        return userList;
     }
 
     /**
@@ -29,7 +33,12 @@ public abstract class UserList {
      * @return The matching User object
      */
     public User getUser(String userName) {
-        return new User(1, "TestUser", "password", "test@gmail.com", AccountType.STUDENT);
+        for (User user : users) {
+            if (user.getUsername().equals(userName)) {
+                return user;
+            }
+        }
+        return null;
     }
 
     /**
@@ -37,7 +46,7 @@ public abstract class UserList {
      * @param user The User object to add
      */
     public void addUser(User user) {
-
+        users.add(user);
     }
 
     /**
@@ -45,7 +54,7 @@ public abstract class UserList {
      * @param user The User object to remove
      */
     public void removeUser(User user) {
-
+        users.remove(user);
     }
 
     /**
@@ -53,14 +62,14 @@ public abstract class UserList {
      * @return A list containing all system users
      */
     public List<User> getAllUsers() {
-        ArrayList<User> stubUsers = new ArrayList<>();
-        stubUsers.add(new User(1, "Steve", "password1", "steve@gmail.com", AccountType.ADMIN));
-        stubUsers.add(new User(2, "Sarah", "passwrod2", "sarah@gmail.com", AccountType.SUDENT));
-        return stubUsers;
+        return users;
     }
 
+    /**
+     * Saves the current list of users
+     */
     public void save() {
-
+        DataWriter.saveUser();
     }
 
 
