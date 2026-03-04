@@ -55,7 +55,7 @@ public abstract class UserList {
     public List<User> getAllUsers() {
         ArrayList<User> stubUsers = new ArrayList<>();
         stubUsers.add(new User(1, "Steve", "password1", "steve@gmail.com", AccountType.ADMIN));
-        stubUsers.add(new User(2, "Sarah", "passwrod2", "sarah@gmail.com", AccountType.SUDENT));
+        stubUsers.add(new User(2, "Sarah", "passwrod2", "sarah@gmail.com", AccountType.STUDENT));
         return stubUsers;
     }
 
