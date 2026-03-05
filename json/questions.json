@@ -1,83 +1,84 @@
-{
-  "courses": [
-    "CSCE145",
-    "CSCE146",
-    "CSCE240",
-    "CSCE242",
-    "CSCE247"
-  ],
-  "difficulties": [
-    "EASY",
-    "MEDIUM",
-    "HARD"
-  ],
-  "languages": [
-    "JAVA",
-    "PYTHON",
-    "CPP",
-    "JAVASCRIPT",
-    "HTML",
-    "CSS"
-  ],
-  "questions"[
-   {
-    "questionID": "q1",
-    "title": "Implement a Stack",
-    "prompt": "Create a stack using an array.",
-    "difficulty": "EASY",
-    "language": "JAVA",
-    "course": "CSCE146",
-    "authorId": 2,
-    "isSolutionRevealed": false,
-    "hint": "Think about how you would track which element is on top. Consider using an integer variable that moves up when you add an element and down when you remove one.",
-    "sampleSolution": "Use an array and track the top index.",
-    "sampleExplanation": "Maintain a top pointer that increments on push and decrements on pop.",
-    "solutions": [
-      {
-        "authorId": 2,
-        "content": "Use an array and track the top index.",
-        "upvotes": 3,
-        "isAccepted": true
-      }
-    ],
-    "replies": [
-      {
-        "authorId": 1,
-        "title": "Question about top",
-        "content": "Why track top?",
-        "upvotes": 0,
-        "isAccepted": false
-      }
-    ]
-  },
   {
-    "questionID": "q2",
-    "title": "Binary Search",
-    "prompt": "Implement binary search recursively.",
-    "difficulty": "MEDIUM",
-    "language": "PYTHON",
-    "course": "CSCE247",
-    "authorId": 2,
-    "isSolutionRevealed": false,
-    "hint": "Start by finding the middle index of the array. If the target is smaller than the middle element, which half do you search next? Make sure you have a base case for when the array can no longer be divided.",
-    "sampleSolution": "Divide the array in half each recursive call.",
-    "sampleExplanation": "Compare the midpoint to the target and recurse left or right.",
-    "solutions": [
-      {
-        "authorId": 2,
-        "content": "Divide the array in half each recursive call.",
-        "upvotes": 1,
-        "isAccepted": false
-      }
+    "courses": [
+      "CSCE145",
+      "CSCE146",
+      "CSCE240",
+      "CSCE242",
+      "CSCE247"
     ],
-    "replies": [
-      {
-        "authorId": 1,
-        "title": "Complexity question",
-        "content": "What's the complexity?",
-        "upvotes": 0,
-        "isAccepted": false
-      }
-    ]
-  }
-]
+    "difficulties": [
+      "EASY",
+      "MEDIUM",
+      "HARD"
+    ],
+    "languages": [
+      "JAVA",
+      "PYTHON",
+      "CPP",
+      "JAVASCRIPT",
+      "HTML",
+      "CSS"
+    ],
+    "questions": [
+    {
+      "questionID": "q1",
+      "title": "Implement a Stack",
+      "prompt": "Create a stack using an array.",
+      "difficulty": "EASY",
+      "language": "JAVA",
+      "course": "CSCE146",
+      "authorId": 2,
+      "isSolutionRevealed": false,
+      "hint": "Think about how you would track which element is on top. Consider using an integer variable that moves up when you add an element and down when you remove one.",
+      "sampleSolution": "Use an array and track the top index.",
+      "sampleExplanation": "Maintain a top pointer that increments on push and decrements on pop.",
+      "solutions": [
+        {
+          "authorId": 2,
+          "content": "Use an array and track the top index.",
+          "upvotes": 3,
+          "isAccepted": true
+        }
+      ],
+      "replies": [
+        {
+          "authorId": 1,
+          "title": "Question about top",
+          "content": "Why track top?",
+          "upvotes": 0,
+          "isAccepted": false
+        }
+      ]
+    },
+    {
+      "questionID": "q2",
+      "title": "Binary Search",
+      "prompt": "Implement binary search recursively.",
+      "difficulty": "MEDIUM",
+      "language": "PYTHON",
+      "course": "CSCE247",
+      "authorId": 2,
+      "isSolutionRevealed": false,
+      "hint": "Start by finding the middle index of the array. If the target is smaller than the middle element, which half do you search next? Make sure you have a base case for when the array can no longer be divided.",
+      "sampleSolution": "Divide the array in half each recursive call.",
+      "sampleExplanation": "Compare the midpoint to the target and recurse left or right.",
+      "solutions": [
+        {
+          "authorId": 2,
+          "content": "Divide the array in half each recursive call.",
+          "upvotes": 1,
+          "isAccepted": false
+        }
+      ],
+      "replies": [
+        {
+          "authorId": 1,
+          "title": "Complexity question",
+          "content": "What's the complexity?",
+          "upvotes": 0,
+          "isAccepted": false
+        }
+      ]
+    }
+  ]
+}
