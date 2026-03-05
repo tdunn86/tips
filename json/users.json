@@ -14,5 +14,40 @@
     "password": "hashed_password_2",
     "email": "bob@email.com",
     "userType": "Editor"
+  },
+  {
+    "userId": 3,
+    "username": "tommy",
+    "password": "done",
+    "email": "td@email.com",
+    "userType": "Admin"
+  },
+  {
+    "userId": 4,
+    "username": "sam",
+    "password": "britton",
+    "email": "sb@email.com",
+    "userType": "Admin"
+  },
+  {
+    "userId": 5,
+    "username": "neel",
+    "password": "patel",
+    "email": "np@email.com",
+    "userType": "Admin"
+  },
+  {
+    "userId": 6,
+    "username": "james",
+    "password": "ges",
+    "email": "jg@email.com",
+    "userType": "Admin"
+  },
+  {
+    "userId": 7,
+    "username": "oliver",
+    "password": "been",
+    "email": "ob@email.com",
+    "userType": "Admin"
   }
 ]
