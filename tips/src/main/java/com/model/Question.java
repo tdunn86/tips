@@ -130,4 +130,8 @@ public class Question {
         return "Question{id=" + questionID + ", title='" + title + 
                "', difficulty=" + difficulty + ", course=" + course + "}";
     }
+
+    Iterable<Solution> getSolutions() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

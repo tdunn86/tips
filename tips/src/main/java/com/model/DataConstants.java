@@ -34,7 +34,7 @@ public class DataConstants {
     public static final String QUESTION_LANGUAGE            = "language";
 
     public static final String QUESTION_COURSE              = "course";   // singular (second file)
-
+    public static final String QUESTION_COURSES              = "courses";
     // author fields (variants)
     public static final String QUESTION_AUTHOR              = "author";    // original (this could be the username of the author)
     public static final String QUESTION_AUTHOR_ID           = "authorId";  // alternative

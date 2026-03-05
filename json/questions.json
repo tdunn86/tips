@@ -1,26 +1,5 @@
-{
-  "courses": [
-    "CSCE145",
-    "CSCE146",
-    "CSCE240",
-    "CSCE242",
-    "CSCE247"
-  ],
-  "difficulties": [
-    "EASY",
-    "MEDIUM",
-    "HARD"
-  ],
-  "languages": [
-    "JAVA",
-    "PYTHON",
-    "CPP",
-    "JAVASCRIPT",
-    "HTML",
-    "CSS"
-  ],
-  "questions"[
-   {
+[
+  {
     "questionID": "q1",
     "title": "Implement a Stack",
     "prompt": "Create a stack using an array.",
