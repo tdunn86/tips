@@ -7,7 +7,7 @@ package com.model;
  * Merged data constants NEEDS TO BE FIXED - currently contains all constants from both files, including duplicates and variants.
 **/
 
-public final class DataConstants {
+public class DataConstants {
     // ===================== FILE PATHS =====================
     public static final String USER_FILE_NAME     = "json/users.json";
     public static final String QUESTION_FILE_NAME = "json/questions.json";
