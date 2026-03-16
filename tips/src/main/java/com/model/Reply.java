@@ -1,5 +1,7 @@
 package com.model;
 
+import java.util.UUID;
+
 /**
  * Represents a reply to a question in the TIPS system
  * @author Thomas Dunn, James Gessler
@@ -7,6 +9,7 @@ package com.model;
 public class Reply {
     protected User author;
     protected Question question;
+    private UUID replyId;       // FIXED: was missing, DataWriter called getReplyId()
     private String title;
     private String content;
     private int upvotes;
@@ -16,11 +19,14 @@ public class Reply {
         this.author = author;
         this.question = question;
         this.content = content;
+        this.replyId = UUID.randomUUID();
         this.title = "";
         this.upvotes = 0;
         this.isAccepted = false;
     }
 
+    // Getters
+    public UUID getReplyId() { return replyId; }   // FIXED: was throwing UnsupportedOperationException
     public User getAuthor() { return author; }
     public Question getQuestion() { return question; }
     public String getTitle() { return title; }
@@ -28,6 +34,7 @@ public class Reply {
     public int getUpvotes() { return upvotes; }
     public boolean isAccepted() { return isAccepted; }
 
+    // Setters
     public void setTitle(String title) { this.title = title; }
     public void setContent(String content) { this.content = content; }
     public void setUpvotes(int upvotes) { this.upvotes = upvotes; }
@@ -37,9 +44,5 @@ public class Reply {
 
     public void report(String reason) {
         System.out.println("Reply by '" + author.getUsername() + "' reported. Reason: " + reason);
-    }
-
-    Object getReplyId() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
