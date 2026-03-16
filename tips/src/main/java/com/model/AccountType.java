@@ -7,6 +7,10 @@ package com.model;
 public enum AccountType {
     STUDENT,
     EDITOR,
-    ADMIN
-}
+    ADMIN;
 
+    public String toDisplayString() {
+        String name = this.name();
+        return name.charAt(0) + name.substring(1).toLowerCase();
+    }
+}

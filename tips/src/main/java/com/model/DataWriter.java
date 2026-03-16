@@ -2,6 +2,7 @@ package com.model;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -39,7 +40,12 @@ public class DataWriter extends DataConstants {
         userDetails.put(USER_USERNAME,     user.getUsername());
         userDetails.put(USER_PASSWORD,     user.getPassword());
         userDetails.put(USER_EMAIL,        user.getEmail());
-        userDetails.put(USER_TYPE, user.getAccountType().toString());
+        userDetails.put(USER_TYPE, user.getAccountType().toDisplayString());
+        if (user instanceof Student) {
+            Student s = (Student) user;
+            userDetails.put(USER_CLASSIFICATION, s.getClassification());
+            userDetails.put(USER_STREAK, s.getStreak());
+        }
         return userDetails;
     }
 
