@@ -38,4 +38,8 @@ public class Reply {
     public void report(String reason) {
         System.out.println("Reply by '" + author.getUsername() + "' reported. Reason: " + reason);
     }
+
+    Object getReplyId() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

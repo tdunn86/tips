@@ -38,4 +38,8 @@ public class Solution {
     public void upvote() { this.upvotes++; }
     public void delete() { this.content = "[deleted]"; this.isAccepted = false; }
     public void addComment(Reply reply) { if (reply != null) comments.add(reply); }
+
+    Object getSolutionId() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

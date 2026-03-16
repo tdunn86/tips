@@ -18,21 +18,15 @@ public class DataLoader extends DataConstants {
             JSONParser parser = new JSONParser();
             JSONArray userJSON = (JSONArray) parser.parse(reader);
 
-            System.out.println("JSON array size: " + userJSON.size());
-
             for (Object obj : userJSON) {
 
                 JSONObject userObject = (JSONObject) obj;
-
-                System.out.println("Processing: " + userObject.toJSONString());
 
                 int userId      = ((Long) userObject.get(USER_ID)).intValue();
                 String username = (String) userObject.get(USER_USERNAME);
                 String password = (String) userObject.get(USER_PASSWORD);
                 String email    = (String) userObject.get(USER_EMAIL);
                 String userType = (String) userObject.get(USER_TYPE);
-
-                System.out.println("userType value: " + userType);
 
                 User user = null;
 
@@ -93,7 +87,6 @@ public class DataLoader extends DataConstants {
 
                 Question question = new Question(title, prompt, difficulty, language, course);
 
-                // Optional fields
                 if (questionObject.containsKey("hint"))
                     question.setHint((String) questionObject.get("hint"));
 
@@ -112,8 +105,8 @@ public class DataLoader extends DataConstants {
                 }
 
                 // Solutions
-                if (questionObject.containsKey("solutions")) {
-                    JSONArray solutionsJSON = (JSONArray) questionObject.get("solutions");
+                if (questionObject.containsKey(QUESTION_SOLUTIONS)) {
+                    JSONArray solutionsJSON = (JSONArray) questionObject.get(QUESTION_SOLUTIONS);
                     for (Object sObj : solutionsJSON) {
                         JSONObject solutionObject = (JSONObject) sObj;
 
@@ -132,8 +125,8 @@ public class DataLoader extends DataConstants {
                 }
 
                 // Replies
-                if (questionObject.containsKey("replies")) {
-                    JSONArray repliesJSON = (JSONArray) questionObject.get("replies");
+                if (questionObject.containsKey(QUESTION_REPLIES)) {
+                    JSONArray repliesJSON = (JSONArray) questionObject.get(QUESTION_REPLIES);
                     for (Object rObj : repliesJSON) {
                         JSONObject replyObject = (JSONObject) rObj;
 
@@ -157,6 +150,7 @@ public class DataLoader extends DataConstants {
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return questions;
