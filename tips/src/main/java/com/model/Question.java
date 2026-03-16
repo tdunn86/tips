@@ -50,9 +50,7 @@ public class Question {
         this.replies = new ArrayList<>();
     }
 
-    /**
-     * Getters
-     */
+    // Getters
     public String getTitle() { return title; }
     public String getPrompt() { return prompt; }
     public String getHint() { return hint; }
@@ -63,16 +61,14 @@ public class Question {
     public ArrayList<Course> getCourses() { return courses; }
     public User getAuthor() { return author; }
     public boolean isSolutionRevealed() { return isSolutionRevealed; }
-    public ArrayList<Solution> getSolutionID() { return solutions; }
+    public ArrayList<Solution> getSolutions() { return solutions; }  // FIXED: was getSolutionID() and threw exception
     public String getSampleSolution() { return sampleSolution; }
     public String getSampleExplanation() { return sampleExplanation; }
     public List<String> getImages() { return images; }
     public List<String> getAttachments() { return attachments; }
     public List<Reply> getReplies() { return replies; }
 
-    /**
-     * Setters
-     */
+    // Setters
     public void setTitle(String title) { this.title = title; }
     public void setPrompt(String prompt) { this.prompt = prompt; }
     public void setHint(String hint) { this.hint = hint; }
@@ -110,11 +106,11 @@ public class Question {
     }
 
     /**
-     * Checks if the question is finished
-     * @return True if solution is done, false if not
+     * Checks if the question has been completed
+     * @return True if solution is revealed, false otherwise
      */
     public boolean isComplete() {
-        return true;
+        return isSolutionRevealed;
     }
 
     public void addSolution(Solution solution) {
@@ -127,11 +123,7 @@ public class Question {
 
     @Override
     public String toString() {
-        return "Question{id=" + questionID + ", title='" + title + 
+        return "Question{id=" + questionID + ", title='" + title +
                "', difficulty=" + difficulty + ", course=" + course + "}";
-    }
-
-    Iterable<Solution> getSolutions() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
