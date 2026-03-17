@@ -126,4 +126,9 @@ public class Question {
         return "Question{id=" + questionID + ", title='" + title +
                "', difficulty=" + difficulty + ", course=" + course + "}";
     }
+
+    public void setQuestionID(UUID fromString) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setQuestionID'");
+    }
 }
