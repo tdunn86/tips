@@ -72,7 +72,6 @@ public class DataWriter extends DataConstants {
     public static JSONObject getQuestionJSON(Question question) {
         JSONObject questionDetails = new JSONObject();
  
-        // FIX: save UUID so loader can restore stable IDs
         questionDetails.put(QUESTION_ID,                  question.getQuestionID().toString());
         questionDetails.put(QUESTION_TITLE,               question.getTitle());
         questionDetails.put(QUESTION_PROMPT,              question.getPrompt());
@@ -82,13 +81,10 @@ public class DataWriter extends DataConstants {
         questionDetails.put(QUESTION_SAMPLE_SOLUTION,     question.getSampleSolution());
         questionDetails.put(QUESTION_SAMPLE_EXPLANATION,  question.getSampleExplanation());
  
-        // FIX: save primary course (used by Question constructor in loader)
         if (question.getCourse() != null) {
             questionDetails.put(QUESTION_COURSE, question.getCourse().toString());
         }
  
-        // FIX: use QUESTION_AUTHOR_ID (not QUESTION_AUTHOR) so loader's
-        //      findUserById() receives the right key
         if (question.getAuthor() != null) {
             questionDetails.put(QUESTION_AUTHOR_ID, question.getAuthor().getUserId());
         }
@@ -137,7 +133,6 @@ public class DataWriter extends DataConstants {
         JSONObject solutionDetails = new JSONObject();
         solutionDetails.put(SOLUTION_ID,      solution.getSolutionId().toString());
         solutionDetails.put(SOLUTION_CONTENT, solution.getContent());
-        // FIX: use SOLUTION_AUTHOR_ID so loader's findUserById() receives the right key
         if (solution.getAuthor() != null) {
             solutionDetails.put(SOLUTION_AUTHOR_ID, solution.getAuthor().getUserId());
         }
@@ -153,7 +148,6 @@ public class DataWriter extends DataConstants {
         if (reply.getTitle() != null) {
             replyDetails.put(REPLY_TITLE, reply.getTitle());
         }
-        // FIX: use REPLY_AUTHOR_ID so loader's findUserById() receives the right key
         if (reply.getAuthor() != null) {
             replyDetails.put(REPLY_AUTHOR_ID, reply.getAuthor().getUserId());
         }

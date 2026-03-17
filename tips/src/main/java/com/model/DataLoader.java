@@ -73,7 +73,6 @@ public class DataLoader extends DataConstants {
                 String difficultyStr = (String) questionObject.get(QUESTION_DIFFICULTY);
                 String languageStr   = (String) questionObject.get(QUESTION_LANGUAGE);
  
-                // FIX: use QUESTION_COURSE (primary course) for the constructor
                 String courseStr = (String) questionObject.get(QUESTION_COURSE);
  
                 Difficulty difficulty = Difficulty.valueOf(difficultyStr);
@@ -82,13 +81,11 @@ public class DataLoader extends DataConstants {
  
                 Question question = new Question(title, prompt, difficulty, language, course);
  
-                // FIX: restore stable UUID
                 if (questionObject.containsKey(QUESTION_ID)) {
                     question.setQuestionID(UUID.fromString(
                         (String) questionObject.get(QUESTION_ID)));
                 }
  
-                // FIX: restore full courses array
                 if (questionObject.containsKey(QUESTION_COURSES)) {
                     JSONArray coursesArray = (JSONArray) questionObject.get(QUESTION_COURSES);
                     for (Object c : coursesArray) {
@@ -99,7 +96,6 @@ public class DataLoader extends DataConstants {
                 if (questionObject.containsKey("hint"))
                     question.setHint((String) questionObject.get("hint"));
  
-                // FIX: use full-name constants (aliases removed from DataConstants)
                 if (questionObject.containsKey(QUESTION_SAMPLE_SOLUTION))
                     question.setSampleSolution((String) questionObject.get(QUESTION_SAMPLE_SOLUTION));
  
@@ -109,7 +105,6 @@ public class DataLoader extends DataConstants {
                 if (Boolean.TRUE.equals(questionObject.get(QUESTION_IS_SOLUTION_REVEALED)))
                     question.revealSolution();
  
-                // FIX: use QUESTION_AUTHOR_ID — matches what DataWriter saves
                 if (questionObject.containsKey(QUESTION_AUTHOR_ID)) {
                     int authorId = ((Long) questionObject.get(QUESTION_AUTHOR_ID)).intValue();
                     findUserById(users, authorId).ifPresent(question::setAuthor);
@@ -121,7 +116,6 @@ public class DataLoader extends DataConstants {
                     for (Object sObj : solutionsJSON) {
                         JSONObject solutionObject = (JSONObject) sObj;
  
-                        // FIX: use SOLUTION_AUTHOR_ID — matches what DataWriter saves
                         if (!solutionObject.containsKey(SOLUTION_AUTHOR_ID)) continue;
                         int    authorId = ((Long) solutionObject.get(SOLUTION_AUTHOR_ID)).intValue();
                         String content  = (String) solutionObject.get(SOLUTION_CONTENT);
@@ -143,7 +137,6 @@ public class DataLoader extends DataConstants {
                     for (Object rObj : repliesJSON) {
                         JSONObject replyObject = (JSONObject) rObj;
  
-                        // FIX: use REPLY_AUTHOR_ID — matches what DataWriter saves
                         if (!replyObject.containsKey(REPLY_AUTHOR_ID)) continue;
                         int    authorId = ((Long) replyObject.get(REPLY_AUTHOR_ID)).intValue();
                         String content  = (String) replyObject.get(REPLY_CONTENT);
