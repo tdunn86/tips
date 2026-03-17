@@ -28,9 +28,9 @@ public class DataConstants {
     public static final String QUESTION_PROMPT               = "prompt";
     public static final String QUESTION_DIFFICULTY           = "difficulty";
     public static final String QUESTION_LANGUAGE             = "language";
-    public static final String QUESTION_COURSE               = "course";    // primary single course (constructor arg)
-    public static final String QUESTION_COURSES              = "courses";   // full courses array
-    public static final String QUESTION_AUTHOR_ID            = "authorId";  // stores userId int
+    public static final String QUESTION_COURSE               = "course";    
+    public static final String QUESTION_COURSES              = "courses";   
+    public static final String QUESTION_AUTHOR_ID            = "authorId";  
     public static final String QUESTION_IS_SOLUTION_REVEALED = "isSolutionRevealed";
     public static final String QUESTION_SAMPLE_SOLUTION      = "sampleSolution";
     public static final String QUESTION_SAMPLE_EXPLANATION   = "sampleExplanation";
@@ -42,14 +42,14 @@ public class DataConstants {
     // ===================== SOLUTION FIELDS =====================
     public static final String SOLUTION_ID        = "solutionId";
     public static final String SOLUTION_CONTENT   = "content";
-    public static final String SOLUTION_AUTHOR_ID = "authorId";  // stores userId int
+    public static final String SOLUTION_AUTHOR_ID = "authorId";  
     public static final String SOLUTION_UPVOTES   = "upvotes";
     public static final String SOLUTION_ACCEPTED  = "isAccepted";
  
     // ===================== REPLY FIELDS =====================
     public static final String REPLY_ID        = "replyId";
     public static final String REPLY_CONTENT   = "content";
-    public static final String REPLY_AUTHOR_ID = "authorId";  // stores userId int
+    public static final String REPLY_AUTHOR_ID = "authorId"; 
     public static final String REPLY_TITLE     = "title";
     public static final String REPLY_UPVOTES   = "upvotes";
     public static final String REPLY_ACCEPTED  = "isAccepted";
