@@ -27,7 +27,7 @@ public class DataLoader extends DataConstants {
 
                 User user = null;
                 switch (userType) {
-                    case "Student":
+                    case "STUDENT":
                         Student student = new Student(userId, username, password, email);
                         if (userObject.containsKey(USER_CLASSIFICATION))
                             student.setClassification((String) userObject.get(USER_CLASSIFICATION));
@@ -35,10 +35,10 @@ public class DataLoader extends DataConstants {
                             student.setStreak(((Long) userObject.get(USER_STREAK)).intValue());
                         user = student;
                         break;
-                    case "Editor":
+                    case "EDITOR":
                         user = new Editor(userId, username, password, email);
                         break;
-                    case "Admin":
+                    case "ADMIN":
                         user = new Admin(userId, username, password, email);
                         break;
                 }
