@@ -299,8 +299,6 @@ private static void handleAddQuestion() {
             facade.registrationSuccess(newUser);
             facade.login(username, password);
             handleLoggedInMenu();
-        } else {
-            System.out.println("Registration failed: username '" + username + "' already exists.");
         }
     }
 }
