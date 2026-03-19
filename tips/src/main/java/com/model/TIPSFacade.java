@@ -3,8 +3,8 @@ package com.model;
 import java.util.ArrayList;
 
 /**
- * Facade class that serves as the main entry point for the TIPS system.
- * Manages user authentication, questions, solutions, and comments.
+ * Facade class - thin layer that delegates to UserList, QuestionList, etc.
+ * Contains no business logic of its own.
  * @author Thomas Dunn, James Gessler
  */
 public class TIPSFacade {
@@ -13,7 +13,6 @@ public class TIPSFacade {
     private UserList userList;
     private QuestionList questionList;
     private User currentUser;
-    private AccountType accountType;
 
     private TIPSFacade() {
         this.userList = UserList.getInstance();
@@ -28,17 +27,11 @@ public class TIPSFacade {
     public User getCurrentUser() { return currentUser; }
 
     /**
-     * Authenticates a user with their username and password.
-     * @param username the username of the user
-     * @param password the password of the user
-     * @return true if login successful, false otherwise
+     * Delegates login to UserList.
      */
     public boolean login(String username, String password) {
-        if (username == null || username.trim().isEmpty()) return false;
-        if (password == null || password.trim().isEmpty()) return false;
-
-        User user = userList.getUser(username);
-        if (user != null && user.validatePassword(password)) {
+        User user = userList.login(username, password);
+        if (user != null) {
             this.currentUser = user;
             if (user instanceof Student) ((Student) user).startStreak();
             return true;
@@ -47,99 +40,99 @@ public class TIPSFacade {
     }
 
     /**
-     * Logs out the current user, saves data, and clears the session.
-     * FIXED: now calls DataWriter.saveUsers() so new users persist
+     * Saves all data and clears the session.
      */
     public void logout() {
         if (currentUser != null) {
-            DataWriter.saveUsers();  // FIXED: persist any changes (e.g. newly registered user)
+            DataWriter.saveUsers();
             this.currentUser = null;
         }
     }
 
     /**
-     * Registers a new user in the system.
-     * @param username the username of the new user
-     * @param password the password of the new user
-     * @param email the email of the new user
-     * @param accountType the account type of the new user
-     * @return the newly registered user, or null if registration fails
+     * Delegates registration to UserList.
      */
     public User registerUser(String username, String password, String email, AccountType accountType) {
-        // FIXED: validate blank username
-        if (username == null || username.trim().isEmpty()) {
-            System.out.println("Registration failed: username cannot be blank.");
-            return null;
-        }
-        if (password == null || password.trim().isEmpty()) {
-            System.out.println("Registration failed: password cannot be blank.");
-            return null;
-        }
-        if (userList.hasUser(username)) {
-            System.out.println("Registration failed: username '" + username + "' already exists.");
-            return null;
-        }
-
-        int newId = userList.getNextUserId();
-        User newUser;
-        switch (accountType) {
-            case EDITOR: newUser = new Editor(newId, username, password, email); break;
-            case ADMIN:  newUser = new Admin(newId, username, password, email);  break;
-            default:     newUser = new Student(newId, username, password, email); break;
-        }
-        userList.addUser(newUser);
-        return newUser;
+        return userList.registerUser(username, password, email, accountType);
     }
 
     /**
-     * Handles post-registration success logic for a user.
-     * @param user the newly registered user
+     * Handles post-registration success.
      */
     public void registrationSuccess(User user) {
         System.out.println("Registration successful for: " + user.getUsername());
     }
 
     /**
-     * Retrieves questions based on a given filter.
-     * @param filter the filter criteria for questions (null or empty returns all)
+     * Delegates question filtering to QuestionList.
      */
     public ArrayList<Question> getQuestions(String filter) {
-        ArrayList<Question> allQuestions = questionList.getAllQuestions();
-        if (filter == null || filter.isEmpty()) return allQuestions;
-
-        ArrayList<Question> filtered = new ArrayList<>();
-        for (Question q : allQuestions) {
-            if (q.getTitle().toLowerCase().contains(filter.toLowerCase())
-                    || q.getPrompt().toLowerCase().contains(filter.toLowerCase())) {
-                filtered.add(q);
-            }
-        }
-        return filtered;
+        return questionList.getQuestions(filter);
     }
 
     /**
-     * Submits a solution for the given question.
-     * @param question The question being answered
-     * @param content The content of the solution
+     * Delegates question creation to QuestionList.
+     */
+    public void addQuestion(String title, String prompt, Difficulty diff, Language lang, Course course) {
+        Question q = questionList.addQuestion(title, prompt, diff, lang, course, currentUser);
+        if (q != null) DataWriter.saveQuestions();
+    }
+
+    /**
+     * Delegates question editing to Question itself.
+     */
+    public void editQuestion(Question q, String newTitle, String newPrompt) {
+        if (q == null) return;
+        if (!(currentUser instanceof Editor) && !(currentUser instanceof Admin)) return;
+        q.setTitle(newTitle);
+        q.setPrompt(newPrompt);
+        DataWriter.saveQuestions();
+    }
+
+    /**
+     * Delegates question removal to QuestionList.
+     */
+    public void removeQuestion(Question q) {
+        questionList.removeQuestion(q, currentUser);
+        DataWriter.saveQuestions();
+    }
+
+    /**
+     * Delegates solution submission to Question.
      */
     public Solution submitSolution(Question question, String content) {
         if (currentUser == null || question == null || content == null) return null;
-        Solution newSolution = new Solution(currentUser, question, content);
-        question.addSolution(newSolution);
+        Solution solution = new Solution(currentUser, question, content);
+        question.addSolution(solution);
         if (currentUser instanceof Student) ((Student) currentUser).incrementStreak();
         DataWriter.saveQuestions();
-        return newSolution;
+        return solution;
     }
 
     /**
-     * Saves the current solution state.
+     * Delegates comment creation to Question.
      */
-    public void saveSolution() {
+    public Reply addComment(Question question, String title, String content) {
+        if (currentUser == null || question == null) return null;
+        Reply reply = new Reply(currentUser, question, content);
+        reply.setTitle(title);
+        question.addReply(reply);
+        DataWriter.saveQuestions();
+        return reply;
+    }
+
+    /**
+     * Delegates comment removal to Solution.
+     */
+    public void removeComment(Solution solution, Reply comment) {
+        if (solution == null || comment == null) return;
+        if (!(currentUser instanceof Admin) && !comment.getAuthor().equals(currentUser)) return;
+        solution.getComments().remove(comment);
         DataWriter.saveQuestions();
     }
 
     /**
-     * Saves all data in the system.
+     * Saves all data.
      */
     public void saveAll() {
         DataWriter.saveUsers();
@@ -147,65 +140,10 @@ public class TIPSFacade {
     }
 
     /**
-     * Loads all data into the system.
+     * Reloads all data.
      */
     public void loadAll() {
         this.userList = UserList.getInstance();
         this.questionList = QuestionList.getInstance();
-    }
-
-    /**
-     * Adds a question to the system (Editor/Admin only).
-     */
-    public void addQuestion(String title, String prompt, Difficulty diff, Language lang, Course course) {
-        if (currentUser instanceof Editor || currentUser instanceof Admin) {
-            Question q = new Question(title, prompt, diff, lang, course);
-            q.setAuthor(currentUser);
-            questionList.addQuestion(q);
-        }
-    }
-
-    /**
-     * Edits an existing question (Editor/Admin only).
-     */
-    public void editQuestion(Question q, String newTitle, String newPrompt) {
-        if (q != null && (currentUser instanceof Editor || currentUser instanceof Admin)) {
-            q.setTitle(newTitle);
-            q.setPrompt(newPrompt);
-            DataWriter.saveQuestions();
-        }
-    }
-
-    /**
-     * Removes a question from the system (Admin only).
-     */
-    public void removeQuestion(Question q) {
-        if (currentUser instanceof Admin) {
-            questionList.removeQuestion(q);
-        }
-    }
-
-    /**
-     * Adds a comment/reply to a question.
-     */
-    public Reply addComment(Question question, String title, String content) {
-        if (currentUser == null || question == null) return null;
-        Reply reply = new Reply(currentUser, question, content);
-        reply.setTitle(title);
-        question.addReply(reply);
-        return reply;
-    }
-
-    /**
-     * Removes a comment from a solution (Admin or comment author only).
-     */
-    public void removeComment(Solution solution, Reply commentToRemove) {
-        if (currentUser instanceof Admin ||
-            (commentToRemove != null && commentToRemove.getAuthor().equals(currentUser))) {
-            if (solution != null && commentToRemove != null) {
-                solution.getComments().remove(commentToRemove);
-                DataWriter.saveQuestions();
-            }
-        }
     }
 }
