@@ -64,28 +64,75 @@ public class TIPSUI {
     // Logged-in menu
     // ----------------------------------------------------------------
     private static void handleLoggedInMenu() {
-        boolean loggedIn = true;
-        while (loggedIn) {
-            System.out.println("\n--- Main Menu ---");
-            System.out.println("1. View all questions");
-            System.out.println("2. Search questions");
-            System.out.println("3. Logout");
-            System.out.print("Choose an option: ");
-            String choice = scanner.nextLine().trim();
+    boolean loggedIn = true;
+    while (loggedIn) {
+        System.out.println("\n--- Main Menu ---");
+        System.out.println("1. View all questions");
+        System.out.println("2. Search questions");
 
-            switch (choice) {
-                case "1": handleViewAllQuestions(); break;
-                case "2": handleSearchQuestions();  break;
-                case "3":
+        User current = facade.getCurrentUser();
+        if (current instanceof Editor || current instanceof Admin) {
+            System.out.println("3. Add a question");
+            System.out.println("4. Logout");
+        } else {
+            System.out.println("3. Logout");
+        }
+
+        System.out.print("Choose an option: ");
+        String choice = scanner.nextLine().trim();
+
+        boolean isEditorOrAdmin = (current instanceof Editor || current instanceof Admin);
+
+        switch (choice) {
+            case "1": handleViewAllQuestions(); break;
+            case "2": handleSearchQuestions();  break;
+            case "3":
+                if (isEditorOrAdmin) {
+                    handleAddQuestion();
+                } else {
                     facade.logout();
                     System.out.println("Logged out. Data saved.");
                     loggedIn = false;
-                    break;
-                default:
-                    System.out.println("Invalid option. Try again.");
-            }
+                }
+                break;
+            case "4":
+                if (isEditorOrAdmin) {
+                    facade.logout();
+                    System.out.println("Logged out. Data saved.");
+                    loggedIn = false;
+                }
+                break;
+            default:
+                System.out.println("Invalid option. Try again.");
         }
     }
+}
+
+    // ----------------------------------------------------------------
+    // Add question (Editors and Admins only)
+    // ----------------------------------------------------------------
+private static void handleAddQuestion() {
+    System.out.println("\n--- Add Question ---");
+
+    System.out.print("Title: ");
+    String title = scanner.nextLine().trim();
+
+    System.out.print("Prompt: ");
+    String prompt = scanner.nextLine().trim();
+
+    System.out.println("Difficulty (EASY, MEDIUM, HARD): ");
+    Difficulty difficulty = Difficulty.valueOf(scanner.nextLine().trim().toUpperCase());
+
+    System.out.println("Language (JAVA, PYTHON, CPP, JAVASCRIPT, HTML, CSS): ");
+    Language language = Language.valueOf(scanner.nextLine().trim().toUpperCase());
+
+    System.out.println("Course (CSCE145, CSCE146, CSCE240, CSCE242, CSCE247): ");
+    Course course = Course.valueOf(scanner.nextLine().trim().toUpperCase());
+
+    facade.addQuestion(title, prompt, difficulty, language, course);
+    DataWriter.saveQuestions();
+    System.out.println("Question added successfully!");
+}
 
     // ----------------------------------------------------------------
     // View all questions
