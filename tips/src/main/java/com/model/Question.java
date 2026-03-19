@@ -61,7 +61,7 @@ public class Question {
     public ArrayList<Course> getCourses() { return courses; }
     public User getAuthor() { return author; }
     public boolean isSolutionRevealed() { return isSolutionRevealed; }
-    public ArrayList<Solution> getSolutions() { return solutions; }  // FIXED: was getSolutionID() and threw exception
+    public ArrayList<Solution> getSolutions() { return solutions; }
     public String getSampleSolution() { return sampleSolution; }
     public String getSampleExplanation() { return sampleExplanation; }
     public List<String> getImages() { return images; }
@@ -121,9 +121,12 @@ public class Question {
         if (reply != null) replies.add(reply);
     }
 
-    @Override
     public String toString() {
         return "Question{id=" + questionID + ", title='" + title +
                "', difficulty=" + difficulty + ", course=" + course + "}";
+    }
+
+    public void setQuestionID(UUID questionID) {
+        this.questionID = questionID;
     }
 }

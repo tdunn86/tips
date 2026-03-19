@@ -58,5 +58,101 @@
         "isAccepted": false
       }
     ]
+  },
+  {
+    "questionID": "q3",
+    "title": "Reverse a Linked List",
+    "prompt": "Given the head of a singly linked list, reverse the list and return the new head.",
+    "difficulty": "MEDIUM",
+    "language": "JAVA",
+    "course": "CSCE146",
+    "authorId": 2,
+    "isSolutionRevealed": false,
+    "hint": "Use three pointers: previous, current, and next. At each step, reverse the current node's pointer to point back to previous, then advance all three pointers forward.",
+    "sampleSolution": "Iterate through the list using three pointers: prev, curr, and next. At each step set curr.next = prev, then advance.",
+    "sampleExplanation": "By keeping track of the previous node, you can redirect each node's next pointer backwards as you traverse, achieving reversal in O(n) time and O(1) space.",
+    "solutions": [
+      {
+        "authorId": 2,
+        "content": "Use prev, curr, next pointers and reverse each link as you go.",
+        "upvotes": 4,
+        "isAccepted": true
+      }
+    ],
+    "replies": []
+  },
+  {
+    "questionID": "q4",
+    "title": "Find Duplicate in Array",
+    "prompt": "Given an array of n+1 integers where each integer is between 1 and n, find the duplicate number. You may not modify the array and must use O(1) extra space.",
+    "difficulty": "HARD",
+    "language": "JAVA",
+    "course": "CSCE247",
+    "authorId": 3,
+    "isSolutionRevealed": false,
+    "hint": "Think of the array as a linked list where the value at each index points to the next index. If there is a duplicate, there must be a cycle. Floyd's cycle detection algorithm can find the entry point of the cycle.",
+    "sampleSolution": "Use Floyd's tortoise and hare cycle detection algorithm.",
+    "sampleExplanation": "Treat the array as a linked list. Use slow and fast pointers to detect a cycle, then find the cycle entry point which is the duplicate number. Runs in O(n) time and O(1) space.",
+    "solutions": [
+      {
+        "authorId": 3,
+        "content": "Apply Floyd's cycle detection. Move slow by 1 and fast by 2 until they meet, then reset one pointer to start and advance both by 1 until they meet again.",
+        "upvotes": 5,
+        "isAccepted": true
+      }
+    ],
+    "replies": [
+      {
+        "authorId": 1,
+        "title": "Why does this work?",
+        "content": "I don't understand why resetting one pointer to the start finds the duplicate.",
+        "upvotes": 2,
+        "isAccepted": false
+      }
+    ]
+  },
+  {
+    "questionID": "q5",
+    "title": "Bubble Sort Implementation",
+    "prompt": "Implement bubble sort on an integer array and explain its time complexity.",
+    "difficulty": "EASY",
+    "language": "JAVA",
+    "course": "CSCE145",
+    "authorId": 2,
+    "isSolutionRevealed": false,
+    "hint": "Use two nested loops. The outer loop runs n times and the inner loop compares adjacent elements, swapping them if they are in the wrong order. After each pass of the outer loop, the largest unsorted element bubbles to its correct position.",
+    "sampleSolution": "Use two nested for loops. Compare adjacent elements and swap if out of order.",
+    "sampleExplanation": "Each pass of the outer loop places the next largest element in its correct position. Worst and average case is O(n^2). Best case is O(n) if you add an early exit flag when no swaps occur in a pass.",
+    "solutions": [
+      {
+        "authorId": 2,
+        "content": "for(int i=0;i<n-1;i++) for(int j=0;j<n-i-1;j++) if(arr[j]>arr[j+1]) swap them.",
+        "upvotes": 2,
+        "isAccepted": true
+      }
+    ],
+    "replies": []
+  },
+  {
+    "questionID": "q6",
+    "title": "Inheritance and Method Overriding",
+    "prompt": "You have a base class Animal with a method makeSound() that prints 'Some sound'. Create a derived class Dog that overrides makeSound() to print 'Woof'. In main, create a pointer of type Animal* pointing to a Dog object and call makeSound(). What keyword is required on the base class method to ensure the correct version is called, and why?",
+    "difficulty": "MEDIUM",
+    "language": "CPP",
+    "course": "CSCE240",
+    "authorId": 2,
+    "isSolutionRevealed": false,
+    "hint": "Think about what happens when you call a method through a base class pointer without the virtual keyword. Does it call the base or derived version? What changes when you add virtual?",
+    "sampleSolution": "Declare makeSound() as virtual in the base class. The derived class overrides it. Calling through a base class pointer then dispatches to the correct derived version at runtime.",
+    "sampleExplanation": "Without virtual, the call is resolved at compile time based on the pointer type (static dispatch), so Animal::makeSound() is called. With virtual, it is resolved at runtime based on the actual object type (dynamic dispatch), so Dog::makeSound() is called. This is the foundation of polymorphism in C++.",
+    "solutions": [
+      {
+        "authorId": 2,
+        "content": "Add the virtual keyword to makeSound() in Animal. The derived Dog class overrides it. Animal* a = new Dog(); a->makeSound(); will then correctly print Woof.",
+        "upvotes": 3,
+        "isAccepted": true
+      }
+    ],
+    "replies": []
   }
 ]

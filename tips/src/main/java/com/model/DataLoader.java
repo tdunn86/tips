@@ -10,16 +10,13 @@ import org.json.simple.parser.JSONParser;
 public class DataLoader extends DataConstants {
 
     public static ArrayList<User> getUsers() {
-
         ArrayList<User> users = new ArrayList<>();
-
         try {
             FileReader reader = new FileReader(USER_FILE_NAME);
             JSONParser parser = new JSONParser();
             JSONArray userJSON = (JSONArray) parser.parse(reader);
 
             for (Object obj : userJSON) {
-
                 JSONObject userObject = (JSONObject) obj;
 
                 int userId      = ((Long) userObject.get(USER_ID)).intValue();
@@ -29,9 +26,8 @@ public class DataLoader extends DataConstants {
                 String userType = (String) userObject.get(USER_TYPE);
 
                 User user = null;
-
                 switch (userType) {
-                    case "Student":
+                    case "STUDENT":
                         Student student = new Student(userId, username, password, email);
                         if (userObject.containsKey(USER_CLASSIFICATION))
                             student.setClassification((String) userObject.get(USER_CLASSIFICATION));
@@ -39,30 +35,23 @@ public class DataLoader extends DataConstants {
                             student.setStreak(((Long) userObject.get(USER_STREAK)).intValue());
                         user = student;
                         break;
-
-                    case "Editor":
+                    case "EDITOR":
                         user = new Editor(userId, username, password, email);
                         break;
-
-                    case "Admin":
+                    case "ADMIN":
                         user = new Admin(userId, username, password, email);
                         break;
                 }
-
-                if (user != null)
-                    users.add(user);
+                if (user != null) users.add(user);
             }
-
         } catch (Exception e) {
-            System.out.println("EXCEPTION: " + e.getMessage());
+            System.out.println("Error loading users: " + e.getMessage());
             e.printStackTrace();
         }
-
         return users;
     }
 
     public static ArrayList<Question> getQuestions() {
-
         ArrayList<Question> questions = new ArrayList<>();
         ArrayList<User> users = getUsers();
 
@@ -72,7 +61,6 @@ public class DataLoader extends DataConstants {
             JSONArray questionJSON = (JSONArray) parser.parse(reader);
 
             for (Object obj : questionJSON) {
-
                 JSONObject questionObject = (JSONObject) obj;
 
                 String title         = (String) questionObject.get(QUESTION_TITLE);
@@ -87,32 +75,32 @@ public class DataLoader extends DataConstants {
 
                 Question question = new Question(title, prompt, difficulty, language, course);
 
+                // Basic properties
                 if (questionObject.containsKey("hint"))
                     question.setHint((String) questionObject.get("hint"));
 
-                if (questionObject.containsKey(QUESTION_SAMPLE_SOL))
-                    question.setSampleSolution((String) questionObject.get(QUESTION_SAMPLE_SOL));
+                if (questionObject.containsKey(QUESTION_SAMPLE_SOLUTION))
+                    question.setSampleSolution((String) questionObject.get(QUESTION_SAMPLE_SOLUTION));
 
-                if (questionObject.containsKey(QUESTION_SAMPLE_EXP))
-                    question.setSampleExplanation((String) questionObject.get(QUESTION_SAMPLE_EXP));
+                if (questionObject.containsKey(QUESTION_SAMPLE_EXPLANATION))
+                    question.setSampleExplanation((String) questionObject.get(QUESTION_SAMPLE_EXPLANATION));
 
-                if (Boolean.TRUE.equals(questionObject.get(QUESTION_REVEALED)))
+                if (Boolean.TRUE.equals(questionObject.get(QUESTION_IS_SOLUTION_REVEALED)))
                     question.revealSolution();
 
+                // Author
                 if (questionObject.containsKey(QUESTION_AUTHOR_ID)) {
                     int authorId = ((Long) questionObject.get(QUESTION_AUTHOR_ID)).intValue();
                     findUserById(users, authorId).ifPresent(question::setAuthor);
                 }
 
-                // Solutions
+                // Solutions (answers)
                 if (questionObject.containsKey(QUESTION_SOLUTIONS)) {
                     JSONArray solutionsJSON = (JSONArray) questionObject.get(QUESTION_SOLUTIONS);
                     for (Object sObj : solutionsJSON) {
                         JSONObject solutionObject = (JSONObject) sObj;
-
                         int authorId   = ((Long) solutionObject.get(SOLUTION_AUTHOR_ID)).intValue();
                         String content = (String) solutionObject.get(SOLUTION_CONTENT);
-
                         findUserById(users, authorId).ifPresent(author -> {
                             Solution solution = new Solution(author, question, content);
                             if (solutionObject.containsKey(SOLUTION_UPVOTES))
@@ -124,36 +112,53 @@ public class DataLoader extends DataConstants {
                     }
                 }
 
-                // Replies
+                // Replies (comments, recursive)
                 if (questionObject.containsKey(QUESTION_REPLIES)) {
                     JSONArray repliesJSON = (JSONArray) questionObject.get(QUESTION_REPLIES);
                     for (Object rObj : repliesJSON) {
-                        JSONObject replyObject = (JSONObject) rObj;
-
-                        int authorId   = ((Long) replyObject.get(REPLY_AUTHOR_ID)).intValue();
-                        String content = (String) replyObject.get(REPLY_CONTENT);
-
-                        findUserById(users, authorId).ifPresent(author -> {
-                            Reply reply = new Reply(author, question, content);
-                            if (replyObject.containsKey(REPLY_TITLE))
-                                reply.setTitle((String) replyObject.get(REPLY_TITLE));
-                            if (replyObject.containsKey(REPLY_UPVOTES))
-                                reply.setUpvotes(((Long) replyObject.get(REPLY_UPVOTES)).intValue());
-                            if (Boolean.TRUE.equals(replyObject.get(REPLY_ACCEPTED)))
-                                reply.setAccepted(true);
-                            question.addReply(reply);
-                        });
+                        Reply reply = parseReply((JSONObject) rObj, question, users);
+                        if (reply != null) question.addReply(reply);
                     }
                 }
 
                 questions.add(question);
             }
-
         } catch (Exception e) {
+            System.out.println("Error loading questions: " + e.getMessage());
             e.printStackTrace();
         }
-
         return questions;
+    }
+
+    /**
+     * Recursively parses a reply and any nested replies (comments on comments).
+     */
+    private static Reply parseReply(JSONObject replyObject, Question question, ArrayList<User> users) {
+        int authorId   = ((Long) replyObject.get(REPLY_AUTHOR_ID)).intValue();
+        String content = (String) replyObject.get(REPLY_CONTENT);
+
+        java.util.Optional<User> authorOpt = findUserById(users, authorId);
+        if (!authorOpt.isPresent()) return null;
+
+        Reply reply = new Reply(authorOpt.get(), question, content);
+
+        if (replyObject.containsKey(REPLY_TITLE))
+            reply.setTitle((String) replyObject.get(REPLY_TITLE));
+        if (replyObject.containsKey(REPLY_UPVOTES))
+            reply.setUpvotes(((Long) replyObject.get(REPLY_UPVOTES)).intValue());
+        if (Boolean.TRUE.equals(replyObject.get(REPLY_ACCEPTED)))
+            reply.setAccepted(true);
+
+        // Recursive: load nested replies (comments on comments)
+        if (replyObject.containsKey(QUESTION_REPLIES)) {
+            JSONArray nestedReplies = (JSONArray) replyObject.get(QUESTION_REPLIES);
+            for (Object nObj : nestedReplies) {
+                Reply nested = parseReply((JSONObject) nObj, question, users);
+                if (nested != null) reply.addReply(nested);
+            }
+        }
+
+        return reply;
     }
 
     private static java.util.Optional<User> findUserById(ArrayList<User> users, int userId) {
