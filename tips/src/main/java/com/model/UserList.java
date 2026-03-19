@@ -69,7 +69,6 @@ public class UserList {
             System.out.println("Registration failed: username '" + username + "' already exists.");
             return null;
         }
-
         int newId = getNextUserId();
         User newUser;
         switch (accountType) {
@@ -79,6 +78,29 @@ public class UserList {
         }
         users.add(newUser);
         return newUser;
+    }
+
+    /**
+     * Deletes a user by username. Only Admins can delete users.
+     * Cannot delete your own account.
+     */
+    public boolean deleteUser(String username, User requestingUser) {
+        if (!(requestingUser instanceof Admin)) {
+            System.out.println("Only Admins can delete users.");
+            return false;
+        }
+        User target = getUser(username);
+        if (target == null) {
+            System.out.println("User not found: " + username);
+            return false;
+        }
+        if (target.equals(requestingUser)) {
+            System.out.println("You cannot delete your own account.");
+            return false;
+        }
+        users.remove(target);
+        DataWriter.saveUsers();
+        return true;
     }
 
     public void addUser(User user) {
