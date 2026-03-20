@@ -96,7 +96,29 @@ public class TIPSFacade {
         questionList.removeQuestion(q, currentUser);
         DataWriter.saveQuestions();
     }
+    
+    /**
+     * Returns all users(Admin only)
+     * @return list of all current users in the system
+     */
+    public ArrayList<User> getAllUsers() {
+        if (currentUser instanceof Admin) {
+            return userList.getAllUsers();
+        }
+        return new ArrayList<>();
+    }
 
+    /**
+     * Remove a user from the system (Admin only)
+     * @param user the user to be removed
+     */
+    public void removeUser(User user) {
+        if (currentUser instanceof Admin) {
+            userList.removeUser(user);
+            DataWriter.saveUsers();
+        }
+    }
+    
     /**
      * Delegates solution submission to Question.
      */

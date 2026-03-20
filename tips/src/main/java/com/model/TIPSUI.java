@@ -72,7 +72,11 @@ public class TIPSUI {
             System.out.println("2. Search questions");
 
             User current = facade.getCurrentUser();
-            if (current instanceof Editor || current instanceof Admin) {
+            if (current instanceof Admin) {
+                System.out.println("3. Add a question");
+                System.out.println("4. View users");
+                System.out.println("5. Logout");
+            } else if (current instanceof Editor) {
                 System.out.println("3. Add a question");
                 System.out.println("4. Logout");
             } else {
@@ -82,13 +86,11 @@ public class TIPSUI {
             System.out.print("Choose an option: ");
             String choice = scanner.nextLine().trim();
 
-            boolean isEditorOrAdmin = (current instanceof Editor || current instanceof Admin);
-
             switch (choice) {
                 case "1": handleViewAllQuestions(); break;
                 case "2": handleSearchQuestions();  break;
                 case "3":
-                    if (isEditorOrAdmin) {
+                    if (current instanceof Editor || current instanceof Admin) {
                         handleAddQuestion();
                     } else {
                         facade.logout();
@@ -97,17 +99,66 @@ public class TIPSUI {
                     }
                     break;
                 case "4":
-                    if (isEditorOrAdmin) {
+                    if (current instanceof Admin) {
+                        handleViewUsers();
+                    } else if (current instanceof Editor) {
                         facade.logout();
                         System.out.println("Logged out. Data saved.");
                         loggedIn = false;
-                    } else {
-                        System.out.println("Invalid option. Try again.");
+                    }
+                    break;
+                case "5":
+                    if (current instanceof Admin) {
+                        facade.logout();
+                        System.out.println("Logged out. Data saved.");
+                        loggedIn = false;
                     }
                     break;
                 default:
                     System.out.println("Invalid option. Try again.");
             }
+        }
+    }
+
+    /**
+     * Viewing all users (Admin only)
+     */
+    private static void handleViewUsers() {
+        ArrayList<User> users = facade.getAllUsers();
+
+        System.out.println("\n--- User List ---");
+        for (int i = 0; i < users.size(); i++) {
+            User u = users.get(i);
+            System.out.println((i + 1) + ". [" + u.getAccountType() + "] "
+                + u.getUsername() + " (" + u.getEmail() + ")");
+        }
+
+        System.out.print("\nEnter user number to delete (or 0 to go back): ");
+        String input = scanner.nextLine().trim();
+
+        try {
+            int index = Integer.parseInt(input) - 1;
+            if (index >= 0 && index < users.size()) {
+                User toDelete = users.get(index);
+
+                if (toDelete.equals(facade.getCurrentUser())) {
+                    System.out.println("You cannot delete your own account.");
+                    return;
+                }
+
+                System.out.print("Are you sure you want to delete '"
+                    + toDelete.getUsername() + "'? (yes/no): ");
+                String confirm = scanner.nextLine().trim();
+
+                if (confirm.equalsIgnoreCase("yes")) {
+                    facade.removeUser(toDelete);
+                    System.out.println("User '" + toDelete.getUsername() + "' deleted.");
+                } else {
+                    System.out.println("Cancelled.");
+                }
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input.");
         }
     }
 
