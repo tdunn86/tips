@@ -74,11 +74,13 @@ public class TIPSUI {
             User current = facade.getCurrentUser();
             if (current instanceof Admin) {
                 System.out.println("3. Add a question");
-                System.out.println("4. View users");
-                System.out.println("5. Logout");
+                System.out.println("4. Remove a question");
+                System.out.println("5. View users");
+                System.out.println("6. Logout");
             } else if (current instanceof Editor) {
                 System.out.println("3. Add a question");
-                System.out.println("4. Logout");
+                System.out.println("4. Remove a question");
+                System.out.println("5. Logout");
             } else {
                 System.out.println("3. Logout");
             }
@@ -99,6 +101,15 @@ public class TIPSUI {
                     }
                     break;
                 case "4":
+                    if (current instanceof Editor || current instanceof Admin) {
+                        handleRemoveQuestion();
+                    } else if (current instanceof Editor) {
+                        facade.logout();
+                        System.out.println("Logged out. Data saved.");
+                        loggedIn = false;
+                    }
+                    break;
+                case "5":
                     if (current instanceof Admin) {
                         handleViewUsers();
                     } else if (current instanceof Editor) {
@@ -107,7 +118,7 @@ public class TIPSUI {
                         loggedIn = false;
                     }
                     break;
-                case "5":
+                case "6":
                     if (current instanceof Admin) {
                         facade.logout();
                         System.out.println("Logged out. Data saved.");
@@ -186,6 +197,47 @@ public class TIPSUI {
         facade.addQuestion(title, prompt, difficulty, language, course);
         DataWriter.saveQuestions();
         System.out.println("Question added successfully!");
+    }
+
+    /**
+     * Remove a question (Editors and Admins only)
+     */
+    private static void handleRemoveQuestion() {
+        ArrayList<Question> questions = facade.getQuestions(null);
+
+        if (questions.isEmpty()) {
+            System.out.println("No questions to remove.");
+            return;
+        }
+
+        System.out.println("\n--- Remove a Question ---");
+        for (int i = 0; i < questions.size(); i++) {
+            Question q = questions.get(i);
+            System.out.println((i + 1) + ". [" + q.getDifficulty() + "] "
+                + q.getTitle() + " (" + q.getCourse() + ")");
+        }
+
+        System.out.print("\nEnter question number to remove (or 0 to go back): ");
+        String input = scanner.nextLine().trim();
+
+        try {
+            int index = Integer.parseInt(input) - 1;
+            if (index >= 0 && index < questions.size()) {
+                Question toRemove = questions.get(index);
+                System.out.print("Are you sure you want to delete '"
+                    + toRemove.getTitle() + "'? (yes/no): ");
+                String confirm = scanner.nextLine().trim();
+
+                if (confirm.equalsIgnoreCase("yes")) {
+                    facade.removeQuestion(toRemove);
+                    System.out.println("Question '" + toRemove.getTitle() + "' deleted.");
+                } else {
+                    System.out.println("Cancelled.");
+                }
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input.");
+        }
     }
 
     // ----------------------------------------------------------------

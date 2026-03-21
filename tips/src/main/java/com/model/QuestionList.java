@@ -82,8 +82,8 @@ public class QuestionList {
      * Removes a question. Only Admins can remove questions.
      */
     public boolean removeQuestion(Question q, User requestingUser) {
-        if (!(requestingUser instanceof Admin)) {
-            System.out.println("Only Admins can remove questions.");
+        if (!(requestingUser instanceof Editor) && !(requestingUser instanceof Admin)) {
+            System.out.println("Only Editors and Admins can remove questions.");
             return false;
         }
         return questions.remove(q);
