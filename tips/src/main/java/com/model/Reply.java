@@ -9,7 +9,7 @@ import java.util.UUID;
  * Represents a comment on a question.
  * Replies can contain nested replies, allowing threaded discussions.
  * Each reply records the date and time it was posted.
- * @author Thomas Dunn, James Gessler
+ * @author Thomas Dunn, James Gessler, Oliver Benjamin
  */
 public class Reply {
     protected User author;
