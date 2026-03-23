@@ -1,1 +1,53 @@
-[{"password":"hashed_password_1","userType":"STUDENT","streak":1,"classification":"Sophomore","userId":1,"email":"alice@email.com","username":"alice"},{"password":"hashed_password_2","userType":"EDITOR","userId":2,"email":"bob@email.com","username":"bob"},{"password":"done","userType":"ADMIN","userId":3,"email":"td@email.com","username":"tommy"},{"password":"britton","userType":"ADMIN","userId":4,"email":"sb@email.com","username":"sam"},{"password":"patel","userType":"ADMIN","userId":5,"email":"np@email.com","username":"neel"},{"password":"ges","userType":"ADMIN","userId":6,"email":"jg@email.com","username":"james"},{"password":"been","userType":"ADMIN","userId":7,"email":"ob@email.com","username":"oliver"}]
+[
+  {
+    "classification": "Sophomore",
+    "email": "alice@email.com",
+    "password": "hashed_password_1",
+    "streak": 1,
+    "userId": 1,
+    "userType": "STUDENT",
+    "username": "alice"
+  },
+  {
+    "email": "bob@email.com",
+    "password": "hashed_password_2",
+    "userId": 2,
+    "userType": "EDITOR",
+    "username": "bob"
+  },
+  {
+    "email": "td@email.com",
+    "password": "done",
+    "userId": 3,
+    "userType": "ADMIN",
+    "username": "tommy"
+  },
+  {
+    "email": "sb@email.com",
+    "password": "britton",
+    "userId": 4,
+    "userType": "ADMIN",
+    "username": "sam"
+  },
+  {
+    "email": "np@email.com",
+    "password": "patel",
+    "userId": 5,
+    "userType": "ADMIN",
+    "username": "neel"
+  },
+  {
+    "email": "jg@email.com",
+    "password": "ges",
+    "userId": 6,
+    "userType": "ADMIN",
+    "username": "james"
+  },
+  {
+    "email": "ob@email.com",
+    "password": "been",
+    "userId": 7,
+    "userType": "ADMIN",
+    "username": "oliver"
+  }
+]

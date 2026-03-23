@@ -102,12 +102,6 @@ public class UserList {
     }
 
     /**
-<<<<<<< HEAD
-     * Adds an existing user to the list.
-     * Does nothing if the user is null or the username is already taken.
-     * @param user the user to add
-     */
-=======
      * Deletes a user by username. Only Admins can delete users.
      * Cannot delete your own account.
      */
@@ -130,7 +124,6 @@ public class UserList {
         return true;
     }
 
->>>>>>> 124d2f4e6fc056fc019cf488ed4657d6ad2c8a21
     public void addUser(User user) {
         if (user != null && !hasUser(user.getUsername())) users.add(user);
     }
