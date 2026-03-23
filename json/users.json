@@ -3,7 +3,7 @@
     "classification": "Sophomore",
     "email": "alice@email.com",
     "password": "hashed_password_1",
-    "streak": 1,
+    "streak": 0,
     "userId": 1,
     "userType": "STUDENT",
     "username": "alice"
@@ -49,5 +49,23 @@
     "userId": 7,
     "userType": "ADMIN",
     "username": "oliver"
+  },
+  {
+    "classification": "Junior",
+    "email": "sullivan@email.com",
+    "password": "sparrow123",
+    "streak": 3,
+    "userId": 8,
+    "userType": "STUDENT",
+    "username": "SSparrow"
+  },
+  {
+    "classification": "Senior",
+    "email": "jimmy@email.com",
+    "password": "bauer26",
+    "streak": 8,
+    "userId": 9,
+    "userType": "STUDENT",
+    "username": "JimmyBauer"
   }
 ]
