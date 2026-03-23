@@ -42,7 +42,7 @@ public class Admin extends User {
     }
 
     /**
-     * Edites a question
+     * Edits a question
      * @param q The Question to be edited
      * @return The modified question
      */

@@ -7,8 +7,18 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+/**
+ * Reads user and question data from JSON files and converts them into model objects.
+ * Extends DataConstants to access all JSON field name keys.
+ * @author Oliver Benjamin
+ */
 public class DataLoader extends DataConstants {
 
+    /**
+     * Loads all users from the users JSON file.
+     * Creates the correct subclass based on the userType field.
+     * @return a list of all users loaded from the file
+     */
     public static ArrayList<User> getUsers() {
         ArrayList<User> users = new ArrayList<>();
         try {
@@ -51,6 +61,11 @@ public class DataLoader extends DataConstants {
         return users;
     }
 
+    /**
+     * Loads all questions from the questions JSON file.
+     * Also loads solutions and replies attached to each question.
+     * @return a list of all questions loaded from the file
+     */
     public static ArrayList<Question> getQuestions() {
         ArrayList<Question> questions = new ArrayList<>();
         ArrayList<User> users = getUsers();
@@ -75,26 +90,20 @@ public class DataLoader extends DataConstants {
 
                 Question question = new Question(title, prompt, difficulty, language, course);
 
-                // Basic properties
                 if (questionObject.containsKey("hint"))
                     question.setHint((String) questionObject.get("hint"));
-
                 if (questionObject.containsKey(QUESTION_SAMPLE_SOLUTION))
                     question.setSampleSolution((String) questionObject.get(QUESTION_SAMPLE_SOLUTION));
-
                 if (questionObject.containsKey(QUESTION_SAMPLE_EXPLANATION))
                     question.setSampleExplanation((String) questionObject.get(QUESTION_SAMPLE_EXPLANATION));
-
                 if (Boolean.TRUE.equals(questionObject.get(QUESTION_IS_SOLUTION_REVEALED)))
                     question.revealSolution();
 
-                // Author
                 if (questionObject.containsKey(QUESTION_AUTHOR_ID)) {
                     int authorId = ((Long) questionObject.get(QUESTION_AUTHOR_ID)).intValue();
                     findUserById(users, authorId).ifPresent(question::setAuthor);
                 }
 
-                // Solutions (answers)
                 if (questionObject.containsKey(QUESTION_SOLUTIONS)) {
                     JSONArray solutionsJSON = (JSONArray) questionObject.get(QUESTION_SOLUTIONS);
                     for (Object sObj : solutionsJSON) {
@@ -112,7 +121,6 @@ public class DataLoader extends DataConstants {
                     }
                 }
 
-                // Replies (comments, recursive)
                 if (questionObject.containsKey(QUESTION_REPLIES)) {
                     JSONArray repliesJSON = (JSONArray) questionObject.get(QUESTION_REPLIES);
                     for (Object rObj : repliesJSON) {
@@ -131,7 +139,11 @@ public class DataLoader extends DataConstants {
     }
 
     /**
-     * Recursively parses a reply and any nested replies (comments on comments).
+     * Recursively parses a reply and any nested replies it contains.
+     * @param replyObject the JSON object representing the reply
+     * @param question the question this reply belongs to
+     * @param users the list of loaded users used to resolve the author
+     * @return the parsed Reply, or null if the author could not be found
      */
     private static Reply parseReply(JSONObject replyObject, Question question, ArrayList<User> users) {
         int authorId   = ((Long) replyObject.get(REPLY_AUTHOR_ID)).intValue();
@@ -148,8 +160,9 @@ public class DataLoader extends DataConstants {
             reply.setUpvotes(((Long) replyObject.get(REPLY_UPVOTES)).intValue());
         if (Boolean.TRUE.equals(replyObject.get(REPLY_ACCEPTED)))
             reply.setAccepted(true);
+        if (replyObject.containsKey(REPLY_DATE_POSTED))
+            reply.setDatePosted((String) replyObject.get(REPLY_DATE_POSTED));
 
-        // Recursive: load nested replies (comments on comments)
         if (replyObject.containsKey(QUESTION_REPLIES)) {
             JSONArray nestedReplies = (JSONArray) replyObject.get(QUESTION_REPLIES);
             for (Object nObj : nestedReplies) {
@@ -161,6 +174,12 @@ public class DataLoader extends DataConstants {
         return reply;
     }
 
+    /**
+     * Searches a list of users for one with the given ID.
+     * @param users the list to search
+     * @param userId the ID to look for
+     * @return an Optional containing the user if found, or empty if not
+     */
     private static java.util.Optional<User> findUserById(ArrayList<User> users, int userId) {
         return users.stream().filter(u -> u.getUserId() == userId).findFirst();
     }

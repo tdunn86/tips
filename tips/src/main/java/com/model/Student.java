@@ -47,10 +47,11 @@ public class Student extends User {
     }
 
     /**
-     * Resets or starts the user's streak
+     * Starts the streak if it has not been set yet.
+     * If the student already has a streak from a previous session, it is preserved.
      */
     public void startStreak() {
-        this.streak = 1;
+        if (this.streak == 0) this.streak = 1;
     }
 
     /**
