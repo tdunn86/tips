@@ -1,11 +1,12 @@
 package com.model;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
  * Console UI for the TIPS system.
- * @author Thomas Dunn, James Gessler
+ * @author Thomas Dunn, James Gessler, Oliver Benjamin
  */
 public class TIPSUI {
 
@@ -26,7 +27,7 @@ public class TIPSUI {
             String choice = scanner.nextLine().trim();
 
             switch (choice) {
-                case "1": handleLogin();        break;
+                case "1": handleLogin();         break;
                 case "2": handleCreateAccount(); break;
                 case "3":
                     running = false;
@@ -64,75 +65,180 @@ public class TIPSUI {
     // Logged-in menu
     // ----------------------------------------------------------------
     private static void handleLoggedInMenu() {
-    boolean loggedIn = true;
-    while (loggedIn) {
-        System.out.println("\n--- Main Menu ---");
-        System.out.println("1. View all questions");
-        System.out.println("2. Search questions");
+        boolean loggedIn = true;
+        while (loggedIn) {
+            System.out.println("\n--- Main Menu ---");
+            System.out.println("1. View all questions");
+            System.out.println("2. Search questions");
 
-        User current = facade.getCurrentUser();
-        if (current instanceof Editor || current instanceof Admin) {
-            System.out.println("3. Add a question");
-            System.out.println("4. Logout");
-        } else {
-            System.out.println("3. Logout");
-        }
+            User current = facade.getCurrentUser();
+            if (current instanceof Admin) {
+                System.out.println("3. Add a question");
+                System.out.println("4. Remove a question");
+                System.out.println("5. View users");
+                System.out.println("6. Logout");
+            } else if (current instanceof Editor) {
+                System.out.println("3. Add a question");
+                System.out.println("4. Remove a question");
+                System.out.println("5. Logout");
+            } else {
+                System.out.println("3. Logout");
+            }
 
-        System.out.print("Choose an option: ");
-        String choice = scanner.nextLine().trim();
+            System.out.print("Choose an option: ");
+            String choice = scanner.nextLine().trim();
 
-        boolean isEditorOrAdmin = (current instanceof Editor || current instanceof Admin);
-
-        switch (choice) {
-            case "1": handleViewAllQuestions(); break;
-            case "2": handleSearchQuestions();  break;
-            case "3":
-                if (isEditorOrAdmin) {
-                    handleAddQuestion();
-                } else {
-                    facade.logout();
-                    System.out.println("Logged out. Data saved.");
-                    loggedIn = false;
-                }
-                break;
-            case "4":
-                if (isEditorOrAdmin) {
-                    facade.logout();
-                    System.out.println("Logged out. Data saved.");
-                    loggedIn = false;
-                }
-                break;
-            default:
-                System.out.println("Invalid option. Try again.");
+            switch (choice) {
+                case "1": handleViewAllQuestions(); break;
+                case "2": handleSearchQuestions();  break;
+                case "3":
+                    if (current instanceof Editor || current instanceof Admin) {
+                        handleAddQuestion();
+                    } else {
+                        facade.logout();
+                        System.out.println("Logged out. Data saved.");
+                        loggedIn = false;
+                    }
+                    break;
+                case "4":
+                    if (current instanceof Editor || current instanceof Admin) {
+                        handleRemoveQuestion();
+                    } else if (current instanceof Editor) {
+                        facade.logout();
+                        System.out.println("Logged out. Data saved.");
+                        loggedIn = false;
+                    }
+                    break;
+                case "5":
+                    if (current instanceof Admin) {
+                        handleViewUsers();
+                    } else if (current instanceof Editor) {
+                        facade.logout();
+                        System.out.println("Logged out. Data saved.");
+                        loggedIn = false;
+                    }
+                    break;
+                case "6":
+                    if (current instanceof Admin) {
+                        facade.logout();
+                        System.out.println("Logged out. Data saved.");
+                        loggedIn = false;
+                    }
+                    break;
+                default:
+                    System.out.println("Invalid option. Try again.");
+            }
         }
     }
-}
+
+    /**
+     * Viewing all users (Admin only)
+     */
+    private static void handleViewUsers() {
+        ArrayList<User> users = facade.getAllUsers();
+
+        System.out.println("\n--- User List ---");
+        for (int i = 0; i < users.size(); i++) {
+            User u = users.get(i);
+            System.out.println((i + 1) + ". [" + u.getAccountType() + "] "
+                + u.getUsername() + " (" + u.getEmail() + ")");
+        }
+
+        System.out.print("\nEnter user number to delete (or 0 to go back): ");
+        String input = scanner.nextLine().trim();
+
+        try {
+            int index = Integer.parseInt(input) - 1;
+            if (index >= 0 && index < users.size()) {
+                User toDelete = users.get(index);
+
+                if (toDelete.equals(facade.getCurrentUser())) {
+                    System.out.println("You cannot delete your own account.");
+                    return;
+                }
+
+                System.out.print("Are you sure you want to delete '"
+                    + toDelete.getUsername() + "'? (yes/no): ");
+                String confirm = scanner.nextLine().trim();
+
+                if (confirm.equalsIgnoreCase("yes")) {
+                    facade.removeUser(toDelete);
+                    System.out.println("User '" + toDelete.getUsername() + "' deleted.");
+                } else {
+                    System.out.println("Cancelled.");
+                }
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input.");
+        }
+    }
 
     // ----------------------------------------------------------------
     // Add question (Editors and Admins only)
     // ----------------------------------------------------------------
-private static void handleAddQuestion() {
-    System.out.println("\n--- Add Question ---");
+    private static void handleAddQuestion() {
+        System.out.println("\n--- Add Question ---");
 
-    System.out.print("Title: ");
-    String title = scanner.nextLine().trim();
+        System.out.print("Title: ");
+        String title = scanner.nextLine().trim();
 
-    System.out.print("Prompt: ");
-    String prompt = scanner.nextLine().trim();
+        System.out.print("Prompt: ");
+        String prompt = scanner.nextLine().trim();
 
-    System.out.println("Difficulty (EASY, MEDIUM, HARD): ");
-    Difficulty difficulty = Difficulty.valueOf(scanner.nextLine().trim().toUpperCase());
+        System.out.println("Difficulty (EASY, MEDIUM, HARD): ");
+        Difficulty difficulty = Difficulty.valueOf(scanner.nextLine().trim().toUpperCase());
 
-    System.out.println("Language (JAVA, PYTHON, CPP, JAVASCRIPT, HTML, CSS): ");
-    Language language = Language.valueOf(scanner.nextLine().trim().toUpperCase());
+        System.out.println("Language (JAVA, PYTHON, CPP, JAVASCRIPT, HTML, CSS): ");
+        Language language = Language.valueOf(scanner.nextLine().trim().toUpperCase());
 
-    System.out.println("Course (CSCE145, CSCE146, CSCE240, CSCE242, CSCE247): ");
-    Course course = Course.valueOf(scanner.nextLine().trim().toUpperCase());
+        System.out.println("Course (CSCE145, CSCE146, CSCE240, CSCE242, CSCE247): ");
+        Course course = Course.valueOf(scanner.nextLine().trim().toUpperCase());
 
-    facade.addQuestion(title, prompt, difficulty, language, course);
-    DataWriter.saveQuestions();
-    System.out.println("Question added successfully!");
-}
+        facade.addQuestion(title, prompt, difficulty, language, course);
+        DataWriter.saveQuestions();
+        System.out.println("Question added successfully!");
+    }
+
+    /**
+     * Remove a question (Editors and Admins only)
+     */
+    private static void handleRemoveQuestion() {
+        ArrayList<Question> questions = facade.getQuestions(null);
+
+        if (questions.isEmpty()) {
+            System.out.println("No questions to remove.");
+            return;
+        }
+
+        System.out.println("\n--- Remove a Question ---");
+        for (int i = 0; i < questions.size(); i++) {
+            Question q = questions.get(i);
+            System.out.println((i + 1) + ". [" + q.getDifficulty() + "] "
+                + q.getTitle() + " (" + q.getCourse() + ")");
+        }
+
+        System.out.print("\nEnter question number to remove (or 0 to go back): ");
+        String input = scanner.nextLine().trim();
+
+        try {
+            int index = Integer.parseInt(input) - 1;
+            if (index >= 0 && index < questions.size()) {
+                Question toRemove = questions.get(index);
+                System.out.print("Are you sure you want to delete '"
+                    + toRemove.getTitle() + "'? (yes/no): ");
+                String confirm = scanner.nextLine().trim();
+
+                if (confirm.equalsIgnoreCase("yes")) {
+                    facade.removeQuestion(toRemove);
+                    System.out.println("Question '" + toRemove.getTitle() + "' deleted.");
+                } else {
+                    System.out.println("Cancelled.");
+                }
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input.");
+        }
+    }
 
     // ----------------------------------------------------------------
     // View all questions
@@ -219,21 +325,30 @@ private static void handleAddQuestion() {
             System.out.println("Explanation:     " + question.getSampleExplanation());
         }
 
-        // Show replies/comments
-        if (!question.getReplies().isEmpty()) {
+        // Show replies
+        List<Reply> replies = question.getReplies();
+        if (!replies.isEmpty()) {
             System.out.println("--------------------------------------------");
-            System.out.println("Comments:");
-            for (Reply r : question.getReplies()) {
-                printReply(r, 1);
+            System.out.println("Replies:");
+            for (int i = 0; i < replies.size(); i++) {
+                System.out.print((i + 1) + ". ");
+                printReply(replies.get(i), 1);
             }
         }
 
         System.out.println("============================================");
         System.out.println("\n1. Reveal solution");
-        System.out.println("2. Add a comment");
-        System.out.println("3. Go back");
+        System.out.println("2. Add a reply");
+        if (!replies.isEmpty()) {
+            System.out.println("3. Reply to an existing reply");
+            System.out.println("4. Go back");
+        } else {
+            System.out.println("3. Go back");
+        }
         System.out.print("Choose an option: ");
         String choice = scanner.nextLine().trim();
+
+        boolean hasReplies = !replies.isEmpty();
 
         switch (choice) {
             case "1":
@@ -242,28 +357,151 @@ private static void handleAddQuestion() {
                 System.out.println("Explanation: " + question.getSampleExplanation());
                 break;
             case "2":
-                handleAddComment(question);
+                handleAddReply(question);
                 break;
             case "3":
+                if (hasReplies) {
+                    handleReplyToReply(question);
+                }
+                // else: go back (fall through)
+                break;
+            case "4":
+                if (hasReplies) {
+                    // go back
+                }
+                break;
             default:
                 break;
         }
     }
 
     // ----------------------------------------------------------------
-    // Add a comment to a question
+    // Add a top-level reply to a question
     // ----------------------------------------------------------------
-    private static void handleAddComment(Question question) {
-        System.out.print("Comment title: ");
+    private static void handleAddReply(Question question) {
+        System.out.print("Reply title: ");
         String title = scanner.nextLine().trim();
-        System.out.print("Comment: ");
+        System.out.print("Reply: ");
         String content = scanner.nextLine().trim();
-        facade.addComment(question, title, content);
-        System.out.println("Comment added!");
+        facade.addReply(question, title, content);
+        System.out.println("Reply added!");
     }
 
     // ----------------------------------------------------------------
-    // Print reply recursively (handles nested comments)
+    // Reply to an existing reply (one level of nesting shown at a time)
+    // ----------------------------------------------------------------
+    private static void handleReplyToReply(Question question) {
+        List<Reply> replies = question.getReplies();
+
+        System.out.println("\n--- Select a reply to respond to ---");
+        for (int i = 0; i < replies.size(); i++) {
+            Reply r = replies.get(i);
+            System.out.println((i + 1) + ". ["
+                + r.getAuthor().getUsername() + "] "
+                + r.getTitle());
+        }
+        System.out.print("Enter reply number (or 0 to go back): ");
+
+        String input = scanner.nextLine().trim();
+        try {
+            int index = Integer.parseInt(input) - 1;
+            if (index >= 0 && index < replies.size()) {
+                handleViewReply(replies.get(index), question);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input.");
+        }
+    }
+
+    // ----------------------------------------------------------------
+    // View a single reply and interact with it
+    // ----------------------------------------------------------------
+    private static void handleViewReply(Reply reply, Question question) {
+        System.out.println("\n--------------------------------------------");
+        System.out.println("Author:  " + reply.getAuthor().getUsername());
+        System.out.println("Title:   " + reply.getTitle());
+        System.out.println("Content: " + reply.getContent());
+
+        ArrayList<Reply> nested = reply.getReplies();
+        if (!nested.isEmpty()) {
+            System.out.println("  Nested replies:");
+            for (int i = 0; i < nested.size(); i++) {
+                System.out.print("  " + (i + 1) + ". ");
+                printReply(nested.get(i), 2);
+            }
+        }
+        System.out.println("--------------------------------------------");
+
+        System.out.println("\n1. Add a reply to this reply");
+        if (!nested.isEmpty()) {
+            System.out.println("2. View a nested reply");
+            System.out.println("3. Go back");
+        } else {
+            System.out.println("2. Go back");
+        }
+        System.out.print("Choose an option: ");
+        String choice = scanner.nextLine().trim();
+
+        boolean hasNested = !nested.isEmpty();
+
+        switch (choice) {
+            case "1":
+                handleAddNestedReply(reply, question);
+                break;
+            case "2":
+                if (hasNested) {
+                    handleSelectNestedReply(nested, question);
+                }
+                // else: go back
+                break;
+            case "3":
+                if (hasNested) {
+                    // go back
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    // ----------------------------------------------------------------
+    // Add a nested reply to a reply
+    // ----------------------------------------------------------------
+    private static void handleAddNestedReply(Reply parent, Question question) {
+        System.out.print("Reply title: ");
+        String title = scanner.nextLine().trim();
+        System.out.print("Reply: ");
+        String content = scanner.nextLine().trim();
+        facade.addNestedReply(parent, question, title, content);
+        System.out.println("Reply added!");
+    }
+
+    // ----------------------------------------------------------------
+    // Select a nested reply to view/interact with (recursive)
+    // ----------------------------------------------------------------
+    private static void handleSelectNestedReply(ArrayList<Reply> replies, Question question) {
+        System.out.println("\n--- Select a nested reply ---");
+        for (int i = 0; i < replies.size(); i++) {
+            Reply r = replies.get(i);
+            System.out.println((i + 1) + ". ["
+                + r.getAuthor().getUsername() + "] "
+                + r.getTitle());
+        }
+        System.out.print("Enter reply number (or 0 to go back): ");
+
+        String input = scanner.nextLine().trim();
+        try {
+            int index = Integer.parseInt(input) - 1;
+            if (index >= 0 && index < replies.size()) {
+                handleViewReply(replies.get(index), question);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input.");
+        }
+    }
+
+    // ----------------------------------------------------------------
+    // Print reply recursively (for display only)
     // ----------------------------------------------------------------
     private static void printReply(Reply reply, int depth) {
         String indent = "  ".repeat(depth);

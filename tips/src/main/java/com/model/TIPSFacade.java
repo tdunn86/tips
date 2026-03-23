@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Facade class - thin layer that delegates to UserList, QuestionList, etc.
  * Contains no business logic of its own.
- * @author Thomas Dunn, James Gessler
+ * @author Thomas Dunn, James Gessler, Oliver Benjamin
  */
 public class TIPSFacade {
     private static TIPSFacade instance;
@@ -96,7 +96,29 @@ public class TIPSFacade {
         questionList.removeQuestion(q, currentUser);
         DataWriter.saveQuestions();
     }
+    
+    /**
+     * Returns all users(Admin only)
+     * @return list of all current users in the system
+     */
+    public ArrayList<User> getAllUsers() {
+        if (currentUser instanceof Admin) {
+            return userList.getAllUsers();
+        }
+        return new ArrayList<>();
+    }
 
+    /**
+     * Remove a user from the system (Admin only)
+     * @param user the user to be removed
+     */
+    public void removeUser(User user) {
+        if (currentUser instanceof Admin) {
+            userList.removeUser(user);
+            DataWriter.saveUsers();
+        }
+    }
+    
     /**
      * Delegates solution submission to Question.
      */
@@ -110,9 +132,9 @@ public class TIPSFacade {
     }
 
     /**
-     * Delegates comment creation to Question.
+     * Adds a top-level reply to a question.
      */
-    public Reply addComment(Question question, String title, String content) {
+    public Reply addReply(Question question, String title, String content) {
         if (currentUser == null || question == null) return null;
         Reply reply = new Reply(currentUser, question, content);
         reply.setTitle(title);
@@ -122,12 +144,36 @@ public class TIPSFacade {
     }
 
     /**
-     * Delegates comment removal to Solution.
+     * Adds a nested reply to an existing reply.
      */
-    public void removeComment(Solution solution, Reply comment) {
-        if (solution == null || comment == null) return;
-        if (!(currentUser instanceof Admin) && !comment.getAuthor().equals(currentUser)) return;
-        solution.getComments().remove(comment);
+    public Reply addNestedReply(Reply parent, Question question, String title, String content) {
+        if (currentUser == null || parent == null || question == null) return null;
+        Reply nested = new Reply(currentUser, question, content);
+        nested.setTitle(title);
+        parent.addReply(nested);
+        DataWriter.saveQuestions();
+        return nested;
+    }
+
+    /**
+     * Removes a reply from a question's top-level reply list.
+     * Only admins or the reply's own author may remove it.
+     */
+    public void removeReply(Question question, Reply reply) {
+        if (question == null || reply == null) return;
+        if (!(currentUser instanceof Admin) && !reply.getAuthor().equals(currentUser)) return;
+        question.getReplies().remove(reply);
+        DataWriter.saveQuestions();
+    }
+
+    /**
+     * Removes a nested reply from a parent reply.
+     * Only admins or the reply's own author may remove it.
+     */
+    public void removeNestedReply(Reply parent, Reply nested) {
+        if (parent == null || nested == null) return;
+        if (!(currentUser instanceof Admin) && !nested.getAuthor().equals(currentUser)) return;
+        parent.getReplies().remove(nested);
         DataWriter.saveQuestions();
     }
 
