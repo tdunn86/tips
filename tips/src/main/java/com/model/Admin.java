@@ -19,11 +19,11 @@ public class Admin extends User {
 
     /**
      * Grants editor status to a user
-     * @param userid The ID of the user to promote
+     * @param userId The ID of the user to promote
      * @return True if approved, false if not
      */
-    public boolean approveEditor(int userid) {
-        User user = UserList.getInstance().getUserById(userid);
+    public boolean approveEditor(int userId) {
+        User user = UserList.getInstance().getUserById(userId);
         if (user != null) {
             user.setAccountType(AccountType.EDITOR);
             return true;
@@ -60,7 +60,4 @@ public class Admin extends User {
         return q;
     }
 
-    public void createSection() {
-
-    }
 }
