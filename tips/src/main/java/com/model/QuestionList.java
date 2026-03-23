@@ -3,8 +3,8 @@ package com.model;
 import java.util.ArrayList;
 
 /**
- * A singleton manager for all questions.
- * Owns all question-related business logic.
+ * Singleton manager for all questions.
+ * Owns question-level business logic: filtering, adding, removing, submitting solutions.
  * @author Thomas Dunn, James Gessler
  */
 public class QuestionList {
