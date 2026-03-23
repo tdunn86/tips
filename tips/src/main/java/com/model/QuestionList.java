@@ -1,7 +1,6 @@
 package com.model;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A singleton manager for all questions.
@@ -21,9 +20,11 @@ public class QuestionList {
         return instance;
     }
 
+    // ===================== QUERY =====================
+
     /**
-     * Returns all questions, optionally filtered by keyword, difficulty, language, or course.
-     * Filter logic lives here, not in the Facade.
+     * Returns all questions filtered by keyword, difficulty, language, or course.
+     * Passing null or blank returns all questions.
      */
     public ArrayList<Question> getQuestions(String filter) {
         if (filter == null || filter.trim().isEmpty()) return getAllQuestions();
@@ -41,9 +42,6 @@ public class QuestionList {
         return results;
     }
 
-    /**
-     * Finds the first question matching a keyword.
-     */
     public Question getQuestion(String keyword) {
         if (keyword == null || keyword.isEmpty()) return null;
         String lower = keyword.toLowerCase();
@@ -54,9 +52,14 @@ public class QuestionList {
         return null;
     }
 
+    public ArrayList<Question> getAllQuestions() {
+        return new ArrayList<>(questions);
+    }
+
+    // ===================== ADD / REMOVE =====================
+
     /**
-     * Creates and adds a new question. Author must be an Editor or Admin.
-     * Question creation logic lives here, not in the Facade.
+     * Creates and adds a new question. Only Editors and Admins may add questions.
      */
     public Question addQuestion(String title, String prompt, Difficulty difficulty,
             Language language, Course course, User author) {
@@ -71,34 +74,82 @@ public class QuestionList {
         return q;
     }
 
-    /**
-     * Adds an already-created question directly.
-     */
     public void addQuestion(Question q) {
         if (q != null && !questions.contains(q)) questions.add(q);
     }
 
     /**
-     * Removes a question. Only Admins can remove questions.
+     * Removes a question. Only Admins may remove questions.
      */
     public boolean removeQuestion(Question q, User requestingUser) {
-        if (!(requestingUser instanceof Editor) && !(requestingUser instanceof Admin)) {
-            System.out.println("Only Editors and Admins can remove questions.");
+        if (!(requestingUser instanceof Admin)) {
+            System.out.println("Only Admins can remove questions.");
             return false;
         }
         return questions.remove(q);
     }
 
-    /**
-     * Removes a question directly (no permission check).
-     */
     public void removeQuestion(Question q) {
         questions.remove(q);
     }
 
-    public ArrayList<Question> getAllQuestions() {
-        return new ArrayList<>(questions);
+    // ===================== SOLUTION / REPLY =====================
+
+    /**
+     * Submits a code solution to a question. Delegates to Question.
+     * Saves questions after submission.
+     */
+    public Solution submitSolution(Question question, User author, String content) {
+        if (question == null) return null;
+        Solution solution = question.submitSolution(author, content);
+        if (solution != null) DataWriter.saveQuestions();
+        return solution;
     }
+
+    /**
+     * Adds a top-level comment to a question. Delegates to Question.
+     * Saves after adding.
+     */
+    public Reply addComment(Question question, User author, String title, String content) {
+        if (question == null) return null;
+        Reply reply = question.addComment(author, title, content);
+        if (reply != null) DataWriter.saveQuestions();
+        return reply;
+    }
+
+    /**
+     * Adds a nested reply to an existing comment. Delegates to Question.
+     * Saves after adding.
+     */
+    public Reply addNestedReply(Question question, Reply parentReply, User author,
+            String title, String content) {
+        if (question == null) return null;
+        Reply reply = question.addNestedReply(parentReply, author, title, content);
+        if (reply != null) DataWriter.saveQuestions();
+        return reply;
+    }
+
+    /**
+     * Removes a comment from a question. Delegates to Question.
+     * Saves after removing.
+     */
+    public boolean removeComment(Question question, Reply comment, User requestingUser) {
+        if (question == null) return false;
+        boolean removed = question.removeComment(comment, requestingUser);
+        if (removed) DataWriter.saveQuestions();
+        return removed;
+    }
+
+    /**
+     * Reveals the sample solution for a question. Saves after revealing.
+     */
+    public void revealSolution(Question question) {
+        if (question == null) return;
+        question.revealSolution();
+        DataWriter.saveQuestions();
+    }
+
+    // ===================== PERSIST =====================
 
     public void save() {
         DataWriter.saveQuestions();
