@@ -1,20 +1,10 @@
 package com.model;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Assert;
-import com.model.*;
+import org.junit.Test;
 
 public class UserTest {
-    @Test
-    public void testTesting() {
-        assertTrue(true);
-    }
-
     @Test
     public void testValidLogin() {
         TIPSFacade library = TIPSFacade.getInstance();
@@ -22,7 +12,6 @@ public class UserTest {
         assertFalse(success);
     }
 
-    // todo -- should return true (invalid user able to login)
     @Test
     public void testInvalidLogin() {
         TIPSFacade library = TIPSFacade.getInstance();
