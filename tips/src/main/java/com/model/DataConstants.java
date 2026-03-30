@@ -1,5 +1,9 @@
 package com.model;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * Holds all constants used for reading and writing JSON data.
  * Contains file paths and field name keys for users, questions, solutions, and replies.
@@ -8,8 +12,29 @@ package com.model;
 public class DataConstants {
 
     // ===================== FILE PATHS =====================
-    public static final String USER_FILE_NAME     = "../json/users.json";
-    public static final String QUESTION_FILE_NAME = "../json/questions.json";
+    private static final Path JSON_DIR = resolveJsonDir();
+
+    public static final String USER_FILE_NAME = JSON_DIR.resolve("users.json").toString();
+    public static final String QUESTION_FILE_NAME = JSON_DIR.resolve("questions.json").toString();
+
+    private static Path resolveJsonDir() {
+        Path cwd = Paths.get("").toAbsolutePath().normalize();
+
+        Path[] candidates = new Path[] {
+            cwd.resolve("json"),
+            cwd.resolve("..").resolve("json").normalize(),
+            cwd.resolve("..").resolve("..").resolve("json").normalize()
+        };
+
+        for (Path candidate : candidates) {
+            if (Files.isDirectory(candidate)) {
+                return candidate;
+            }
+        }
+
+        // Last resort: current working directory/json
+        return cwd.resolve("json");
+    }
 
     // ===================== USER FIELDS =====================
     public static final String USER_ID             = "userId";

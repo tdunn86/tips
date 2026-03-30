@@ -42,7 +42,7 @@ Treat the array as a linked list: index i points to index nums[i]. The duplicate
 --------------------------------------------
 COMMENTS:
 --------------------------------------------
-[JimmyBauer] Confused about Solution 2 - 03/22/2026 23:29
+[JimmyBauer] Confused about Solution 2 - 03/29/2026 22:45
 I don't understand why resetting one pointer to the start finds the duplicate. Can someone explain the math behind why the two pointers meet at the cycle entrance?
 
 
