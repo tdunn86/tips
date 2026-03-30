@@ -8,8 +8,8 @@ package com.model;
 public class DataConstants {
 
     // ===================== FILE PATHS =====================
-    public static final String USER_FILE_NAME     = "json/users.json";
-    public static final String QUESTION_FILE_NAME = "json/questions.json";
+    public static final String USER_FILE_NAME     = "../json/users.json";
+    public static final String QUESTION_FILE_NAME = "../json/questions.json";
 
     // ===================== USER FIELDS =====================
     public static final String USER_ID             = "userId";
