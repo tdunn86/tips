@@ -1,9 +1,9 @@
 package com.model;
 
 import static org.junit.Assert.assertFalse;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.BeforeEach;
 
 
 /**
@@ -25,7 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 public class UserTest {
     private Student testUser;
 
-    @BeforeEach
+    @Before
     public void setup() {
         testUser = new Student(1, "testUser", "securePass", "test@email.com");
     }

@@ -7,8 +7,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Test class for QuestionList.
@@ -44,12 +44,12 @@ import org.junit.jupiter.api.BeforeEach;
  */
 
 public class UserListTest {
-        private QuestionList questionList;
+    private QuestionList questionList;
     private Admin testAdmin;
     private Editor testEditor;
     private Student testStudent;
 
-    @BeforeEach
+    @Before
     public void setup() {
         questionList = QuestionList.getInstance();
         testAdmin = new Admin(9999, "testAdmin", "adminPass", "admin@test.com");
