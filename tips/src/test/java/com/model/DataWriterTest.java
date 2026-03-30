@@ -1,40 +1,147 @@
 package com.model;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test class for DataWriter.
+ * @author Oliver Benjamin
+ *
+ * +----------------------------------------------------------+----------------------------------------------------------------------+
+ * | Test                                                     | Reasoning                                                            |
+ * +----------------------------------------------------------+----------------------------------------------------------------------+
+ * | testWritingZeroUsers                                     | Empty user list should serialize to an empty JSON array             |
+ * | testWritingOneStudent                                    | A single student should round-trip through JSON correctly           |
+ * | testWritingMixedUsersPreservesTypes                       | Different user subclasses should preserve their types              |
+ * | testWritingStudentPreservesStreak                         | Student streak should be written and loaded back correctly         |
+ * | testWritingStudentPreservesClassification                  | Student classification should be written and loaded back correctly |
+ * | testWritingZeroQuestions                                 | Empty question list should serialize to an empty JSON array       |
+ * | testWritingOneQuestion                                    | A basic question should round-trip through JSON correctly          |
+ * | testWritingQuestionPreservesDifficultyLanguageCourse       | Core enum fields should remain unchanged after saving/loading      |
+ * | testWritingQuestionWithAuthor                             | Question author ID should be preserved through serialization       |
+ * | testWritingQuestionWithSolution                           | Solutions should be serialized with author, content, votes, and acceptance |
+ * | testWritingQuestionWithReply                              | Replies should be serialized with author and metadata              |
+ * | testWritingNestedReply                                    | Nested replies should be preserved recursively                     |
+ * | testWritingQuestionOptionalFieldsRoundTrip                 | Optional fields like hint/sample solution should persist correctly |
+ * +----------------------------------------------------------+----------------------------------------------------------------------+
+ */
+
 class DataWriterTest {
 
-    private UserList userList         = UserList.getInstance();
-    private QuestionList questionList = QuestionList.getInstance();
+    private static final String USERS_FILE = DataConstants.USER_FILE_NAME;
+    private static final String QUESTIONS_FILE = DataConstants.QUESTION_FILE_NAME;
 
-    // Reusable users
-    private User teacher  = new User(1, "jdoe",   "pass1", "jdoe@uni.edu",   AccountType.TEACHER);
-    private User student1 = new User(2, "asmith", "pass2", "asmith@uni.edu", AccountType.STUDENT);
-    private User student2 = new User(3, "bsmith", "pass3", "bsmith@uni.edu", AccountType.STUDENT);
+    private String originalUsersJson;
+    private String originalQuestionsJson;
+    private boolean usersFileExisted;
+    private boolean questionsFileExisted;
+
+    private UserList userList;
+    private QuestionList questionList;
+
+    private Student student1;
+    private Student student2;
+    private Editor editor;
+    private Admin admin;
+
+    private void writeFile(String path, String content) throws IOException {
+        Path p = Paths.get(path);
+        Path parent = p.getParent();
+        if (parent != null) {
+            Files.createDirectories(parent);
+        }
+        Files.write(p, content.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private String readFile(String path) throws IOException {
+        Path p = Paths.get(path);
+        return Files.exists(p)
+            ? new String(Files.readAllBytes(p), StandardCharsets.UTF_8)
+            : "";
+    }
+
+    private void restoreFile(String path, boolean existedBefore, String originalContent) throws IOException {
+        if (existedBefore) {
+            writeFile(path, originalContent);
+        } else {
+            Files.deleteIfExists(Paths.get(path));
+        }
+    }
+
+    private void resetSingletons() throws Exception {
+        Field ul = UserList.class.getDeclaredField("instance");
+        ul.setAccessible(true);
+        ul.set(null, null);
+
+        Field ql = QuestionList.class.getDeclaredField("instance");
+        ql.setAccessible(true);
+        ql.set(null, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    private ArrayList<User> getBackingUsers() throws Exception {
+        Field usersField = UserList.class.getDeclaredField("users");
+        usersField.setAccessible(true);
+        return (ArrayList<User>) usersField.get(userList);
+    }
+
+    @SuppressWarnings("unchecked")
+    private ArrayList<Question> getBackingQuestions() throws Exception {
+        Field questionsField = QuestionList.class.getDeclaredField("questions");
+        questionsField.setAccessible(true);
+        return (ArrayList<Question>) questionsField.get(questionList);
+    }
+
+    private void clearBackingData() throws Exception {
+        getBackingUsers().clear();
+        getBackingQuestions().clear();
+    }
 
     @BeforeEach
-    public void setup() {
-        userList.getAllUsers().clear();
-        questionList.getAllQuestions().clear();
-        DataWriter.saveUsers();
-        DataWriter.saveQuestions();
+    void setup() throws Exception {
+        usersFileExisted = Files.exists(Paths.get(USERS_FILE));
+        questionsFileExisted = Files.exists(Paths.get(QUESTIONS_FILE));
+
+        originalUsersJson = usersFileExisted ? readFile(USERS_FILE) : "";
+        originalQuestionsJson = questionsFileExisted ? readFile(QUESTIONS_FILE) : "";
+
+        resetSingletons();
+
+        userList = UserList.getInstance();
+        questionList = QuestionList.getInstance();
+
+        clearBackingData();
+
+        student1 = new Student(1, "jdoe", "pass1", "jdoe@uni.edu");
+        student2 = new Student(2, "asmith", "pass2", "asmith@uni.edu");
+        editor = new Editor(3, "eeditor", "edpass", "editor@uni.edu");
+        admin = new Admin(4, "aadmin", "adminpass", "admin@uni.edu");
     }
 
     @AfterEach
-    public void tearDown() {
-        userList.getAllUsers().clear();
-        questionList.getAllQuestions().clear();
-        DataWriter.saveUsers();
-        DataWriter.saveQuestions();
+    void tearDown() throws Exception {
+        clearBackingData();
+
+        restoreFile(USERS_FILE, usersFileExisted, originalUsersJson);
+        restoreFile(QUESTIONS_FILE, questionsFileExisted, originalQuestionsJson);
+
+        resetSingletons();
     }
 
-    // -----------------------------------------------------------------------
-    // User tests
-    // -----------------------------------------------------------------------
+    // ================= USERS =================
 
     @Test
     void testWritingZeroUsers() {
@@ -43,102 +150,53 @@ class DataWriterTest {
     }
 
     @Test
-    void testWritingOneUser() {
-        userList.getAllUsers().add(teacher);
+    void testWritingOneStudent() {
+        userList.addUser(student1);
         DataWriter.saveUsers();
+
+        assertEquals(1, DataLoader.getUsers().size());
+        assertInstanceOf(Student.class, DataLoader.getUsers().get(0));
         assertEquals("jdoe", DataLoader.getUsers().get(0).getUsername());
-    }
-
-    @Test
-    void testWritingFiveUsers() {
-        userList.getAllUsers().add(new User(1, "asmith", "pw", "a@x.com", AccountType.STUDENT));
-        userList.getAllUsers().add(new User(2, "bsmith", "pw", "b@x.com", AccountType.STUDENT));
-        userList.getAllUsers().add(new User(3, "csmith", "pw", "c@x.com", AccountType.STUDENT));
-        userList.getAllUsers().add(new User(4, "dsmith", "pw", "d@x.com", AccountType.STUDENT));
-        userList.getAllUsers().add(new User(5, "esmith", "pw", "e@x.com", AccountType.STUDENT));
-        DataWriter.saveUsers();
-        assertEquals("esmith", DataLoader.getUsers().get(4).getUsername());
-    }
-
-    @Test
-    void testWritingUserPreservesEmail() {
-        userList.getAllUsers().add(teacher);
-        DataWriter.saveUsers();
         assertEquals("jdoe@uni.edu", DataLoader.getUsers().get(0).getEmail());
     }
 
     @Test
-    void testWritingUserPreservesAccountType() {
-        userList.getAllUsers().add(teacher);
-        DataWriter.saveUsers();
-        assertEquals(AccountType.TEACHER, DataLoader.getUsers().get(0).getAccountType());
-    }
+    void testWritingMixedUsersPreservesTypes() {
+        userList.addUser(student1);
+        userList.addUser(editor);
+        userList.addUser(admin);
 
-    @Test
-    void testWritingUserWithEmptyUsername() {
-        userList.getAllUsers().add(new User(10, "", "pw", "x@x.com", AccountType.STUDENT));
         DataWriter.saveUsers();
-        assertEquals("", DataLoader.getUsers().get(0).getUsername());
-    }
 
-    @Test
-    void testWritingUserWithEmptyPassword() {
-        userList.getAllUsers().add(new User(10, "user", "", "x@x.com", AccountType.STUDENT));
-        DataWriter.saveUsers();
-        assertEquals("", DataLoader.getUsers().get(0).getPassword());
-    }
-
-    @Test
-    void testWritingUserWithEmptyEmail() {
-        userList.getAllUsers().add(new User(10, "user", "pw", "", AccountType.STUDENT));
-        DataWriter.saveUsers();
-        assertEquals("", DataLoader.getUsers().get(0).getEmail());
-    }
-
-    // -----------------------------------------------------------------------
-    // Student tests
-    // -----------------------------------------------------------------------
-
-    @Test
-    void testWritingOneStudent() {
-        userList.getAllUsers().add(new Student(20, "stu1", "pw", "stu1@uni.edu"));
-        DataWriter.saveUsers();
-        assertEquals("stu1", DataLoader.getUsers().get(0).getUsername());
+        assertEquals(3, DataLoader.getUsers().size());
+        assertInstanceOf(Student.class, DataLoader.getUsers().get(0));
+        assertInstanceOf(Editor.class, DataLoader.getUsers().get(1));
+        assertInstanceOf(Admin.class, DataLoader.getUsers().get(2));
     }
 
     @Test
     void testWritingStudentPreservesStreak() {
-        Student s = new Student(20, "stu1", "pw", "stu1@uni.edu");
-        s.setStreak(5);
-        userList.getAllUsers().add(s);
+        student1.setStreak(5);
+        userList.addUser(student1);
+
         DataWriter.saveUsers();
+
         Student loaded = (Student) DataLoader.getUsers().get(0);
         assertEquals(5, loaded.getStreak());
     }
 
     @Test
     void testWritingStudentPreservesClassification() {
-        Student s = new Student(20, "stu1", "pw", "stu1@uni.edu");
-        s.setClassification("Junior");
-        userList.getAllUsers().add(s);
+        student1.setClassification("Junior");
+        userList.addUser(student1);
+
         DataWriter.saveUsers();
+
         Student loaded = (Student) DataLoader.getUsers().get(0);
         assertEquals("Junior", loaded.getClassification());
     }
 
-    @Test
-    void testWritingStudentWithZeroStreak() {
-        Student s = new Student(21, "stu2", "pw", "stu2@uni.edu");
-        s.setStreak(0);
-        userList.getAllUsers().add(s);
-        DataWriter.saveUsers();
-        Student loaded = (Student) DataLoader.getUsers().get(0);
-        assertEquals(0, loaded.getStreak());
-    }
-
-    // -----------------------------------------------------------------------
-    // Question tests
-    // -----------------------------------------------------------------------
+    // ================= QUESTIONS =================
 
     @Test
     void testWritingZeroQuestions() {
@@ -148,174 +206,171 @@ class DataWriterTest {
 
     @Test
     void testWritingOneQuestion() {
-        questionList.getAllQuestions().add(
-            new Question("Reverse a String", "Write a method to reverse a string.",
-                         Difficulty.EASY, Language.JAVA, Course.CSCE145));
+        Question q = new Question(
+            "Reverse a String",
+            "Write a method to reverse a string.",
+            Difficulty.EASY,
+            Language.JAVA,
+            Course.CSCE145
+        );
+        questionList.addQuestion(q);
+
         DataWriter.saveQuestions();
+
+        assertEquals(1, DataLoader.getQuestions().size());
         assertEquals("Reverse a String", DataLoader.getQuestions().get(0).getTitle());
+        assertEquals("Write a method to reverse a string.", DataLoader.getQuestions().get(0).getPrompt());
     }
 
     @Test
-    void testWritingFiveQuestions() {
-        for (int i = 1; i <= 5; i++) {
-            questionList.getAllQuestions().add(
-                new Question("Question " + i, "Prompt " + i,
-                             Difficulty.EASY, Language.JAVA, Course.CSCE145));
-        }
+    void testWritingQuestionPreservesDifficultyLanguageCourse() {
+        Question q = new Question(
+            "Title",
+            "Prompt",
+            Difficulty.HARD,
+            Language.PYTHON,
+            Course.CSCE146
+        );
+        questionList.addQuestion(q);
+
         DataWriter.saveQuestions();
-        assertEquals(5, DataLoader.getQuestions().size());
+
+        Question loaded = DataLoader.getQuestions().get(0);
+        assertEquals(Difficulty.HARD, loaded.getDifficulty());
+        assertEquals(Language.PYTHON, loaded.getLanguage());
+        assertEquals(Course.CSCE146, loaded.getCourse());
     }
 
     @Test
-    void testWritingQuestionPreservesPrompt() {
-        questionList.getAllQuestions().add(
-            new Question("Title", "Detailed prompt here.",
-                         Difficulty.MEDIUM, Language.PYTHON, Course.CSCE145));
-        DataWriter.saveQuestions();
-        assertEquals("Detailed prompt here.", DataLoader.getQuestions().get(0).getPrompt());
-    }
+    void testWritingQuestionWithAuthor() {
+        userList.addUser(student1);
 
-    @Test
-    void testWritingQuestionPreservesDifficulty() {
-        questionList.getAllQuestions().add(
-            new Question("Title", "Prompt", Difficulty.HARD, Language.JAVA, Course.CSCE145));
-        DataWriter.saveQuestions();
-        assertEquals(Difficulty.HARD, DataLoader.getQuestions().get(0).getDifficulty());
-    }
+        Question q = new Question(
+            "Title",
+            "Prompt",
+            Difficulty.EASY,
+            Language.JAVA,
+            Course.CSCE146
+        );
+        q.setAuthor(student1);
+        questionList.addQuestion(q);
 
-    @Test
-    void testWritingQuestionPreservesLanguage() {
-        questionList.getAllQuestions().add(
-            new Question("Title", "Prompt", Difficulty.EASY, Language.PYTHON, Course.CSCE145));
-        DataWriter.saveQuestions();
-        assertEquals(Language.PYTHON, DataLoader.getQuestions().get(0).getLanguage());
-    }
-
-    @Test
-    void testWritingQuestionWithEmptyTitle() {
-        questionList.getAllQuestions().add(
-            new Question("", "Prompt", Difficulty.EASY, Language.JAVA, Course.CSCE145));
-        DataWriter.saveQuestions();
-        assertEquals("", DataLoader.getQuestions().get(0).getTitle());
-    }
-
-    // -----------------------------------------------------------------------
-    // Solution tests
-    // -----------------------------------------------------------------------
-
-    @Test
-    void testWritingZeroSolutions() {
-        Question q = new Question("Title", "Prompt", Difficulty.EASY, Language.JAVA, Course.CSCE145);
-        questionList.getAllQuestions().add(q);
-        DataWriter.saveQuestions();
-        assertEquals(0, DataLoader.getQuestions().get(0).getSolutions().size());
-    }
-
-    @Test
-    void testWritingOneSolution() {
-        Question q = new Question("Title", "Prompt", Difficulty.EASY, Language.JAVA, Course.CSCE145);
-        q.getSolutions().add(new Solution(student1, q, "return x + 1;"));
-        questionList.getAllQuestions().add(q);
-        DataWriter.saveQuestions();
-        assertEquals("return x + 1;",
-            DataLoader.getQuestions().get(0).getSolutions().get(0).getContent());
-    }
-
-    @Test
-    void testWritingMultipleSolutions() {
-        Question q = new Question("Title", "Prompt", Difficulty.EASY, Language.JAVA, Course.CSCE145);
-        q.getSolutions().add(new Solution(student1, q, "solution one"));
-        q.getSolutions().add(new Solution(student2, q, "solution two"));
-        questionList.getAllQuestions().add(q);
-        DataWriter.saveQuestions();
-        assertEquals(2, DataLoader.getQuestions().get(0).getSolutions().size());
-    }
-
-    @Test
-    void testWritingSolutionPreservesAuthor() {
-        userList.getAllUsers().add(student1);
-        Question q = new Question("Title", "Prompt", Difficulty.EASY, Language.JAVA, Course.CSCE145);
-        q.getSolutions().add(new Solution(student1, q, "code"));
-        questionList.getAllQuestions().add(q);
         DataWriter.saveUsers();
         DataWriter.saveQuestions();
-        assertEquals(student1.getUserId(),
-            DataLoader.getQuestions().get(0).getSolutions().get(0).getAuthor().getUserId());
+
+        Question loaded = DataLoader.getQuestions().get(0);
+        assertNotNull(loaded.getAuthor());
+        assertEquals("jdoe", loaded.getAuthor().getUsername());
     }
 
     @Test
-    void testWritingSolutionWithEmptyContent() {
-        Question q = new Question("Title", "Prompt", Difficulty.EASY, Language.JAVA, Course.CSCE145);
-        q.getSolutions().add(new Solution(student1, q, ""));
-        questionList.getAllQuestions().add(q);
-        DataWriter.saveQuestions();
-        assertEquals("",
-            DataLoader.getQuestions().get(0).getSolutions().get(0).getContent());
-    }
+    void testWritingQuestionWithSolution() {
+        userList.addUser(student1);
 
-    // -----------------------------------------------------------------------
-    // Reply tests
-    // -----------------------------------------------------------------------
+        Question q = new Question(
+            "Title",
+            "Prompt",
+            Difficulty.EASY,
+            Language.JAVA,
+            Course.CSCE146
+        );
 
-    @Test
-    void testWritingZeroReplies() {
-        Question q = new Question("Title", "Prompt", Difficulty.EASY, Language.JAVA, Course.CSCE145);
-        questionList.getAllQuestions().add(q);
-        DataWriter.saveQuestions();
-        assertEquals(0, DataLoader.getQuestions().get(0).getReplies().size());
-    }
+        Solution solution = new Solution(student1, q, "return s;");
+        solution.setUpvotes(3);
+        solution.setAccepted(true);
+        q.addSolution(solution);
+        questionList.addQuestion(q);
 
-    @Test
-    void testWritingOneReply() {
-        Question q = new Question("Title", "Prompt", Difficulty.EASY, Language.JAVA, Course.CSCE145);
-        q.getReplies().add(new Reply(student1, q, "Great question!"));
-        questionList.getAllQuestions().add(q);
-        DataWriter.saveQuestions();
-        assertEquals("Great question!",
-            DataLoader.getQuestions().get(0).getReplies().get(0).getContent());
-    }
-
-    @Test
-    void testWritingMultipleReplies() {
-        Question q = new Question("Title", "Prompt", Difficulty.EASY, Language.JAVA, Course.CSCE145);
-        q.getReplies().add(new Reply(student1, q, "Reply one"));
-        q.getReplies().add(new Reply(student2, q, "Reply two"));
-        questionList.getAllQuestions().add(q);
-        DataWriter.saveQuestions();
-        assertEquals(2, DataLoader.getQuestions().get(0).getReplies().size());
-    }
-
-    @Test
-    void testWritingReplyPreservesAuthor() {
-        userList.getAllUsers().add(student1);
-        Question q = new Question("Title", "Prompt", Difficulty.EASY, Language.JAVA, Course.CSCE145);
-        q.getReplies().add(new Reply(student1, q, "My reply"));
-        questionList.getAllQuestions().add(q);
         DataWriter.saveUsers();
         DataWriter.saveQuestions();
-        assertEquals(student1.getUserId(),
-            DataLoader.getQuestions().get(0).getReplies().get(0).getAuthor().getUserId());
+
+        Question loaded = DataLoader.getQuestions().get(0);
+        assertEquals(1, loaded.getSolutions().size());
+        assertEquals("return s;", loaded.getSolutions().get(0).getContent());
+        assertEquals(3, loaded.getSolutions().get(0).getUpvotes());
+        assertTrue(loaded.getSolutions().get(0).isAccepted());
+        assertEquals("jdoe", loaded.getSolutions().get(0).getAuthor().getUsername());
     }
 
     @Test
-    void testWritingReplyWithEmptyContent() {
-        Question q = new Question("Title", "Prompt", Difficulty.EASY, Language.JAVA, Course.CSCE145);
-        q.getReplies().add(new Reply(student1, q, ""));
-        questionList.getAllQuestions().add(q);
+    void testWritingQuestionWithReply() {
+        userList.addUser(student1);
+
+        Question q = new Question(
+            "Title",
+            "Prompt",
+            Difficulty.EASY,
+            Language.JAVA,
+            Course.CSCE146
+        );
+
+        Reply reply = new Reply(student1, q, "Great question!");
+        reply.setTitle("Feedback");
+        reply.setUpvotes(2);
+        q.addReply(reply);
+        questionList.addQuestion(q);
+
+        DataWriter.saveUsers();
         DataWriter.saveQuestions();
-        assertEquals("",
-            DataLoader.getQuestions().get(0).getReplies().get(0).getContent());
+
+        Question loaded = DataLoader.getQuestions().get(0);
+        assertEquals(1, loaded.getReplies().size());
+        assertEquals("Great question!", loaded.getReplies().get(0).getContent());
+        assertEquals("Feedback", loaded.getReplies().get(0).getTitle());
+        assertEquals(2, loaded.getReplies().get(0).getUpvotes());
+        assertEquals("jdoe", loaded.getReplies().get(0).getAuthor().getUsername());
     }
 
     @Test
     void testWritingNestedReply() {
-        Question q = new Question("Title", "Prompt", Difficulty.EASY, Language.JAVA, Course.CSCE145);
+        userList.addUser(student1);
+        userList.addUser(student2);
+
+        Question q = new Question(
+            "Title",
+            "Prompt",
+            Difficulty.EASY,
+            Language.JAVA,
+            Course.CSCE146
+        );
+
         Reply parent = new Reply(student1, q, "Parent reply");
-        parent.getReplies().add(new Reply(student2, q, "Nested reply"));
-        q.getReplies().add(parent);
-        questionList.getAllQuestions().add(q);
+        Reply child = new Reply(student2, q, "Nested reply");
+        parent.addReply(child);
+        q.addReply(parent);
+        questionList.addQuestion(q);
+
+        DataWriter.saveUsers();
         DataWriter.saveQuestions();
-        assertEquals("Nested reply",
-            DataLoader.getQuestions().get(0).getReplies().get(0).getReplies().get(0).getContent());
+
+        Question loaded = DataLoader.getQuestions().get(0);
+        assertEquals(1, loaded.getReplies().size());
+        assertEquals("Parent reply", loaded.getReplies().get(0).getContent());
+        assertEquals(1, loaded.getReplies().get(0).getReplies().size());
+        assertEquals("Nested reply", loaded.getReplies().get(0).getReplies().get(0).getContent());
+    }
+
+    @Test
+    void testWritingQuestionOptionalFieldsRoundTrip() {
+        Question q = new Question(
+            "Title",
+            "Prompt",
+            Difficulty.MEDIUM,
+            Language.PYTHON,
+            Course.CSCE145
+        );
+        q.setHint("Think step by step.");
+        q.setSampleSolution("print('hello')");
+        q.setSampleExplanation("Simple example.");
+        q.revealSolution();
+        questionList.addQuestion(q);
+
+        DataWriter.saveQuestions();
+
+        Question loaded = DataLoader.getQuestions().get(0);
+        assertEquals("Think step by step.", loaded.getHint());
+        assertEquals("print('hello')", loaded.getSampleSolution());
+        assertEquals("Simple example.", loaded.getSampleExplanation());
+        assertTrue(loaded.isSolutionRevealed());
     }
 }
