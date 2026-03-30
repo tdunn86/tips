@@ -48,8 +48,8 @@ import org.junit.jupiter.api.Test;
 
 class DataLoaderTest {
 
-    private static final String USERS_FILE = "../json/users.json";
-    private static final String QUESTIONS_FILE = "../json/questions.json";
+    private static final String USERS_FILE = DataConstants.USER_FILE_NAME;
+    private static final String QUESTIONS_FILE = DataConstants.QUESTION_FILE_NAME;
 
     private static final String USERS_JSON =
         "[\n" +
