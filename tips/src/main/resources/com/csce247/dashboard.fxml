@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.Circle?>
+
+<ScrollPane fitToWidth="true" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csce247.DashboardController">
+   <content>
+      <VBox spacing="25.0" style="-fx-background-color: #F8F9FA;">
+         <padding>
+            <Insets bottom="30.0" left="40.0" right="40.0" top="20.0" />
+         </padding>
+         
+         <HBox alignment="CENTER_LEFT" spacing="20.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+            <padding><Insets bottom="10.0" left="20.0" right="20.0" top="10.0" /></padding>
+            <Label text="&lt;/&gt; TIPS" style="-fx-font-weight: bold; -fx-font-size: 20;" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button text="Home" style="-fx-background-color: #800000; -fx-text-fill: white; -fx-background-radius: 15;" />
+            <Button text="Questions" onAction="#handleViewQuestions" style="-fx-background-color: transparent;" />
+            <Button text="Daily Challenge" onAction="#handleDailyChallenge" style="-fx-background-color: transparent;" />
+            <Button text="Logout" onAction="#handleLogout" style="-fx-background-color: transparent;" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label fx:id="userNameLabel" text="User" />
+            <Circle radius="15.0" fill="#800000" />
+         </HBox>
+
+         <VBox spacing="5.0">
+            <Label fx:id="greetingLabel" text="Hello!" style="-fx-font-size: 32; -fx-font-weight: bold;" />
+            <Label text="Ready to sharpen your coding skills today?" style="-fx-text-fill: #6c757d; -fx-font-size: 16;" />
+         </VBox>
+
+         <HBox alignment="CENTER_LEFT" spacing="15.0" style="-fx-background-color: #F4E7E7; -fx-background-radius: 15; -fx-border-color: #E0CACA; -fx-border-radius: 15;">
+            <padding><Insets bottom="20.0" left="20.0" right="20.0" top="20.0" /></padding>
+            <Circle radius="20.0" fill="#800000" />
+            <VBox>
+               <Label fx:id="streakLabel" text="0 Days" style="-fx-font-weight: bold; -fx-font-size: 18;" />
+               <Label text="Current Streak - Keep it up!" style="-fx-text-fill: #6c757d;" />
+            </VBox>
+         </HBox>
+
+         <HBox spacing="20.0">
+            <VBox spacing="15.0" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 15; -fx-border-color: #EEE; -fx-border-radius: 15;">
+               <padding><Insets bottom="20.0" left="20.0" right="20.0" top="20.0" /></padding>
+               <Label text="View Questions" style="-fx-font-weight: bold; -fx-font-size: 16;" />
+               <Button maxWidth="Infinity" onAction="#handleViewQuestions" text="Explore Questions" style="-fx-background-color: #800000; -fx-text-fill: white;" />
+            </VBox>
+            
+            <VBox spacing="15.0" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 15; -fx-border-color: #EEE; -fx-border-radius: 15;">
+               <padding><Insets bottom="20.0" left="20.0" right="20.0" top="20.0" /></padding>
+               <Label text="Daily Challenge" style="-fx-font-weight: bold; -fx-font-size: 16;" />
+               <Button maxWidth="Infinity" onAction="#handleDailyChallenge" text="Start Challenge" style="-fx-background-color: #800000; -fx-text-fill: white;" />
+            </VBox>
+
+            <VBox spacing="15.0" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 15; -fx-border-color: #EEE; -fx-border-radius: 15;">
+               <padding><Insets bottom="20.0" left="20.0" right="20.0" top="20.0" /></padding>
+               <Label text="Add Question" style="-fx-font-weight: bold; -fx-font-size: 16;" />
+               <Button maxWidth="Infinity" onAction="#handleAddQuestion" text="Create Question" style="-fx-background-color: #F0F0F0; -fx-text-fill: black;" />
+            </VBox>
+         </HBox>
+
+         <Label text="Your Progress" style="-fx-font-size: 24; -fx-font-weight: bold;" />
+         <HBox spacing="20.0">
+            <HBox alignment="CENTER_LEFT" spacing="15.0" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 15; -fx-border-color: #EEE; -fx-border-radius: 15;">
+               <padding><Insets bottom="20.0" left="20.0" right="20.0" top="20.0" /></padding>
+               <VBox>
+                  <Label text="Problems Solved" style="-fx-text-fill: #6c757d;" />
+                  <Label fx:id="solvedCountLabel" text="0" style="-fx-font-weight: bold; -fx-font-size: 22;" />
+               </VBox>
+            </HBox>
+         </HBox>
+      </VBox>
+   </content>
+</ScrollPane>
