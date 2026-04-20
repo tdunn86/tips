@@ -5,19 +5,34 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
+<!--
+    login.fxml  —  TIPS Login Screen
+    Wired to com.csce247.LoginController.
+
+    Changes from the static prototype:
+      1. fx:controller declared on root StackPane
+      2. fx:id added to TextField (tfUsername), PasswordField (pfPassword),
+         and error Label (lblError)
+      3. onAction wired to Login Button and both fields (Enter key submits)
+      4. onAction wired to Create Account Hyperlink
+      5. Error label added below password field, hidden by default
+      6. maxHeight bumped slightly to fit the error label without clipping
+-->
 <StackPane xmlns="http://javafx.com/javafx/17"
-           xmlns:fx="http://javafx.com/fxml"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.csce247.LoginController"
            prefWidth="600" prefHeight="400"
            style="-fx-background-color: #f2f2f2;">
 
-    <!-- Card Container -->
     <VBox spacing="12"
           alignment="CENTER"
           maxWidth="300"
           prefWidth="200"
-          maxHeight="200"
-          prefHeight="150"
-          style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10,0,0,4);">
+          maxHeight="280"
+          prefHeight="200"
+          style="-fx-background-color: white;
+                 -fx-background-radius: 10;
+                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 4);">
 
         <padding>
             <Insets top="20" right="20" bottom="20" left="20"/>
@@ -25,8 +40,10 @@
 
         <!-- Icon -->
         <StackPane prefWidth="50" prefHeight="50"
+                   alignment="CENTER"
                    style="-fx-background-color: #8B0000; -fx-background-radius: 10;">
-            <Label text="&lt;/&gt;" style="-fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;"/>
+            <Label text="&lt;/&gt;"
+                   style="-fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;"/>
         </StackPane>
 
         <!-- Title -->
@@ -40,26 +57,41 @@
         <!-- Username -->
         <VBox alignment="TOP_LEFT" spacing="4">
             <Label text="Username"/>
-            <TextField promptText="Enter your username"
-                       prefHeight="30"/>
+            <TextField fx:id="tfUsername"
+                       promptText="Enter your username"
+                       prefHeight="30"
+                       onAction="#handleLogin"/>
         </VBox>
 
         <!-- Password -->
         <VBox alignment="TOP_LEFT" spacing="4">
             <Label text="Password"/>
-            <PasswordField promptText="Enter your password"
-                           prefHeight="30"/>
+            <PasswordField fx:id="pfPassword"
+                           promptText="Enter your password"
+                           prefHeight="30"
+                           onAction="#handleLogin"/>
         </VBox>
+
+        <!-- Error label — shown only on failed login -->
+        <Label fx:id="lblError"
+               text=""
+               wrapText="true"
+               style="-fx-text-fill: #c0392b; -fx-font-size: 11;"
+               visible="false"/>
 
         <!-- Login Button -->
         <Button text="Login"
                 maxWidth="Infinity"
                 prefHeight="35"
-                style="-fx-background-color: #8B0000; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                defaultButton="true"
+                style="-fx-background-color: #8B0000; -fx-text-fill: white;
+                       -fx-font-weight: bold; -fx-cursor: hand;"
+                onAction="#handleLogin"/>
 
         <!-- Create Account -->
         <Hyperlink text="Create Account"
-                   style="-fx-text-fill: #8B0000;"/>
+                   style="-fx-text-fill: #8B0000;"
+                   onAction="#handleCreateAccount"/>
 
     </VBox>
 
