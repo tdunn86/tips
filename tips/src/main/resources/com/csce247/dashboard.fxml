@@ -1,74 +1,255 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<ScrollPane fitToWidth="true" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.csce247.DashboardController">
-   <content>
-      <VBox spacing="25.0" style="-fx-background-color: #F8F9FA;">
-         <padding>
-            <Insets bottom="30.0" left="40.0" right="40.0" top="20.0" />
-         </padding>
-         
-         <HBox alignment="CENTER_LEFT" spacing="20.0" style="-fx-background-color: white; -fx-background-radius: 10;">
-            <padding><Insets bottom="10.0" left="20.0" right="20.0" top="10.0" /></padding>
-            <Label text="&lt;/&gt; TIPS" style="-fx-font-weight: bold; -fx-font-size: 20;" />
+<BorderPane fx:id="rootPane"
+            prefHeight="900.0"
+            prefWidth="1600.0"
+            stylesheets="@dashboard.css"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.csce247.DashboardController">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="14.0" styleClass="top-bar">
+            <padding>
+                <Insets top="20.0" right="32.0" bottom="20.0" left="32.0"/>
+            </padding>
+
+            <Button fx:id="logoButton"
+                    mnemonicParsing="false"
+                    onAction="#goDashboard"
+                    styleClass="logo-button"
+                    text="&lt;/&gt;" />
+
+            <Label styleClass="brand-label" text="TIPS" />
+
             <Region HBox.hgrow="ALWAYS" />
-            <Button text="Home" style="-fx-background-color: #800000; -fx-text-fill: white; -fx-background-radius: 15;" />
-            <Button text="Questions" onAction="#handleViewQuestions" style="-fx-background-color: transparent;" />
-            <Button text="Daily Challenge" onAction="#handleDailyChallenge" style="-fx-background-color: transparent;" />
-            <Button text="Logout" onAction="#handleLogout" style="-fx-background-color: transparent;" />
-            <Region HBox.hgrow="ALWAYS" />
-            <Label fx:id="userNameLabel" text="User" />
-            <Circle radius="15.0" fill="#800000" />
-         </HBox>
 
-         <VBox spacing="5.0">
-            <Label fx:id="greetingLabel" text="Hello!" style="-fx-font-size: 32; -fx-font-weight: bold;" />
-            <Label text="Ready to sharpen your coding skills today?" style="-fx-text-fill: #6c757d; -fx-font-size: 16;" />
-         </VBox>
+            <HBox alignment="CENTER" spacing="10.0" styleClass="nav-group">
 
-         <HBox alignment="CENTER_LEFT" spacing="15.0" style="-fx-background-color: #F4E7E7; -fx-background-radius: 15; -fx-border-color: #E0CACA; -fx-border-radius: 15;">
-            <padding><Insets bottom="20.0" left="20.0" right="20.0" top="20.0" /></padding>
-            <Circle radius="20.0" fill="#800000" />
-            <VBox>
-               <Label fx:id="streakLabel" text="0 Days" style="-fx-font-weight: bold; -fx-font-size: 18;" />
-               <Label text="Current Streak - Keep it up!" style="-fx-text-fill: #6c757d;" />
-            </VBox>
-         </HBox>
+                <Button fx:id="homeNavButton"
+                        mnemonicParsing="false"
+                        onAction="#goDashboard"
+                        styleClass="nav-button, nav-button-active">
+                    <graphic>
+                        <HBox alignment="CENTER" spacing="8.0">
+                            <Label styleClass="nav-icon" text="⌂"/>
+                            <Label styleClass="nav-text" text="Home"/>
+                        </HBox>
+                    </graphic>
+                </Button>
 
-         <HBox spacing="20.0">
-            <VBox spacing="15.0" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 15; -fx-border-color: #EEE; -fx-border-radius: 15;">
-               <padding><Insets bottom="20.0" left="20.0" right="20.0" top="20.0" /></padding>
-               <Label text="View Questions" style="-fx-font-weight: bold; -fx-font-size: 16;" />
-               <Button maxWidth="Infinity" onAction="#handleViewQuestions" text="Explore Questions" style="-fx-background-color: #800000; -fx-text-fill: white;" />
-            </VBox>
-            
-            <VBox spacing="15.0" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 15; -fx-border-color: #EEE; -fx-border-radius: 15;">
-               <padding><Insets bottom="20.0" left="20.0" right="20.0" top="20.0" /></padding>
-               <Label text="Daily Challenge" style="-fx-font-weight: bold; -fx-font-size: 16;" />
-               <Button maxWidth="Infinity" onAction="#handleDailyChallenge" text="Start Challenge" style="-fx-background-color: #800000; -fx-text-fill: white;" />
-            </VBox>
+                <Button fx:id="questionsNavButton"
+                        mnemonicParsing="false"
+                        onAction="#goQuestions"
+                        styleClass="nav-button">
+                    <graphic>
+                        <HBox alignment="CENTER" spacing="8.0">
+                            <Label styleClass="nav-icon" text="☷"/>
+                            <Label styleClass="nav-text" text="Questions"/>
+                        </HBox>
+                    </graphic>
+                </Button>
 
-            <VBox spacing="15.0" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 15; -fx-border-color: #EEE; -fx-border-radius: 15;">
-               <padding><Insets bottom="20.0" left="20.0" right="20.0" top="20.0" /></padding>
-               <Label text="Add Question" style="-fx-font-weight: bold; -fx-font-size: 16;" />
-               <Button maxWidth="Infinity" onAction="#handleAddQuestion" text="Create Question" style="-fx-background-color: #F0F0F0; -fx-text-fill: black;" />
-            </VBox>
-         </HBox>
+                <Button fx:id="dailyChallengeNavButton"
+                        mnemonicParsing="false"
+                        onAction="#goDailyChallenge"
+                        styleClass="nav-button">
+                    <graphic>
+                        <HBox alignment="CENTER" spacing="8.0">
+                            <Label styleClass="nav-icon" text="🏆"/>
+                            <Label styleClass="nav-text" text="Daily Challenge"/>
+                        </HBox>
+                    </graphic>
+                </Button>
 
-         <Label text="Your Progress" style="-fx-font-size: 24; -fx-font-weight: bold;" />
-         <HBox spacing="20.0">
-            <HBox alignment="CENTER_LEFT" spacing="15.0" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 15; -fx-border-color: #EEE; -fx-border-radius: 15;">
-               <padding><Insets bottom="20.0" left="20.0" right="20.0" top="20.0" /></padding>
-               <VBox>
-                  <Label text="Problems Solved" style="-fx-text-fill: #6c757d;" />
-                  <Label fx:id="solvedCountLabel" text="0" style="-fx-font-weight: bold; -fx-font-size: 22;" />
-               </VBox>
+                <Button fx:id="contributorNavButton"
+                        mnemonicParsing="false"
+                        onAction="#goContributor"
+                        styleClass="nav-button">
+                    <graphic>
+                        <HBox alignment="CENTER" spacing="8.0">
+                            <Label styleClass="nav-icon" text="✎"/>
+                            <Label styleClass="nav-text" text="Contributor"/>
+                        </HBox>
+                    </graphic>
+                </Button>
             </HBox>
-         </HBox>
-      </VBox>
-   </content>
-</ScrollPane>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <Label fx:id="usernameLabel" styleClass="username-label" text="Username" />
+            <Button fx:id="profileButton"
+                    mnemonicParsing="false"
+                    onAction="#handleLogout"
+                    styleClass="profile-button"
+                    text="◯" />
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="content-scroll" vbarPolicy="AS_NEEDED">
+            <content>
+                <VBox spacing="34.0" styleClass="page-content">
+                    <padding>
+                        <Insets top="24.0" right="32.0" bottom="40.0" left="32.0"/>
+                    </padding>
+
+                    <VBox spacing="10.0">
+                        <Label fx:id="greetingLabel" styleClass="greeting-label" text="Hello, User! 👋" />
+                        <Label fx:id="subtitleLabel" styleClass="subtitle-label"
+                               text="Ready to sharpen your coding skills today?"
+                               wrapText="true" />
+                    </VBox>
+
+                    <HBox alignment="CENTER_LEFT" spacing="18.0" styleClass="streak-card">
+                        <padding>
+                            <Insets top="26.0" right="28.0" bottom="26.0" left="28.0"/>
+                        </padding>
+
+                        <StackPane styleClass="streak-icon-wrap">
+                            <Label styleClass="streak-icon" text="🔥" />
+                        </StackPane>
+
+                        <VBox spacing="4.0">
+                            <Label fx:id="streakValueLabel" styleClass="streak-value" text="0 Days" />
+                            <Label fx:id="streakLabel" styleClass="streak-label"
+                                   text="Current Streak - Keep it up!"
+                                   wrapText="true" />
+                        </VBox>
+                    </HBox>
+
+                    <GridPane hgap="26.0" vgap="26.0">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3333" />
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3333" />
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3333" />
+                        </columnConstraints>
+
+                        <VBox GridPane.columnIndex="0" spacing="18.0" styleClass="feature-card">
+                            <padding>
+                                <Insets top="28.0" right="24.0" bottom="24.0" left="24.0"/>
+                            </padding>
+                            <StackPane styleClass="feature-icon-box">
+                                <Label styleClass="feature-icon" text="☰" />
+                            </StackPane>
+                            <Label styleClass="feature-title" text="View Questions" />
+                            <Label styleClass="feature-subtitle"
+                                   text="Browse and solve coding problems from various courses"
+                                   wrapText="true" />
+                            <Region VBox.vgrow="ALWAYS" />
+                            <Button fx:id="exploreQuestionsButton"
+                                    mnemonicParsing="false"
+                                    onAction="#goQuestions"
+                                    styleClass="primary-action-button"
+                                    text="Explore Questions"
+                                    maxWidth="1.7976931348623157E308" />
+                        </VBox>
+
+                        <VBox GridPane.columnIndex="1" spacing="18.0" styleClass="feature-card">
+                            <padding>
+                                <Insets top="28.0" right="24.0" bottom="24.0" left="24.0"/>
+                            </padding>
+                            <StackPane styleClass="feature-icon-box">
+                                <Label styleClass="feature-icon" text="🏆" />
+                            </StackPane>
+                            <Label styleClass="feature-title" text="Daily Challenge" />
+                            <Label styleClass="feature-subtitle"
+                                   text="Take on today's challenge and maintain your streak"
+                                   wrapText="true" />
+                            <Region VBox.vgrow="ALWAYS" />
+                            <Button fx:id="startChallengeButton"
+                                    mnemonicParsing="false"
+                                    onAction="#goDailyChallenge"
+                                    styleClass="primary-action-button"
+                                    text="Start Challenge"
+                                    maxWidth="1.7976931348623157E308" />
+                        </VBox>
+
+                        <VBox GridPane.columnIndex="2" spacing="18.0" styleClass="feature-card">
+                            <padding>
+                                <Insets top="28.0" right="24.0" bottom="24.0" left="24.0"/>
+                            </padding>
+                            <StackPane styleClass="feature-icon-box">
+                                <Label styleClass="feature-icon" text="＋" />
+                            </StackPane>
+                            <Label styleClass="feature-title" text="Add Question" />
+                            <Label styleClass="feature-subtitle"
+                                   text="Create a new coding problem for students to practice"
+                                   wrapText="true" />
+                            <Region VBox.vgrow="ALWAYS" />
+                            <Button fx:id="createQuestionButton"
+                                    mnemonicParsing="false"
+                                    onAction="#goContributor"
+                                    styleClass="secondary-action-button"
+                                    text="Create Question"
+                                    maxWidth="1.7976931348623157E308" />
+                        </VBox>
+                    </GridPane>
+
+                    <VBox spacing="18.0">
+                        <Label styleClass="section-title" text="Your Progress" />
+
+                        <GridPane hgap="24.0" vgap="24.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3333" />
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3333" />
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3333" />
+                            </columnConstraints>
+
+                            <HBox GridPane.columnIndex="0" alignment="CENTER_LEFT" spacing="18.0" styleClass="stat-card">
+                                <padding>
+                                    <Insets top="20.0" right="24.0" bottom="20.0" left="20.0"/>
+                                </padding>
+                                <StackPane styleClass="stat-icon-box, stat-icon-green">
+                                    <Label styleClass="stat-icon, stat-icon-green-text" text="◎" />
+                                </StackPane>
+                                <VBox spacing="2.0">
+                                    <Label styleClass="stat-label" text="Problems Solved" />
+                                    <Label fx:id="problemsSolvedLabel" styleClass="stat-value" text="0" />
+                                </VBox>
+                            </HBox>
+
+                            <HBox GridPane.columnIndex="1" alignment="CENTER_LEFT" spacing="18.0" styleClass="stat-card">
+                                <padding>
+                                    <Insets top="20.0" right="24.0" bottom="20.0" left="20.0"/>
+                                </padding>
+                                <StackPane styleClass="stat-icon-box, stat-icon-blue">
+                                    <Label styleClass="stat-icon, stat-icon-blue-text" text="⌘" />
+                                </StackPane>
+                                <VBox spacing="2.0">
+                                    <Label styleClass="stat-label" text="Courses Active" />
+                                    <Label fx:id="coursesActiveLabel" styleClass="stat-value" text="0" />
+                                </VBox>
+                            </HBox>
+
+                            <HBox GridPane.columnIndex="2" alignment="CENTER_LEFT" spacing="18.0" styleClass="stat-card">
+                                <padding>
+                                    <Insets top="20.0" right="24.0" bottom="20.0" left="20.0"/>
+                                </padding>
+                                <StackPane styleClass="stat-icon-box, stat-icon-purple">
+                                    <Label styleClass="stat-icon, stat-icon-purple-text" text="♕" />
+                                </StackPane>
+                                <VBox spacing="2.0">
+                                    <Label styleClass="stat-label" text="Achievements" />
+                                    <Label fx:id="achievementsLabel" styleClass="stat-value" text="0" />
+                                </VBox>
+                            </HBox>
+                        </GridPane>
+                    </VBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>
