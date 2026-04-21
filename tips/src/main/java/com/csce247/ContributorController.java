@@ -509,7 +509,7 @@ public class ContributorController implements Initializable {
  
     @FXML
     private void handleNavQuestions() {
-        navigateTo("questions.fxml");
+        navigateTo("question.fxml");
     }
  
     @FXML
@@ -546,7 +546,7 @@ public class ContributorController implements Initializable {
  
     private void navigateTo(String fxmlFile) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/ui/" + fxmlFile));
+            Parent root = FXMLLoader.load(getClass().getResource("/com/csce247/" + fxmlFile));
             Stage stage = (Stage) lblUsername.getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (Exception e) {
