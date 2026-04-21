@@ -89,8 +89,7 @@ public class TIPSFacade {
      * @return a suitable question, or null if the current user is not a Student
      */
     public Question getDailyChallenge() {
-        if (!(currentUser instanceof Student)) return null;
-        return questionList.getDailyChallenge((Student) currentUser);
+        return questionList.getDailyChallengeForToday();
     }
 
     /**

@@ -1,7 +1,12 @@
 package com.csce247;
 
+import java.io.IOException;
+
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
 
 public class CreateAccountController {
 
@@ -32,8 +37,7 @@ public class CreateAccountController {
     }
 
     @FXML
-    private void handleBackToLogin() {
-        // TODO: navigate back to login.fxml
-        System.out.println("Back to login");
+    private void handleBackToLogin() throws IOException {
+        App.setRoot("contributor");
     }
 }

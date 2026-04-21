@@ -78,6 +78,18 @@ public class QuestionList {
     }
 
     /**
+     * Returns a deterministic daily challenge based on the current date.
+     * Everyone sees the same question for the same day.
+     * @return today's question, or null if there are no questions
+     */
+    public Question getDailyChallengeForToday() {
+        if (questions == null || questions.isEmpty()) return null;
+        long day = java.time.LocalDate.now().toEpochDay();
+        int index = Math.floorMod((int) day, questions.size());
+        return questions.get(index);
+    }
+
+    /**
      * Returns a daily challenge question tailored to a student.
      * Picks a question matching the student's classification difficulty level
      * that the student has not yet submitted a solution for.
