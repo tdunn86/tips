@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.csce247.CreateAccountController"
+           prefWidth="600" prefHeight="700"
+           style="-fx-background-color: #f2f2f2;">
+
+    <ScrollPane fitToWidth="true"
+                hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                style="-fx-background-color: transparent; -fx-background: transparent;">
+        <content>
+            <VBox alignment="CENTER" style="-fx-background-color: #f2f2f2;">
+                <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+
+                <VBox spacing="16"
+                      maxWidth="440"
+                      prefWidth="440"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 14;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 16, 0, 0, 4);">
+                    <padding><Insets top="28" right="28" bottom="28" left="28"/></padding>
+
+                    <HBox alignment="CENTER_LEFT">
+                        <Hyperlink text="← Back to Login"
+                                   style="-fx-text-fill: #555555; -fx-font-size: 13; -fx-border-color: transparent;"
+                                   onAction="#handleBackToLogin"/>
+                    </HBox>
+
+                    <VBox alignment="CENTER">
+                        <StackPane prefWidth="64" prefHeight="64"
+                                   alignment="CENTER"
+                                   style="-fx-background-color: #73000A; -fx-background-radius: 14;">
+                            <Label text="&lt;/&gt;"
+                                   style="-fx-text-fill: white; -fx-font-size: 20; -fx-font-weight: bold;"/>
+                        </StackPane>
+                    </VBox>
+
+                    <Label text="Create Account"
+                           alignment="CENTER"
+                           maxWidth="Infinity"
+                           style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: #111111;"/>
+
+                    <Label text="Join TIPS to start practicing coding problems"
+                           alignment="CENTER"
+                           maxWidth="Infinity"
+                           wrapText="true"
+                           style="-fx-text-fill: #888888; -fx-font-size: 13;"/>
+
+                    <VBox spacing="6">
+                        <Label text="Username"
+                               style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #222222;"/>
+                        <TextField fx:id="tfUsername"
+                                   promptText="Choose a username"
+                                   prefHeight="40"
+                                   style="-fx-background-color: #f5f5f5;
+                                          -fx-background-radius: 8;
+                                          -fx-border-color: #e0e0e0;
+                                          -fx-border-radius: 8;
+                                          -fx-font-size: 13;
+                                          -fx-text-fill: #333333;"
+                                   onAction="#handleCreateAccount"/>
+                    </VBox>
+
+                    <VBox spacing="6">
+                        <Label text="Email"
+                               style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #222222;"/>
+                        <TextField fx:id="tfEmail"
+                                   promptText="your.email@email.sc.edu"
+                                   prefHeight="40"
+                                   style="-fx-background-color: #f5f5f5;
+                                          -fx-background-radius: 8;
+                                          -fx-border-color: #e0e0e0;
+                                          -fx-border-radius: 8;
+                                          -fx-font-size: 13;
+                                          -fx-text-fill: #333333;"
+                                   onAction="#handleCreateAccount"/>
+                    </VBox>
+
+                    <VBox spacing="6">
+                        <Label text="Password"
+                               style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #222222;"/>
+                        <PasswordField fx:id="pfPassword"
+                                       promptText="Create a password"
+                                       prefHeight="40"
+                                       style="-fx-background-color: #f5f5f5;
+                                              -fx-background-radius: 8;
+                                              -fx-border-color: #e0e0e0;
+                                              -fx-border-radius: 8;
+                                              -fx-font-size: 13;
+                                              -fx-text-fill: #333333;"
+                                       onAction="#handleCreateAccount"/>
+                    </VBox>
+
+                    <VBox spacing="10">
+                        <Label text="Account Type"
+                               style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #222222;"/>
+
+                        <fx:define>
+                            <ToggleGroup fx:id="accountTypeGroup"/>
+                        </fx:define>
+
+                        <HBox fx:id="studentOption"
+                              prefHeight="48"
+                              alignment="CENTER_LEFT"
+                              spacing="12"
+                              style="-fx-background-color: #f8f8f8;
+                                     -fx-background-radius: 8;
+                                     -fx-border-color: #e0e0e0;
+                                     -fx-border-radius: 8;
+                                     -fx-border-width: 1.5;
+                                     -fx-cursor: hand;">
+                            <padding><Insets top="0" right="14" bottom="0" left="14"/></padding>
+                            <RadioButton fx:id="rbStudent"
+                                         selected="true"
+                                         toggleGroup="$accountTypeGroup"
+                                         style="-fx-cursor: hand;">
+                                <graphic>
+                                    <Region prefWidth="0"/>
+                                </graphic>
+                            </RadioButton>
+                            <Label text="Student"
+                                   style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #111111;"/>
+                            <Label text="Practice and solve coding problems"
+                                   style="-fx-font-size: 12; -fx-text-fill: #888888;"/>
+                        </HBox>
+
+                        <HBox fx:id="editorOption"
+                              prefHeight="48"
+                              alignment="CENTER_LEFT"
+                              spacing="12"
+                              style="-fx-background-color: #f8f8f8;
+                                     -fx-background-radius: 8;
+                                     -fx-border-color: #e0e0e0;
+                                     -fx-border-radius: 8;
+                                     -fx-border-width: 1.5;
+                                     -fx-cursor: hand;">
+                            <padding><Insets top="0" right="14" bottom="0" left="14"/></padding>
+                            <RadioButton fx:id="rbEditor"
+                                         toggleGroup="$accountTypeGroup"
+                                         style="-fx-cursor: hand;">
+                                <graphic>
+                                    <Region prefWidth="0"/>
+                                </graphic>
+                            </RadioButton>
+                            <Label text="Editor"
+                                   style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #111111;"/>
+                            <Label text="Create and manage coding problems"
+                                   style="-fx-font-size: 12; -fx-text-fill: #888888;"/>
+                        </HBox>
+
+                    </VBox>
+
+                    <Label fx:id="lblError"
+                           text=""
+                           wrapText="true"
+                           style="-fx-text-fill: #c0392b; -fx-font-size: 12;"
+                           visible="false"/>
+
+                    <Button text="Create Account"
+                            maxWidth="Infinity"
+                            prefHeight="44"
+                            defaultButton="true"
+                            style="-fx-background-color: #73000A;
+                                   -fx-text-fill: white;
+                                   -fx-font-size: 14;
+                                   -fx-font-weight: bold;
+                                   -fx-background-radius: 8;
+                                   -fx-cursor: hand;"
+                            onAction="#handleCreateAccount"/>
+
+                </VBox>
+            </VBox>
+        </content>
+    </ScrollPane>
+
+</StackPane>
