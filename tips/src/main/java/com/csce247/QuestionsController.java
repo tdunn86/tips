@@ -168,6 +168,16 @@ public class QuestionsController implements Initializable {
 
     @FXML
     private void handleContributor() {
+        navigateTo("contributor.fxml");
         System.out.println("Navigate to Contributor");
     }
+    private void navigateTo(String fxmlFile) {
+    try {
+        javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/com/csce247/" + fxmlFile));
+        javafx.stage.Stage stage = (javafx.stage.Stage) searchField.getScene().getWindow();
+        stage.setScene(new javafx.scene.Scene(root));
+    } catch (Exception e) {
+        System.err.println("Navigation failed: " + fxmlFile + " — " + e.getMessage());
+    }
+}
 }
