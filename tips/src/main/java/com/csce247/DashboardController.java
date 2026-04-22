@@ -15,30 +15,16 @@ import com.model.Student;
 import com.model.TIPSFacade;
 import com.model.User;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.stage.Stage;
 
 /**
- * Controller for the dashboard view.
+ * Controller for the dashboard content.
  * Pulls all user-facing dashboard data from the facade/model layer.
  */
 public class DashboardController implements Initializable {
 
-    @FXML private Button homeNavButton;
-    @FXML private Button questionsNavButton;
-    @FXML private Button dailyChallengeNavButton;
-    @FXML private Button contributorNavButton;
-
-    @FXML private Label usernameLabel;
     @FXML private Label greetingLabel;
     @FXML private Label subtitleLabel;
     @FXML private Label streakValueLabel;
@@ -51,7 +37,6 @@ public class DashboardController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        setActiveNav(homeNavButton);
         loadDashboardData();
     }
 
@@ -60,7 +45,6 @@ public class DashboardController implements Initializable {
         List<Question> questions = facade.getQuestions(null);
 
         if (currentUser == null) {
-            usernameLabel.setText("Guest");
             greetingLabel.setText("Hello, Guest! 👋");
             subtitleLabel.setText("Ready to sharpen your coding skills today?");
             streakValueLabel.setText("0 Days");
@@ -71,7 +55,6 @@ public class DashboardController implements Initializable {
             return;
         }
 
-        usernameLabel.setText(currentUser.getUsername());
         greetingLabel.setText("Hello, " + currentUser.getUsername() + "! 👋");
         subtitleLabel.setText(buildSubtitle(currentUser));
 
@@ -264,69 +247,5 @@ public class DashboardController implements Initializable {
         }
 
         return count;
-    }
-
-    private void setActiveNav(Button activeButton) {
-        Button[] buttons = { homeNavButton, questionsNavButton, dailyChallengeNavButton, contributorNavButton };
-
-        for (Button button : buttons) {
-            if (button != null) {
-                button.getStyleClass().remove("nav-button-active");
-            }
-        }
-
-        if (activeButton != null && !activeButton.getStyleClass().contains("nav-button-active")) {
-            activeButton.getStyleClass().add("nav-button-active");
-        }
-    }
-
-    @FXML
-    private void goDashboard(ActionEvent event) {
-        setActiveNav(homeNavButton);
-        navigate(event, "dashboard.fxml");
-    }
-
-    @FXML
-    private void goQuestions(ActionEvent event) {
-        setActiveNav(questionsNavButton);
-        navigate(event, "question.fxml");
-    }
-
-    @FXML
-    private void goDailyChallenge(ActionEvent event) {
-        setActiveNav(dailyChallengeNavButton);
-        navigate(event, "dailychallenge.fxml");
-    }
-
-    @FXML
-    private void goContributor(ActionEvent event) {
-        setActiveNav(contributorNavButton);
-        navigate(event, "contributor.fxml");
-    }
-
-    @FXML
-    private void handleLogout(ActionEvent event) {
-        facade.logout();
-        navigate(event, "login.fxml");
-    }
-
-    private void navigate(ActionEvent event, String fxmlFile) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/csce247/" + fxmlFile));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (Exception e) {
-            System.err.println("Navigation failed to " + fxmlFile + ": " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    private void showError(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(title);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }
