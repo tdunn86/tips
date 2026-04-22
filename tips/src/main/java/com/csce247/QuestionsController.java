@@ -1,15 +1,24 @@
 package com.csce247;
 
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 public class QuestionsController implements Initializable {
 
@@ -67,7 +76,7 @@ public class QuestionsController implements Initializable {
         String search = searchField.getText() == null ? "" : searchField.getText().toLowerCase();
         String diff   = difficultyFilter.getValue();
         String lang   = languageFilter.getValue();
-        String course = courseFilter.getValue();
+        String course  = courseFilter.getValue();
 
         questionList.getChildren().clear();
 
@@ -75,9 +84,9 @@ public class QuestionsController implements Initializable {
 
         for (Question q : allQuestions) {
             boolean matchSearch = q.title.toLowerCase().contains(search);
-            boolean matchDiff   = diff   == null || diff.equals("All Difficulties") || q.difficulty.equals(diff);
-            boolean matchLang   = lang   == null || lang.equals("All Languages")    || q.language.equals(lang);
-            boolean matchCourse = course == null || course.equals("All Courses")    || q.course.equals(course);
+            boolean matchDiff   = diff == null || diff.equals("All Difficulties") || q.difficulty.equals(diff);
+            boolean matchLang   = lang == null || lang.equals("All Languages") || q.language.equals(lang);
+            boolean matchCourse  = course == null || course.equals("All Courses") || q.course.equals(course);
 
             if (matchSearch && matchDiff && matchLang && matchCourse) {
                 questionList.getChildren().add(buildCard(q));
@@ -91,21 +100,22 @@ public class QuestionsController implements Initializable {
     }
 
     private HBox buildCard(Question q) {
-    Label badge = new Label(q.difficulty);
-    String badgeStyle;
-    switch (q.difficulty) {
-        case "Easy":
-            badgeStyle = "-fx-background-color: #d4edda; -fx-text-fill: #276239;";
-            break;
-        case "Medium":
-            badgeStyle = "-fx-background-color: #fff3cd; -fx-text-fill: #856404;";
-            break;
-        case "Hard":
-            badgeStyle = "-fx-background-color: #fde8e8; -fx-text-fill: #b91c1c;";
-            break;
-        default:
-            badgeStyle = "";
-    }
+        Label badge = new Label(q.difficulty);
+        String badgeStyle;
+        switch (q.difficulty) {
+            case "Easy":
+                badgeStyle = "-fx-background-color: #d4edda; -fx-text-fill: #276239;";
+                break;
+            case "Medium":
+                badgeStyle = "-fx-background-color: #fff3cd; -fx-text-fill: #856404;";
+                break;
+            case "Hard":
+                badgeStyle = "-fx-background-color: #fde8e8; -fx-text-fill: #b91c1c;";
+                break;
+            default:
+                badgeStyle = "";
+        }
+
         badge.setStyle(badgeStyle +
                 "-fx-font-size: 10px; -fx-font-weight: bold;" +
                 "-fx-background-radius: 999; -fx-padding: 2 9 2 9;");
@@ -116,8 +126,8 @@ public class QuestionsController implements Initializable {
         HBox titleRow = new HBox(10, titleLabel, badge);
         titleRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
-        Label langLabel   = new Label("Language: " + q.language);
-        Label dot         = new Label("•");
+        Label langLabel = new Label("Language: " + q.language);
+        Label dot = new Label("•");
         Label courseLabel = new Label("Course: " + q.course);
         langLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #555555;");
         dot.setStyle("-fx-font-size: 12px; -fx-text-fill: #bbbbbb;");
@@ -152,32 +162,38 @@ public class QuestionsController implements Initializable {
     }
 
     private void handleSolve(String questionTitle) {
-        // TODO: navigate to solve view
         System.out.println("Solving: " + questionTitle);
     }
 
     @FXML
-    private void handleHome() {
-        System.out.println("Navigate to Home");
+    private void goDashboard(ActionEvent event) {
+        navigate(event, "dashboard.fxml");
     }
 
     @FXML
-    private void handleDailyChallenge() {
-        System.out.println("Navigate to Daily Challenge");
+    private void goQuestions(ActionEvent event) {
+        navigate(event, "question.fxml");
     }
 
     @FXML
-    private void handleContributor() {
-        navigateTo("contributor.fxml");
-        System.out.println("Navigate to Contributor");
+    private void goDailyChallenge(ActionEvent event) {
+        navigate(event, "dailychallenge.fxml");
     }
-    private void navigateTo(String fxmlFile) {
-    try {
-        javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/com/csce247/" + fxmlFile));
-        javafx.stage.Stage stage = (javafx.stage.Stage) searchField.getScene().getWindow();
-        stage.setScene(new javafx.scene.Scene(root));
-    } catch (Exception e) {
-        System.err.println("Navigation failed: " + fxmlFile + " — " + e.getMessage());
+
+    @FXML
+    private void goContributor(ActionEvent event) {
+        navigate(event, "contributor.fxml");
     }
-}
+
+    private void navigate(ActionEvent event, String fxmlFile) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/com/csce247/" + fxmlFile));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            System.err.println("Navigation failed: " + fxmlFile + " — " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

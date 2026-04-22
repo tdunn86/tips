@@ -1,6 +1,5 @@
 package com.csce247;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -9,12 +8,18 @@ import com.model.Question;
 import com.model.TIPSFacade;
 import com.model.User;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.stage.Stage;
 
 /**
  * Controller for the Daily Challenge page.
@@ -95,7 +100,7 @@ public class DailyChallengeController implements Initializable {
         if (leaderboardListView == null) return;
 
         leaderboardListView.getItems().setAll(List.of(
-
+            "No leaderboard entries yet"
         ));
     }
 
@@ -111,23 +116,41 @@ public class DailyChallengeController implements Initializable {
     }
 
     @FXML
-    private void handleHome() throws IOException {
-        App.setRoot("dashboard");
+    private void goDashboard(ActionEvent event) {
+        navigate(event, "dashboard.fxml");
     }
 
     @FXML
-    private void handleQuestions() throws IOException {
-        App.setRoot("question");
+    private void goQuestions(ActionEvent event) {
+        navigate(event, "question.fxml");
     }
 
     @FXML
-    private void handleDailyChallenge() throws IOException {
-        App.setRoot("dailyChallenge");
+    private void goDailyChallenge(ActionEvent event) {
+        navigate(event, "dailychallenge.fxml");
     }
 
     @FXML
-    private void handleContributor() throws IOException {
-        App.setRoot("contributor");
+    private void goContributor(ActionEvent event) {
+        navigate(event, "contributor.fxml");
+    }
+
+    @FXML
+    private void handleLogout(ActionEvent event) {
+        facade.logout();
+        navigate(event, "login.fxml");
+    }
+
+    private void navigate(ActionEvent event, String fxmlFile) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/com/csce247/" + fxmlFile));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            System.err.println("Navigation failed to " + fxmlFile + ": " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /**

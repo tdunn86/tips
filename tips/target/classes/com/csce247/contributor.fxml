@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -16,9 +17,6 @@
             fx:controller="com.csce247.ContributorController"
             style="-fx-background-color: #f6f6f6;">
 
-    <!-- ============================================================== -->
-    <!-- TOP NAV BAR                                                      -->
-    <!-- ============================================================== -->
     <top>
         <VBox>
             <children>
@@ -29,7 +27,6 @@
                     <padding><Insets top="0" right="18" bottom="0" left="18"/></padding>
                     <children>
 
-                        <!-- Logo -->
                         <HBox alignment="CENTER" spacing="10">
                             <children>
                                 <StackPane prefWidth="34" prefHeight="34"
@@ -46,20 +43,44 @@
 
                         <Region HBox.hgrow="ALWAYS"/>
 
-                        <!-- Navigation links -->
                         <HBox alignment="CENTER" spacing="20">
                             <children>
-                                <Label text="⌂  Home"
-                                       style="-fx-font-size: 13; -fx-text-fill: #222222; -fx-cursor: hand;"
-                                       onMouseClicked="#handleNavHome"/>
-                                <Label text="≡  Questions"
-                                       style="-fx-font-size: 13; -fx-text-fill: #222222; -fx-cursor: hand;"
-                                       onMouseClicked="#handleNavQuestions"/>
-                                <Label text="⌛  Daily Challenge"
-                                       style="-fx-font-size: 13; -fx-text-fill: #222222; -fx-cursor: hand;"
-                                       onMouseClicked="#handleNavDailyChallenge"/>
+                                <Button text="⌂  Home"
+                                        onAction="#goDashboard"
+                                        style="-fx-background-color: transparent;
+                                               -fx-font-size: 13;
+                                               -fx-text-fill: #222222;
+                                               -fx-cursor: hand;
+                                               -fx-padding: 0;
+                                               -fx-background-insets: 0;
+                                               -fx-border-color: transparent;
+                                               -fx-focus-color: transparent;
+                                               -fx-faint-focus-color: transparent;"/>
 
-                                <!-- Active page badge (no nav needed — already here) -->
+                                <Button text="≡  Questions"
+                                        onAction="#goQuestions"
+                                        style="-fx-background-color: transparent;
+                                               -fx-font-size: 13;
+                                               -fx-text-fill: #222222;
+                                               -fx-cursor: hand;
+                                               -fx-padding: 0;
+                                               -fx-background-insets: 0;
+                                               -fx-border-color: transparent;
+                                               -fx-focus-color: transparent;
+                                               -fx-faint-focus-color: transparent;"/>
+
+                                <Button text="⌛  Daily Challenge"
+                                        onAction="#goDailyChallenge"
+                                        style="-fx-background-color: transparent;
+                                               -fx-font-size: 13;
+                                               -fx-text-fill: #222222;
+                                               -fx-cursor: hand;
+                                               -fx-padding: 0;
+                                               -fx-background-insets: 0;
+                                               -fx-border-color: transparent;
+                                               -fx-focus-color: transparent;
+                                               -fx-faint-focus-color: transparent;"/>
+
                                 <StackPane style="-fx-background-color: #8b1115; -fx-background-radius: 6;">
                                     <padding><Insets top="8" right="14" bottom="8" left="14"/></padding>
                                     <children>
@@ -72,22 +93,25 @@
 
                         <Region HBox.hgrow="ALWAYS"/>
 
-                        <!-- Username + avatar / logout -->
                         <HBox alignment="CENTER" spacing="12">
                             <children>
                                 <Label fx:id="lblUsername"
                                        text="..."
                                        style="-fx-font-size: 14; -fx-text-fill: #888888;"/>
-                                <StackPane prefWidth="32" prefHeight="32"
-                                           style="-fx-background-color: #8b1115;
-                                                  -fx-background-radius: 16;
-                                                  -fx-cursor: hand;"
-                                           onMouseClicked="#handleNavLogout">
-                                    <children>
-                                        <Label text="☺"
-                                               style="-fx-text-fill: white; -fx-font-size: 14;"/>
-                                    </children>
-                                </StackPane>
+
+                                <Button text="☺"
+                                        onAction="#handleLogout"
+                                        prefWidth="32" prefHeight="32"
+                                        style="-fx-background-color: #8b1115;
+                                               -fx-background-radius: 16;
+                                               -fx-text-fill: white;
+                                               -fx-font-size: 14;
+                                               -fx-cursor: hand;
+                                               -fx-padding: 0;
+                                               -fx-background-insets: 0;
+                                               -fx-border-color: transparent;
+                                               -fx-focus-color: transparent;
+                                               -fx-faint-focus-color: transparent;"/>
                             </children>
                         </HBox>
 
@@ -97,9 +121,6 @@
         </VBox>
     </top>
 
-    <!-- ============================================================== -->
-    <!-- MAIN CONTENT                                                     -->
-    <!-- ============================================================== -->
     <center>
         <ScrollPane fitToWidth="true"
                     style="-fx-background-color: #f6f6f6; -fx-background: #f6f6f6;"
@@ -110,10 +131,6 @@
                         <VBox layoutX="18.0" layoutY="18.0" spacing="18" prefWidth="1328.0">
                             <children>
 
-                                <!-- ==================================== -->
-                                
-                                <!-- Page title + Add Question button      -->
-                                <!-- ==================================== -->
                                 <HBox alignment="CENTER_LEFT">
                                     <children>
                                         <VBox spacing="4" HBox.hgrow="ALWAYS">
@@ -127,25 +144,29 @@
 
                                         <StackPane fx:id="btnAddQuestion"
                                                    style="-fx-background-color: #8b1115;
-                                                          -fx-background-radius: 8;
-                                                          -fx-cursor: hand;"
-                                                   onMouseClicked="#handleAddQuestion">
+                                                          -fx-background-radius: 8;">
                                             <padding><Insets top="10" right="18" bottom="10" left="18"/></padding>
                                             <children>
-                                                <Label text="＋ Add Question"
-                                                       style="-fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold;"/>
+                                                <Button text="＋ Add Question"
+                                                        onAction="#handleAddQuestion"
+                                                        style="-fx-background-color: transparent;
+                                                               -fx-text-fill: white;
+                                                               -fx-font-size: 13;
+                                                               -fx-font-weight: bold;
+                                                               -fx-cursor: hand;
+                                                               -fx-padding: 0;
+                                                               -fx-background-insets: 0;
+                                                               -fx-border-color: transparent;
+                                                               -fx-focus-color: transparent;
+                                                               -fx-faint-focus-color: transparent;"/>
                                             </children>
                                         </StackPane>
                                     </children>
                                 </HBox>
 
-                                <!-- ==================================== -->
-                                <!-- Stat cards                            -->
-                                <!-- ==================================== -->
                                 <HBox spacing="18">
                                     <children>
 
-                                        <!-- Problems Submitted -->
                                         <VBox prefWidth="420" prefHeight="78" spacing="2"
                                               style="-fx-background-color: white;
                                                      -fx-background-radius: 10;
@@ -176,7 +197,6 @@
                                             </children>
                                         </VBox>
 
-                                        <!-- Solutions Written -->
                                         <VBox prefWidth="420" prefHeight="78" spacing="2"
                                               style="-fx-background-color: white;
                                                      -fx-background-radius: 10;
@@ -207,7 +227,6 @@
                                             </children>
                                         </VBox>
 
-                                        <!-- Approval Rate -->
                                         <VBox prefWidth="420" prefHeight="78" spacing="2"
                                               style="-fx-background-color: white;
                                                      -fx-background-radius: 10;
@@ -241,9 +260,6 @@
                                     </children>
                                 </HBox>
 
-                                <!-- ==================================== -->
-                                <!-- Tab bar                               -->
-                                <!-- ==================================== -->
                                 <StackPane prefHeight="38"
                                            style="-fx-background-color: #dddddd; -fx-background-radius: 12;">
                                     <children>
@@ -256,35 +272,61 @@
                                                                   -fx-background-radius: 12;
                                                                   -fx-border-color: #d0d0d0;
                                                                   -fx-border-radius: 12;
-                                                                  -fx-border-width: 1;
-                                                                  -fx-cursor: hand;"
-                                                           onMouseClicked="#onTabApproved">
+                                                                  -fx-border-width: 1;">
                                                     <children>
                                                         <Label fx:id="lblTabApproved"
                                                                text="◔  Approved (0)"
                                                                style="-fx-font-size: 14; -fx-text-fill: #222222;"/>
+                                                        <Button text=""
+                                                                onAction="#onTabApproved"
+                                                                prefWidth="440" prefHeight="38"
+                                                                style="-fx-background-color: transparent;
+                                                                       -fx-cursor: hand;
+                                                                       -fx-padding: 0;
+                                                                       -fx-background-insets: 0;
+                                                                       -fx-border-color: transparent;
+                                                                       -fx-focus-color: transparent;
+                                                                       -fx-faint-focus-color: transparent;"/>
                                                     </children>
                                                 </StackPane>
 
                                                 <StackPane fx:id="tabPending"
                                                            prefWidth="440" prefHeight="38"
-                                                           style="-fx-background-color: transparent; -fx-cursor: hand;"
-                                                           onMouseClicked="#onTabPending">
+                                                           style="-fx-background-color: transparent;">
                                                     <children>
                                                         <Label fx:id="lblTabPending"
                                                                text="◔  Pending Review (0)"
                                                                style="-fx-font-size: 14; -fx-text-fill: #222222;"/>
+                                                        <Button text=""
+                                                                onAction="#onTabPending"
+                                                                prefWidth="440" prefHeight="38"
+                                                                style="-fx-background-color: transparent;
+                                                                       -fx-cursor: hand;
+                                                                       -fx-padding: 0;
+                                                                       -fx-background-insets: 0;
+                                                                       -fx-border-color: transparent;
+                                                                       -fx-focus-color: transparent;
+                                                                       -fx-faint-focus-color: transparent;"/>
                                                     </children>
                                                 </StackPane>
 
                                                 <StackPane fx:id="tabRejected"
                                                            prefWidth="440" prefHeight="38"
-                                                           style="-fx-background-color: transparent; -fx-cursor: hand;"
-                                                           onMouseClicked="#onTabRejected">
+                                                           style="-fx-background-color: transparent;">
                                                     <children>
                                                         <Label fx:id="lblTabRejected"
                                                                text="⊗  Rejected (0)"
                                                                style="-fx-font-size: 14; -fx-text-fill: #222222;"/>
+                                                        <Button text=""
+                                                                onAction="#onTabRejected"
+                                                                prefWidth="440" prefHeight="38"
+                                                                style="-fx-background-color: transparent;
+                                                                       -fx-cursor: hand;
+                                                                       -fx-padding: 0;
+                                                                       -fx-background-insets: 0;
+                                                                       -fx-border-color: transparent;
+                                                                       -fx-focus-color: transparent;
+                                                                       -fx-faint-focus-color: transparent;"/>
                                                     </children>
                                                 </StackPane>
 
@@ -293,14 +335,10 @@
                                     </children>
                                 </StackPane>
 
-                                <!-- ==================================== -->
-                                <!-- Question list (built by controller)   -->
-                                <!-- ==================================== -->
                                 <VBox fx:id="questionListVBox" spacing="12">
                                     <!-- ContributorController.renderTab() populates this -->
                                 </VBox>
 
-                                <!-- Bottom breathing room -->
                                 <Region prefHeight="24"/>
 
                             </children>

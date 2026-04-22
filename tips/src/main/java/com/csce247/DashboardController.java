@@ -1,6 +1,5 @@
 package com.csce247;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +25,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 /**
@@ -35,17 +33,10 @@ import javafx.stage.Stage;
  */
 public class DashboardController implements Initializable {
 
-    @FXML private BorderPane rootPane;
-
-    @FXML private Button logoButton;
     @FXML private Button homeNavButton;
     @FXML private Button questionsNavButton;
     @FXML private Button dailyChallengeNavButton;
     @FXML private Button contributorNavButton;
-    @FXML private Button profileButton;
-    @FXML private Button exploreQuestionsButton;
-    @FXML private Button startChallengeButton;
-    @FXML private Button createQuestionButton;
 
     @FXML private Label usernameLabel;
     @FXML private Label greetingLabel;
@@ -94,7 +85,8 @@ public class DashboardController implements Initializable {
     }
 
     private String buildSubtitle(User currentUser) {
-        if (currentUser instanceof Student student) {
+        if (currentUser instanceof Student) {
+            Student student = (Student) currentUser;
             return "Classification: " + student.getClassification() + " • Ready to sharpen your coding skills today?";
         }
         if (currentUser instanceof Editor) {
@@ -107,7 +99,8 @@ public class DashboardController implements Initializable {
     }
 
     private int getDisplayedStreak(User currentUser) {
-        if (currentUser instanceof Student student) {
+        if (currentUser instanceof Student) {
+            Student student = (Student) currentUser;
             return student.getStreak();
         }
         return 0;
@@ -130,6 +123,9 @@ public class DashboardController implements Initializable {
         Set<String> solvedQuestionIds = new HashSet<>();
 
         for (Question question : questions) {
+            if (question.getSolutions() == null) {
+                continue;
+            }
             for (Solution solution : question.getSolutions()) {
                 if (solution.getAuthor() != null
                         && solution.getAuthor().getUserId() == currentUser.getUserId()) {
@@ -153,7 +149,7 @@ public class DashboardController implements Initializable {
                 includeCourse = true;
             }
 
-            if (!includeCourse) {
+            if (!includeCourse && question.getSolutions() != null) {
                 for (Solution solution : question.getSolutions()) {
                     if (solution.getAuthor() != null
                             && solution.getAuthor().getUserId() == currentUser.getUserId()) {
@@ -168,7 +164,8 @@ public class DashboardController implements Initializable {
             }
         }
 
-        if (currentUser instanceof Student student) {
+        if (currentUser instanceof Student) {
+            Student student = (Student) currentUser;
             for (Question favorite : student.getFavQuestions()) {
                 if (favorite != null && favorite.getCourse() != null) {
                     activeCourses.add(favorite.getCourse().name());
@@ -185,17 +182,20 @@ public class DashboardController implements Initializable {
         total += countAcceptedSolutions(currentUser, questions);
         total += countAuthoredComments(currentUser, questions);
 
-        if (currentUser instanceof Student student) {
+        if (currentUser instanceof Student) {
+            Student student = (Student) currentUser;
             total += student.getFavQuestions().size();
             if (student.getStreak() >= 1) {
                 total += 1;
             }
         }
 
-        if (currentUser instanceof Editor editor) {
+        if (currentUser instanceof Editor) {
+            Editor editor = (Editor) currentUser;
             total += editor.totalQuestionsCreated;
             total += countAuthoredQuestions(currentUser, questions);
-        } else if (currentUser instanceof Admin admin) {
+        } else if (currentUser instanceof Admin) {
+            Admin admin = (Admin) currentUser;
             total += admin.totalQuestionsCreated;
             total += countAuthoredQuestions(currentUser, questions);
         }
@@ -207,6 +207,9 @@ public class DashboardController implements Initializable {
         int count = 0;
 
         for (Question question : questions) {
+            if (question.getSolutions() == null) {
+                continue;
+            }
             for (Solution solution : question.getSolutions()) {
                 if (solution.getAuthor() != null
                         && solution.getAuthor().getUserId() == currentUser.getUserId()
@@ -236,6 +239,9 @@ public class DashboardController implements Initializable {
         int count = 0;
 
         for (Question question : questions) {
+            if (question.getReplies() == null) {
+                continue;
+            }
             for (Reply reply : question.getReplies()) {
                 count += countRepliesByUser(currentUser, reply);
             }
@@ -251,91 +257,69 @@ public class DashboardController implements Initializable {
             count++;
         }
 
-        for (Reply nestedReply : reply.getReplies()) {
-            count += countRepliesByUser(currentUser, nestedReply);
+        if (reply.getReplies() != null) {
+            for (Reply nestedReply : reply.getReplies()) {
+                count += countRepliesByUser(currentUser, nestedReply);
+            }
         }
 
         return count;
     }
 
     private void setActiveNav(Button activeButton) {
-        Button[] buttons = {homeNavButton, questionsNavButton, dailyChallengeNavButton, contributorNavButton};
+        Button[] buttons = { homeNavButton, questionsNavButton, dailyChallengeNavButton, contributorNavButton };
+
         for (Button button : buttons) {
             if (button != null) {
                 button.getStyleClass().remove("nav-button-active");
             }
         }
+
         if (activeButton != null && !activeButton.getStyleClass().contains("nav-button-active")) {
             activeButton.getStyleClass().add("nav-button-active");
         }
     }
 
     @FXML
-    private void goDashboard(ActionEvent event) throws IOException {
+    private void goDashboard(ActionEvent event) {
         setActiveNav(homeNavButton);
         navigate(event, "dashboard.fxml");
     }
 
     @FXML
-    private void goQuestions(ActionEvent event) throws IOException {
+    private void goQuestions(ActionEvent event) {
         setActiveNav(questionsNavButton);
         navigate(event, "question.fxml");
     }
 
     @FXML
-    private void goDailyChallenge(ActionEvent event) throws IOException {
+    private void goDailyChallenge(ActionEvent event) {
         setActiveNav(dailyChallengeNavButton);
         navigate(event, "dailychallenge.fxml");
     }
 
     @FXML
-    private void goContributor(ActionEvent event) throws IOException {
+    private void goContributor(ActionEvent event) {
         setActiveNav(contributorNavButton);
         navigate(event, "contributor.fxml");
     }
 
     @FXML
-    private void handleLogout(ActionEvent event) throws IOException {
+    private void handleLogout(ActionEvent event) {
         facade.logout();
         navigate(event, "login.fxml");
     }
 
-    private void navigate(ActionEvent event, String fxmlName) throws IOException {
-        URL resource = resolveViewResource(fxmlName);
-        if (resource == null) {
-            showError("Missing view", "Could not find " + fxmlName + " on the classpath.");
-            return;
+    private void navigate(ActionEvent event, String fxmlFile) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/com/csce247/" + fxmlFile));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            System.err.println("Navigation failed to " + fxmlFile + ": " + e.getMessage());
+            e.printStackTrace();
         }
-
-        Parent root = FXMLLoader.load(resource);
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene currentScene = stage.getScene();
-        Scene nextScene = new Scene(
-                root,
-                currentScene != null ? currentScene.getWidth() : 1600,
-                currentScene != null ? currentScene.getHeight() : 900
-        );
-        stage.setScene(nextScene);
-        stage.show();
-    }
-
-    private URL resolveViewResource(String fxmlName) {
-        String[] candidates = {
-            "/com/csce247/" + fxmlName,
-            "/view/" + fxmlName,
-            "/views/" + fxmlName,
-            "/com/view/" + fxmlName,
-            "/com/views/" + fxmlName
-        };
-
-        for (String candidate : candidates) {
-            URL resource = getClass().getResource(candidate);
-            if (resource != null) {
-                return resource;
-            }
-        }
-
-        return null;
     }
 
     private void showError(String title, String message) {
