@@ -4,7 +4,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -12,305 +11,203 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="rootPane"
-            prefHeight="900.0"
-            prefWidth="1600.0"
-            style="-fx-font-family: System; -fx-background-color: #f7f7f8;"
-            xmlns="http://javafx.com/javafx/21"
+<ScrollPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.csce247.DashboardController">
+            fx:controller="com.csce247.DashboardController"
+            fitToWidth="true"
+            hbarPolicy="NEVER"
+            vbarPolicy="AS_NEEDED"
+            style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
 
-    <top>
-        <HBox alignment="CENTER_LEFT"
-              spacing="14.0"
-              style="-fx-background-color: white; -fx-border-color: transparent transparent #dfdfdf transparent; -fx-border-width: 0 0 1 0; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 8, 0.15, 0, 2);">
+    <content>
+        <VBox spacing="34.0"
+              style="-fx-background-color: transparent;">
             <padding>
-                <Insets top="20.0" right="32.0" bottom="20.0" left="32.0"/>
+                <Insets top="24.0" right="32.0" bottom="40.0" left="32.0"/>
             </padding>
 
-            <Button fx:id="logoButton"
-                    mnemonicParsing="false"
-                    onAction="#goDashboard"
-                    text="&lt;/&gt;"
-                    style="-fx-background-color: #8a0011; -fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: 700; -fx-background-radius: 14; -fx-min-width: 58; -fx-min-height: 58; -fx-pref-width: 58; -fx-pref-height: 58; -fx-padding: 0;" />
+            <VBox spacing="10.0">
+                <Label fx:id="greetingLabel"
+                       text="Hello, User! 👋"
+                       style="-fx-font-size: 56px; -fx-font-weight: 800; -fx-text-fill: #111111;" />
+                <Label fx:id="subtitleLabel"
+                       text="Ready to sharpen your coding skills today?"
+                       wrapText="true"
+                       style="-fx-font-size: 22px; -fx-text-fill: #707070;" />
+            </VBox>
 
-            <Label text="TIPS"
-                   style="-fx-font-size: 28px; -fx-font-weight: 800; -fx-text-fill: #111111;" />
+            <HBox alignment="CENTER_LEFT"
+                  spacing="18.0"
+                  style="-fx-background-color: linear-gradient(to right, rgba(138, 0, 17, 0.09), rgba(138, 0, 17, 0.05)); -fx-border-color: rgba(138, 0, 17, 0.24); -fx-border-width: 1; -fx-border-radius: 16; -fx-background-radius: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.15, 0, 2); -fx-min-height: 110; -fx-alignment: CENTER_LEFT;">
+                <padding>
+                    <Insets top="26.0" right="28.0" bottom="26.0" left="28.0"/>
+                </padding>
 
-            <Region HBox.hgrow="ALWAYS" />
+                <StackPane style="-fx-background-color: #8a0011; -fx-background-radius: 999; -fx-min-width: 72; -fx-min-height: 72; -fx-max-width: 72; -fx-max-height: 72; -fx-alignment: CENTER;">
+                    <Label text="🔥"
+                           style="-fx-font-size: 32px;" />
+                </StackPane>
 
-            <HBox alignment="CENTER" spacing="10.0">
-
-                <Button fx:id="homeNavButton"
-                        mnemonicParsing="false"
-                        onAction="#goDashboard"
-                        style="-fx-background-color: #8a0011; -fx-background-radius: 14; -fx-padding: 12 18 12 18; -fx-min-height: 46; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;">
-                    <graphic>
-                        <HBox alignment="CENTER" spacing="8.0">
-                            <Label text="⌂"
-                                   style="-fx-font-size: 18px; -fx-min-width: 20; -fx-min-height: 20; -fx-text-fill: white;" />
-                            <Label text="Home"
-                                   style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: white;" />
-                        </HBox>
-                    </graphic>
-                </Button>
-
-                <Button fx:id="questionsNavButton"
-                        mnemonicParsing="false"
-                        onAction="#goQuestions"
-                        style="-fx-background-color: transparent; -fx-background-radius: 14; -fx-padding: 12 18 12 18; -fx-min-height: 46; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;">
-                    <graphic>
-                        <HBox alignment="CENTER" spacing="8.0">
-                            <Label text="☷"
-                                   style="-fx-font-size: 18px; -fx-min-width: 20; -fx-min-height: 20; -fx-text-fill: #111111;" />
-                            <Label text="Questions"
-                                   style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #111111;" />
-                        </HBox>
-                    </graphic>
-                </Button>
-
-                <Button fx:id="dailyChallengeNavButton"
-                        mnemonicParsing="false"
-                        onAction="#goDailyChallenge"
-                        style="-fx-background-color: transparent; -fx-background-radius: 14; -fx-padding: 12 18 12 18; -fx-min-height: 46; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;">
-                    <graphic>
-                        <HBox alignment="CENTER" spacing="8.0">
-                            <Label text="🏆"
-                                   style="-fx-font-size: 18px; -fx-min-width: 20; -fx-min-height: 20; -fx-text-fill: #111111;" />
-                            <Label text="Daily Challenge"
-                                   style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #111111;" />
-                        </HBox>
-                    </graphic>
-                </Button>
-
-                <Button fx:id="contributorNavButton"
-                        mnemonicParsing="false"
-                        onAction="#goContributor"
-                        style="-fx-background-color: transparent; -fx-background-radius: 14; -fx-padding: 12 18 12 18; -fx-min-height: 46; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;">
-                    <graphic>
-                        <HBox alignment="CENTER" spacing="8.0">
-                            <Label text="✎"
-                                   style="-fx-font-size: 18px; -fx-min-width: 20; -fx-min-height: 20; -fx-text-fill: #111111;" />
-                            <Label text="Contributor"
-                                   style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #111111;" />
-                        </HBox>
-                    </graphic>
-                </Button>
+                <VBox spacing="4.0">
+                    <Label fx:id="streakValueLabel"
+                           text="0 Days"
+                           style="-fx-font-size: 38px; -fx-font-weight: 800; -fx-text-fill: #111111;" />
+                    <Label fx:id="streakLabel"
+                           text="Current Streak - Keep it up!"
+                           wrapText="true"
+                           style="-fx-font-size: 18px; -fx-text-fill: #6e6e6e;" />
+                </VBox>
             </HBox>
 
-            <Region HBox.hgrow="ALWAYS" />
+            <GridPane hgap="26.0" vgap="26.0">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3333" />
+                    <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3333" />
+                    <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3333" />
+                </columnConstraints>
 
-            <Label fx:id="usernameLabel"
-                   text="Username"
-                   style="-fx-font-size: 18px; -fx-text-fill: #6a6a6a;" />
-
-            <Button fx:id="profileButton"
-                    mnemonicParsing="false"
-                    onAction="#handleLogout"
-                    text="◯"
-                    style="-fx-background-color: #8a0011; -fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: 700; -fx-background-radius: 999; -fx-min-width: 46; -fx-min-height: 46; -fx-pref-width: 46; -fx-pref-height: 46; -fx-padding: 0;" />
-        </HBox>
-    </top>
-
-    <center>
-        <ScrollPane fitToWidth="true"
-                    hbarPolicy="NEVER"
-                    vbarPolicy="AS_NEEDED"
-                    style="-fx-background-color: transparent; -fx-border-color: transparent;">
-            <content>
-                <VBox spacing="34.0"
-                      style="-fx-background-color: transparent;">
+                <VBox GridPane.columnIndex="0"
+                      spacing="18.0"
+                      style="-fx-background-color: white; -fx-border-color: rgba(0,0,0,0.10); -fx-border-width: 1; -fx-border-radius: 18; -fx-background-radius: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.18, 0, 3);">
                     <padding>
-                        <Insets top="24.0" right="32.0" bottom="40.0" left="32.0"/>
+                        <Insets top="28.0" right="24.0" bottom="24.0" left="24.0"/>
                     </padding>
+                    <StackPane style="-fx-background-color: rgba(138, 0, 17, 0.09); -fx-background-radius: 12; -fx-min-width: 72; -fx-min-height: 72; -fx-max-width: 72; -fx-max-height: 72; -fx-alignment: CENTER;">
+                        <Label text="☰"
+                               style="-fx-font-size: 34px; -fx-text-fill: #8a0011;" />
+                    </StackPane>
+                    <Label text="View Questions"
+                           style="-fx-font-size: 24px; -fx-font-weight: 700; -fx-text-fill: #111111;" />
+                    <Label text="Browse and solve coding problems from various courses"
+                           wrapText="true"
+                           style="-fx-font-size: 19px; -fx-text-fill: #6f6f6f;" />
+                    <Region VBox.vgrow="ALWAYS" />
+                    <Button fx:id="exploreQuestionsButton"
+                            mnemonicParsing="false"
+                            text="Explore Questions"
+                            maxWidth="1.7976931348623157E308"
+                            style="-fx-min-height: 52; -fx-background-color: #8a0011; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-size: 18px; -fx-font-weight: 600;" />
+                </VBox>
 
-                    <VBox spacing="10.0">
-                        <Label fx:id="greetingLabel"
-                               text="Hello, User! 👋"
-                               style="-fx-font-size: 56px; -fx-font-weight: 800; -fx-text-fill: #111111;" />
-                        <Label fx:id="subtitleLabel"
-                               text="Ready to sharpen your coding skills today?"
-                               wrapText="true"
-                               style="-fx-font-size: 22px; -fx-text-fill: #707070;" />
-                    </VBox>
+                <VBox GridPane.columnIndex="1"
+                      spacing="18.0"
+                      style="-fx-background-color: white; -fx-border-color: rgba(0,0,0,0.10); -fx-border-width: 1; -fx-border-radius: 18; -fx-background-radius: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.18, 0, 3);">
+                    <padding>
+                        <Insets top="28.0" right="24.0" bottom="24.0" left="24.0"/>
+                    </padding>
+                    <StackPane style="-fx-background-color: rgba(138, 0, 17, 0.09); -fx-background-radius: 12; -fx-min-width: 72; -fx-min-height: 72; -fx-max-width: 72; -fx-max-height: 72; -fx-alignment: CENTER;">
+                        <Label text="🏆"
+                               style="-fx-font-size: 34px; -fx-text-fill: #8a0011;" />
+                    </StackPane>
+                    <Label text="Daily Challenge"
+                           style="-fx-font-size: 24px; -fx-font-weight: 700; -fx-text-fill: #111111;" />
+                    <Label text="Take on today's challenge and maintain your streak"
+                           wrapText="true"
+                           style="-fx-font-size: 19px; -fx-text-fill: #6f6f6f;" />
+                    <Region VBox.vgrow="ALWAYS" />
+                    <Button fx:id="startChallengeButton"
+                            mnemonicParsing="false"
+                            text="Start Challenge"
+                            maxWidth="1.7976931348623157E308"
+                            style="-fx-min-height: 52; -fx-background-color: #8a0011; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-size: 18px; -fx-font-weight: 600;" />
+                </VBox>
 
-                    <HBox alignment="CENTER_LEFT"
+                <VBox GridPane.columnIndex="2"
+                      spacing="18.0"
+                      style="-fx-background-color: white; -fx-border-color: rgba(0,0,0,0.10); -fx-border-width: 1; -fx-border-radius: 18; -fx-background-radius: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.18, 0, 3);">
+                    <padding>
+                        <Insets top="28.0" right="24.0" bottom="24.0" left="24.0"/>
+                    </padding>
+                    <StackPane style="-fx-background-color: rgba(138, 0, 17, 0.09); -fx-background-radius: 12; -fx-min-width: 72; -fx-min-height: 72; -fx-max-width: 72; -fx-max-height: 72; -fx-alignment: CENTER;">
+                        <Label text="＋"
+                               style="-fx-font-size: 34px; -fx-text-fill: #8a0011;" />
+                    </StackPane>
+                    <Label text="Add Question"
+                           style="-fx-font-size: 24px; -fx-font-weight: 700; -fx-text-fill: #111111;" />
+                    <Label text="Create a new coding problem for students to practice"
+                           wrapText="true"
+                           style="-fx-font-size: 19px; -fx-text-fill: #6f6f6f;" />
+                    <Region VBox.vgrow="ALWAYS" />
+                    <Button fx:id="createQuestionButton"
+                            mnemonicParsing="false"
+                            text="Create Question"
+                            maxWidth="1.7976931348623157E308"
+                            style="-fx-min-height: 52; -fx-background-color: #f5f5f5; -fx-text-fill: #111111; -fx-border-color: rgba(0,0,0,0.15); -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-insets: 0; -fx-font-size: 18px; -fx-font-weight: 600;" />
+                </VBox>
+            </GridPane>
+
+            <VBox spacing="18.0">
+                <Label text="Your Progress"
+                       style="-fx-font-size: 32px; -fx-font-weight: 800; -fx-text-fill: #111111;" />
+
+                <GridPane hgap="24.0" vgap="24.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3333" />
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3333" />
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3333" />
+                    </columnConstraints>
+
+                    <HBox GridPane.columnIndex="0"
+                          alignment="CENTER_LEFT"
                           spacing="18.0"
-                          style="-fx-background-color: linear-gradient(to right, rgba(138, 0, 17, 0.09), rgba(138, 0, 17, 0.05)); -fx-border-color: rgba(138, 0, 17, 0.24); -fx-border-width: 1; -fx-border-radius: 16; -fx-background-radius: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.15, 0, 2); -fx-min-height: 110; -fx-alignment: CENTER_LEFT;">
+                          style="-fx-background-color: white; -fx-border-color: rgba(0,0,0,0.10); -fx-border-width: 1; -fx-border-radius: 18; -fx-background-radius: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.18, 0, 3); -fx-min-height: 128;">
                         <padding>
-                            <Insets top="26.0" right="28.0" bottom="26.0" left="28.0"/>
+                            <Insets top="20.0" right="24.0" bottom="20.0" left="20.0"/>
                         </padding>
-
-                        <StackPane style="-fx-background-color: #8a0011; -fx-background-radius: 999; -fx-min-width: 72; -fx-min-height: 72; -fx-max-width: 72; -fx-max-height: 72; -fx-alignment: CENTER;">
-                            <Label text="🔥"
-                                   style="-fx-font-size: 32px;" />
+                        <StackPane style="-fx-background-color: rgba(26, 191, 94, 0.12); -fx-background-radius: 14; -fx-min-width: 72; -fx-min-height: 72; -fx-max-width: 72; -fx-max-height: 72; -fx-alignment: CENTER;">
+                            <Label text="◎"
+                                   style="-fx-font-size: 34px; -fx-font-weight: 800; -fx-text-fill: #18a84f;" />
                         </StackPane>
-
-                        <VBox spacing="4.0">
-                            <Label fx:id="streakValueLabel"
-                                   text="0 Days"
-                                   style="-fx-font-size: 38px; -fx-font-weight: 800; -fx-text-fill: #111111;" />
-                            <Label fx:id="streakLabel"
-                                   text="Current Streak - Keep it up!"
-                                   wrapText="true"
-                                   style="-fx-font-size: 18px; -fx-text-fill: #6e6e6e;" />
+                        <VBox spacing="2.0">
+                            <Label text="Problems Solved"
+                                   style="-fx-font-size: 19px; -fx-text-fill: #6c6c6c;" />
+                            <Label fx:id="problemsSolvedLabel"
+                                   text="0"
+                                   style="-fx-font-size: 36px; -fx-font-weight: 800; -fx-text-fill: #111111;" />
                         </VBox>
                     </HBox>
 
-                    <GridPane hgap="26.0" vgap="26.0">
-                        <columnConstraints>
-                            <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3333" />
-                            <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3333" />
-                            <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3333" />
-                        </columnConstraints>
-
-                        <VBox GridPane.columnIndex="0"
-                              spacing="18.0"
-                              style="-fx-background-color: white; -fx-border-color: rgba(0,0,0,0.10); -fx-border-width: 1; -fx-border-radius: 18; -fx-background-radius: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.18, 0, 3);">
-                            <padding>
-                                <Insets top="28.0" right="24.0" bottom="24.0" left="24.0"/>
-                            </padding>
-                            <StackPane style="-fx-background-color: rgba(138, 0, 17, 0.09); -fx-background-radius: 12; -fx-min-width: 72; -fx-min-height: 72; -fx-max-width: 72; -fx-max-height: 72; -fx-alignment: CENTER;">
-                                <Label text="☰"
-                                       style="-fx-font-size: 34px; -fx-text-fill: #8a0011;" />
-                            </StackPane>
-                            <Label text="View Questions"
-                                   style="-fx-font-size: 24px; -fx-font-weight: 700; -fx-text-fill: #111111;" />
-                            <Label text="Browse and solve coding problems from various courses"
-                                   wrapText="true"
-                                   style="-fx-font-size: 19px; -fx-text-fill: #6f6f6f;" />
-                            <Region VBox.vgrow="ALWAYS" />
-                            <Button fx:id="exploreQuestionsButton"
-                                    mnemonicParsing="false"
-                                    onAction="#goQuestions"
-                                    text="Explore Questions"
-                                    maxWidth="1.7976931348623157E308"
-                                    style="-fx-min-height: 52; -fx-background-color: #8a0011; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-size: 18px; -fx-font-weight: 600;" />
+                    <HBox GridPane.columnIndex="1"
+                          alignment="CENTER_LEFT"
+                          spacing="18.0"
+                          style="-fx-background-color: white; -fx-border-color: rgba(0,0,0,0.10); -fx-border-width: 1; -fx-border-radius: 18; -fx-background-radius: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.18, 0, 3); -fx-min-height: 128;">
+                        <padding>
+                            <Insets top="20.0" right="24.0" bottom="20.0" left="20.0"/>
+                        </padding>
+                        <StackPane style="-fx-background-color: rgba(54, 115, 255, 0.15); -fx-background-radius: 14; -fx-min-width: 72; -fx-min-height: 72; -fx-max-width: 72; -fx-max-height: 72; -fx-alignment: CENTER;">
+                            <Label text="⌘"
+                                   style="-fx-font-size: 34px; -fx-font-weight: 800; -fx-text-fill: #2f69ff;" />
+                        </StackPane>
+                        <VBox spacing="2.0">
+                            <Label text="Courses Active"
+                                   style="-fx-font-size: 19px; -fx-text-fill: #6c6c6c;" />
+                            <Label fx:id="coursesActiveLabel"
+                                   text="0"
+                                   style="-fx-font-size: 36px; -fx-font-weight: 800; -fx-text-fill: #111111;" />
                         </VBox>
+                    </HBox>
 
-                        <VBox GridPane.columnIndex="1"
-                              spacing="18.0"
-                              style="-fx-background-color: white; -fx-border-color: rgba(0,0,0,0.10); -fx-border-width: 1; -fx-border-radius: 18; -fx-background-radius: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.18, 0, 3);">
-                            <padding>
-                                <Insets top="28.0" right="24.0" bottom="24.0" left="24.0"/>
-                            </padding>
-                            <StackPane style="-fx-background-color: rgba(138, 0, 17, 0.09); -fx-background-radius: 12; -fx-min-width: 72; -fx-min-height: 72; -fx-max-width: 72; -fx-max-height: 72; -fx-alignment: CENTER;">
-                                <Label text="🏆"
-                                       style="-fx-font-size: 34px; -fx-text-fill: #8a0011;" />
-                            </StackPane>
-                            <Label text="Daily Challenge"
-                                   style="-fx-font-size: 24px; -fx-font-weight: 700; -fx-text-fill: #111111;" />
-                            <Label text="Take on today's challenge and maintain your streak"
-                                   wrapText="true"
-                                   style="-fx-font-size: 19px; -fx-text-fill: #6f6f6f;" />
-                            <Region VBox.vgrow="ALWAYS" />
-                            <Button fx:id="startChallengeButton"
-                                    mnemonicParsing="false"
-                                    onAction="#goDailyChallenge"
-                                    text="Start Challenge"
-                                    maxWidth="1.7976931348623157E308"
-                                    style="-fx-min-height: 52; -fx-background-color: #8a0011; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-size: 18px; -fx-font-weight: 600;" />
+                    <HBox GridPane.columnIndex="2"
+                          alignment="CENTER_LEFT"
+                          spacing="18.0"
+                          style="-fx-background-color: white; -fx-border-color: rgba(0,0,0,0.10); -fx-border-width: 1; -fx-border-radius: 18; -fx-background-radius: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.18, 0, 3); -fx-min-height: 128;">
+                        <padding>
+                            <Insets top="20.0" right="24.0" bottom="20.0" left="20.0"/>
+                        </padding>
+                        <StackPane style="-fx-background-color: rgba(158, 52, 255, 0.14); -fx-background-radius: 14; -fx-min-width: 72; -fx-min-height: 72; -fx-max-width: 72; -fx-max-height: 72; -fx-alignment: CENTER;">
+                            <Label text="♕"
+                                   style="-fx-font-size: 34px; -fx-font-weight: 800; -fx-text-fill: #9e34ff;" />
+                        </StackPane>
+                        <VBox spacing="2.0">
+                            <Label text="Achievements"
+                                   style="-fx-font-size: 19px; -fx-text-fill: #6c6c6c;" />
+                            <Label fx:id="achievementsLabel"
+                                   text="0"
+                                   style="-fx-font-size: 36px; -fx-font-weight: 800; -fx-text-fill: #111111;" />
                         </VBox>
-
-                        <VBox GridPane.columnIndex="2"
-                              spacing="18.0"
-                              style="-fx-background-color: white; -fx-border-color: rgba(0,0,0,0.10); -fx-border-width: 1; -fx-border-radius: 18; -fx-background-radius: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.18, 0, 3);">
-                            <padding>
-                                <Insets top="28.0" right="24.0" bottom="24.0" left="24.0"/>
-                            </padding>
-                            <StackPane style="-fx-background-color: rgba(138, 0, 17, 0.09); -fx-background-radius: 12; -fx-min-width: 72; -fx-min-height: 72; -fx-max-width: 72; -fx-max-height: 72; -fx-alignment: CENTER;">
-                                <Label text="＋"
-                                       style="-fx-font-size: 34px; -fx-text-fill: #8a0011;" />
-                            </StackPane>
-                            <Label text="Add Question"
-                                   style="-fx-font-size: 24px; -fx-font-weight: 700; -fx-text-fill: #111111;" />
-                            <Label text="Create a new coding problem for students to practice"
-                                   wrapText="true"
-                                   style="-fx-font-size: 19px; -fx-text-fill: #6f6f6f;" />
-                            <Region VBox.vgrow="ALWAYS" />
-                            <Button fx:id="createQuestionButton"
-                                    mnemonicParsing="false"
-                                    onAction="#goContributor"
-                                    text="Create Question"
-                                    maxWidth="1.7976931348623157E308"
-                                    style="-fx-min-height: 52; -fx-background-color: #f5f5f5; -fx-text-fill: #111111; -fx-border-color: rgba(0,0,0,0.15); -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-insets: 0; -fx-font-size: 18px; -fx-font-weight: 600;" />
-                        </VBox>
-                    </GridPane>
-
-                    <VBox spacing="18.0">
-                        <Label text="Your Progress"
-                               style="-fx-font-size: 32px; -fx-font-weight: 800; -fx-text-fill: #111111;" />
-
-                        <GridPane hgap="24.0" vgap="24.0">
-                            <columnConstraints>
-                                <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3333" />
-                                <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3333" />
-                                <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3333" />
-                            </columnConstraints>
-
-                            <HBox GridPane.columnIndex="0"
-                                  alignment="CENTER_LEFT"
-                                  spacing="18.0"
-                                  style="-fx-background-color: white; -fx-border-color: rgba(0,0,0,0.10); -fx-border-width: 1; -fx-border-radius: 18; -fx-background-radius: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.18, 0, 3); -fx-min-height: 128;">
-                                <padding>
-                                    <Insets top="20.0" right="24.0" bottom="20.0" left="20.0"/>
-                                </padding>
-                                <StackPane style="-fx-background-color: rgba(26, 191, 94, 0.12); -fx-background-radius: 14; -fx-min-width: 72; -fx-min-height: 72; -fx-max-width: 72; -fx-max-height: 72; -fx-alignment: CENTER;">
-                                    <Label text="◎"
-                                           style="-fx-font-size: 34px; -fx-font-weight: 800; -fx-text-fill: #18a84f;" />
-                                </StackPane>
-                                <VBox spacing="2.0">
-                                    <Label text="Problems Solved"
-                                           style="-fx-font-size: 19px; -fx-text-fill: #6c6c6c;" />
-                                    <Label fx:id="problemsSolvedLabel"
-                                           text="0"
-                                           style="-fx-font-size: 36px; -fx-font-weight: 800; -fx-text-fill: #111111;" />
-                                </VBox>
-                            </HBox>
-
-                            <HBox GridPane.columnIndex="1"
-                                  alignment="CENTER_LEFT"
-                                  spacing="18.0"
-                                  style="-fx-background-color: white; -fx-border-color: rgba(0,0,0,0.10); -fx-border-width: 1; -fx-border-radius: 18; -fx-background-radius: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.18, 0, 3); -fx-min-height: 128;">
-                                <padding>
-                                    <Insets top="20.0" right="24.0" bottom="20.0" left="20.0"/>
-                                </padding>
-                                <StackPane style="-fx-background-color: rgba(54, 115, 255, 0.15); -fx-background-radius: 14; -fx-min-width: 72; -fx-min-height: 72; -fx-max-width: 72; -fx-max-height: 72; -fx-alignment: CENTER;">
-                                    <Label text="⌘"
-                                           style="-fx-font-size: 34px; -fx-font-weight: 800; -fx-text-fill: #2f69ff;" />
-                                </StackPane>
-                                <VBox spacing="2.0">
-                                    <Label text="Courses Active"
-                                           style="-fx-font-size: 19px; -fx-text-fill: #6c6c6c;" />
-                                    <Label fx:id="coursesActiveLabel"
-                                           text="0"
-                                           style="-fx-font-size: 36px; -fx-font-weight: 800; -fx-text-fill: #111111;" />
-                                </VBox>
-                            </HBox>
-
-                            <HBox GridPane.columnIndex="2"
-                                  alignment="CENTER_LEFT"
-                                  spacing="18.0"
-                                  style="-fx-background-color: white; -fx-border-color: rgba(0,0,0,0.10); -fx-border-width: 1; -fx-border-radius: 18; -fx-background-radius: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0.18, 0, 3); -fx-min-height: 128;">
-                                <padding>
-                                    <Insets top="20.0" right="24.0" bottom="20.0" left="20.0"/>
-                                </padding>
-                                <StackPane style="-fx-background-color: rgba(158, 52, 255, 0.14); -fx-background-radius: 14; -fx-min-width: 72; -fx-min-height: 72; -fx-max-width: 72; -fx-max-height: 72; -fx-alignment: CENTER;">
-                                    <Label text="♕"
-                                           style="-fx-font-size: 34px; -fx-font-weight: 800; -fx-text-fill: #9e34ff;" />
-                                </StackPane>
-                                <VBox spacing="2.0">
-                                    <Label text="Achievements"
-                                           style="-fx-font-size: 19px; -fx-text-fill: #6c6c6c;" />
-                                    <Label fx:id="achievementsLabel"
-                                           text="0"
-                                           style="-fx-font-size: 36px; -fx-font-weight: 800; -fx-text-fill: #111111;" />
-                                </VBox>
-                            </HBox>
-                        </GridPane>
-                    </VBox>
-                </VBox>
-            </content>
-        </ScrollPane>
-    </center>
-</BorderPane>
+                    </HBox>
+                </GridPane>
+            </VBox>
+        </VBox>
+    </content>
+</ScrollPane>
