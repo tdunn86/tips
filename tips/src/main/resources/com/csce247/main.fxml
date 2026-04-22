@@ -12,11 +12,12 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.csce247.MainController"
             style="-fx-background-color: #f6f6f6;">
+        
 
     <top>
         <HBox alignment="CENTER_LEFT"
-              spacing="14.0"
-              style="-fx-background-color: white; -fx-border-color: transparent transparent #dfdfdf transparent; -fx-border-width: 0 0 1 0; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 8, 0.15, 0, 2);">
+            spacing="14.0"
+            style="-fx-background-color: white; -fx-border-color: transparent transparent #dfdfdf transparent; -fx-border-width: 0 0 1 0; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 8, 0.15, 0, 2);">
             <padding>
                 <Insets top="20.0" right="32.0" bottom="20.0" left="32.0"/>
             </padding>
@@ -28,7 +29,7 @@
                     style="-fx-background-color: #8a0011; -fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: 700; -fx-background-radius: 14; -fx-min-width: 58; -fx-min-height: 58; -fx-pref-width: 58; -fx-pref-height: 58; -fx-padding: 0;" />
 
             <Label text="TIPS"
-                   style="-fx-font-size: 28px; -fx-font-weight: 800; -fx-text-fill: #111111;" />
+                style="-fx-font-size: 28px; -fx-font-weight: 800; -fx-text-fill: #111111;" />
 
             <Region HBox.hgrow="ALWAYS" />
 
@@ -37,13 +38,15 @@
                 <Button fx:id="homeNavButton"
                         mnemonicParsing="false"
                         onAction="#goDashboard"
-                        style="-fx-background-color: #8a0011; -fx-background-radius: 14; -fx-padding: 12 18 12 18; -fx-min-height: 46; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;">
+                        style="-fx-background-color: transparent; -fx-background-radius: 14; -fx-padding: 12 18 12 18; -fx-min-height: 46; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;">
                     <graphic>
                         <HBox alignment="CENTER" spacing="8.0">
-                            <Label text="⌂"
-                                   style="-fx-font-size: 18px; -fx-min-width: 20; -fx-min-height: 20; -fx-text-fill: white;" />
-                            <Label text="Home"
-                                   style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: white;" />
+                            <Label fx:id="homeIconLabel"
+                                text="⌂"
+                                style="-fx-font-size: 18px; -fx-min-width: 20; -fx-min-height: 20; -fx-text-fill: #111111;" />
+                            <Label fx:id="homeTextLabel"
+                                text="Home"
+                                style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #111111;" />
                         </HBox>
                     </graphic>
                 </Button>
@@ -54,10 +57,12 @@
                         style="-fx-background-color: transparent; -fx-background-radius: 14; -fx-padding: 12 18 12 18; -fx-min-height: 46; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;">
                     <graphic>
                         <HBox alignment="CENTER" spacing="8.0">
-                            <Label text="☷"
-                                   style="-fx-font-size: 18px; -fx-min-width: 20; -fx-min-height: 20; -fx-text-fill: #111111;" />
-                            <Label text="Questions"
-                                   style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #111111;" />
+                            <Label fx:id="questionsIconLabel"
+                                text="☷"
+                                style="-fx-font-size: 18px; -fx-min-width: 20; -fx-min-height: 20; -fx-text-fill: #111111;" />
+                            <Label fx:id="questionsTextLabel"
+                                text="Questions"
+                                style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #111111;" />
                         </HBox>
                     </graphic>
                 </Button>
@@ -68,10 +73,12 @@
                         style="-fx-background-color: transparent; -fx-background-radius: 14; -fx-padding: 12 18 12 18; -fx-min-height: 46; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;">
                     <graphic>
                         <HBox alignment="CENTER" spacing="8.0">
-                            <Label text="🏆"
-                                   style="-fx-font-size: 18px; -fx-min-width: 20; -fx-min-height: 20; -fx-text-fill: #111111;" />
-                            <Label text="Daily Challenge"
-                                   style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #111111;" />
+                            <Label fx:id="dailyChallengeIconLabel"
+                                text="🏆"
+                                style="-fx-font-size: 18px; -fx-min-width: 20; -fx-min-height: 20; -fx-text-fill: #111111;" />
+                            <Label fx:id="dailyChallengeTextLabel"
+                                text="Daily Challenge"
+                                style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #111111;" />
                         </HBox>
                     </graphic>
                 </Button>
@@ -82,10 +89,12 @@
                         style="-fx-background-color: transparent; -fx-background-radius: 14; -fx-padding: 12 18 12 18; -fx-min-height: 46; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;">
                     <graphic>
                         <HBox alignment="CENTER" spacing="8.0">
-                            <Label text="✎"
-                                   style="-fx-font-size: 18px; -fx-min-width: 20; -fx-min-height: 20; -fx-text-fill: #111111;" />
-                            <Label text="Contributor"
-                                   style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #111111;" />
+                            <Label fx:id="contributorIconLabel"
+                                text="✎"
+                                style="-fx-font-size: 18px; -fx-min-width: 20; -fx-min-height: 20; -fx-text-fill: #111111;" />
+                            <Label fx:id="contributorTextLabel"
+                                text="Contributor"
+                                style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #111111;" />
                         </HBox>
                     </graphic>
                 </Button>
@@ -94,8 +103,8 @@
             <Region HBox.hgrow="ALWAYS" />
 
             <Label fx:id="usernameLabel"
-                   text="Username"
-                   style="-fx-font-size: 18px; -fx-text-fill: #6a6a6a;" />
+                text="Username"
+                style="-fx-font-size: 18px; -fx-text-fill: #6a6a6a;" />
 
             <Button fx:id="profileButton"
                     mnemonicParsing="false"
