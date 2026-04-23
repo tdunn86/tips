@@ -5,20 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import com.model.Question;
+import com.model.TIPSFacade;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 public class QuestionsController implements Initializable {
 
@@ -28,37 +29,17 @@ public class QuestionsController implements Initializable {
     @FXML private ComboBox<String> courseFilter;
     @FXML private VBox questionList;
 
-    @FXML private Button btnHome;
-    @FXML private Button btnQuestions;
-    @FXML private Button btnDailyChallenge;
-    @FXML private Button btnContributor;
-
-    private static class Question {
-        String title, difficulty, language, course;
-
-        Question(String title, String difficulty, String language, String course) {
-            this.title = title;
-            this.difficulty = difficulty;
-            this.language = language;
-            this.course = course;
-        }
-    }
-
+    private final TIPSFacade facade = TIPSFacade.getInstance();
     private final List<Question> allQuestions = new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        allQuestions.add(new Question("Two Sum",                        "Easy",   "Java", "CSCE 146"));
-        allQuestions.add(new Question("Valid Parentheses",              "Easy",   "Java", "CSCE 146"));
-        allQuestions.add(new Question("Merge Two Sorted Lists",         "Easy",   "Java", "CSCE 146"));
-        allQuestions.add(new Question("Binary Search Tree Validation",  "Medium", "C++",  "CSCE 350"));
-        allQuestions.add(new Question("Longest Palindromic Substring",  "Medium", "C++",  "CSCE 350"));
-        allQuestions.add(new Question("Graph Cycle Detection",          "Hard",   "C++",  "CSCE 350"));
+        loadQuestions();
 
         difficultyFilter.getItems().addAll("All Difficulties", "Easy", "Medium", "Hard");
         difficultyFilter.setValue("All Difficulties");
 
-        languageFilter.getItems().addAll("All Languages", "Java", "C++");
+        languageFilter.getItems().addAll("All Languages", "Java", "C++", "Python", "JavaScript", "HTML", "CSS");
         languageFilter.setValue("All Languages");
 
         courseFilter.getItems().addAll("All Courses", "CSCE 146", "CSCE 350");
@@ -72,21 +53,34 @@ public class QuestionsController implements Initializable {
         applyFilters();
     }
 
+    private void loadQuestions() {
+        allQuestions.clear();
+        List<Question> questions = facade.getQuestions(null);
+        if (questions != null) {
+            allQuestions.addAll(questions);
+        }
+    }
+
     private void applyFilters() {
-        String search = searchField.getText() == null ? "" : searchField.getText().toLowerCase();
-        String diff   = difficultyFilter.getValue();
-        String lang   = languageFilter.getValue();
-        String course  = courseFilter.getValue();
+        String search = searchField.getText() == null ? "" : searchField.getText().toLowerCase().trim();
+        String diff = difficultyFilter.getValue();
+        String lang = languageFilter.getValue();
+        String course = courseFilter.getValue();
 
         questionList.getChildren().clear();
 
         boolean anyVisible = false;
 
         for (Question q : allQuestions) {
-            boolean matchSearch = q.title.toLowerCase().contains(search);
-            boolean matchDiff   = diff == null || diff.equals("All Difficulties") || q.difficulty.equals(diff);
-            boolean matchLang   = lang == null || lang.equals("All Languages") || q.language.equals(lang);
-            boolean matchCourse  = course == null || course.equals("All Courses") || q.course.equals(course);
+            String title = safe(q.getTitle());
+            String qDiff = displayDifficulty(q.getDifficulty());
+            String qLang = displayLanguage(q.getLanguage());
+            String qCourse = displayCourse(q.getCourse());
+
+            boolean matchSearch = title.toLowerCase().contains(search);
+            boolean matchDiff = diff == null || diff.equals("All Difficulties") || qDiff.equalsIgnoreCase(diff);
+            boolean matchLang = lang == null || lang.equals("All Languages") || qLang.equalsIgnoreCase(lang);
+            boolean matchCourse = course == null || course.equals("All Courses") || qCourse.equalsIgnoreCase(course);
 
             if (matchSearch && matchDiff && matchLang && matchCourse) {
                 questionList.getChildren().add(buildCard(q));
@@ -100,9 +94,9 @@ public class QuestionsController implements Initializable {
     }
 
     private HBox buildCard(Question q) {
-        Label badge = new Label(q.difficulty);
+        Label badge = new Label(displayDifficulty(q.getDifficulty()));
         String badgeStyle;
-        switch (q.difficulty) {
+        switch (displayDifficulty(q.getDifficulty())) {
             case "Easy":
                 badgeStyle = "-fx-background-color: #d4edda; -fx-text-fill: #276239;";
                 break;
@@ -120,15 +114,16 @@ public class QuestionsController implements Initializable {
                 "-fx-font-size: 10px; -fx-font-weight: bold;" +
                 "-fx-background-radius: 999; -fx-padding: 2 9 2 9;");
 
-        Label titleLabel = new Label(q.title);
+        Label titleLabel = new Label(safe(q.getTitle()));
         titleLabel.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
 
         HBox titleRow = new HBox(10, titleLabel, badge);
         titleRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
-        Label langLabel = new Label("Language: " + q.language);
+        Label langLabel = new Label("Language: " + displayLanguage(q.getLanguage()));
         Label dot = new Label("•");
-        Label courseLabel = new Label("Course: " + q.course);
+        Label courseLabel = new Label("Course: " + displayCourse(q.getCourse()));
+
         langLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #555555;");
         dot.setStyle("-fx-font-size: 12px; -fx-text-fill: #bbbbbb;");
         courseLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #555555;");
@@ -137,14 +132,14 @@ public class QuestionsController implements Initializable {
         metaRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
         VBox info = new VBox(6, titleRow, metaRow);
-        HBox.setHgrow(info, javafx.scene.layout.Priority.ALWAYS);
+        HBox.setHgrow(info, Priority.ALWAYS);
 
         Button solveBtn = new Button("Solve");
         solveBtn.setStyle("-fx-background-color: #8b1a1a; -fx-text-fill: white;" +
                 "-fx-font-size: 13px; -fx-font-weight: bold;" +
                 "-fx-background-radius: 8; -fx-cursor: hand;" +
                 "-fx-padding: 9 22 9 22;");
-        solveBtn.setOnAction(e -> handleSolve(q.title));
+        solveBtn.setOnAction(e -> handleSolve(e, q));
 
         HBox card = new HBox(info, solveBtn);
         card.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
@@ -161,39 +156,62 @@ public class QuestionsController implements Initializable {
         return empty;
     }
 
-    private void handleSolve(String questionTitle) {
-        System.out.println("Solving: " + questionTitle);
-    }
-
-    @FXML
-    private void goDashboard(ActionEvent event) {
-        navigate(event, "dashboard.fxml");
-    }
-
-    @FXML
-    private void goQuestions(ActionEvent event) {
-        navigate(event, "question.fxml");
-    }
-
-    @FXML
-    private void goDailyChallenge(ActionEvent event) {
-        navigate(event, "dailychallenge.fxml");
-    }
-
-    @FXML
-    private void goContributor(ActionEvent event) {
-        navigate(event, "contributor.fxml");
-    }
-
-    private void navigate(ActionEvent event, String fxmlFile) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/csce247/" + fxmlFile));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (Exception e) {
-            System.err.println("Navigation failed: " + fxmlFile + " — " + e.getMessage());
-            e.printStackTrace();
+    private void handleSolve(ActionEvent event, Question question) {
+        MainController main = getMainController(event);
+        if (main != null) {
+            main.showQuestionDetail(question);
+        } else {
+            System.err.println("MainController not found.");
         }
+    }
+
+    private MainController getMainController(ActionEvent event) {
+        Parent root = ((Node) event.getSource()).getScene().getRoot();
+        Object controller = root.getUserData();
+        if (controller instanceof MainController) {
+            return (MainController) controller;
+        }
+        return null;
+    }
+
+    private String safe(String value) {
+        return value == null ? "" : value;
+    }
+
+    private String displayDifficulty(Object difficulty) {
+        if (difficulty == null) return "N/A";
+        String raw = difficulty.toString().trim();
+        if (raw.isEmpty()) return "N/A";
+        return capitalize(raw);
+    }
+
+    private String displayLanguage(Object language) {
+        if (language == null) return "N/A";
+        String raw = language.toString().trim();
+        if (raw.isEmpty()) return "N/A";
+
+        if (raw.equalsIgnoreCase("CPP")) return "C++";
+        if (raw.equalsIgnoreCase("JAVA")) return "Java";
+        if (raw.equalsIgnoreCase("PYTHON")) return "Python";
+        if (raw.equalsIgnoreCase("JAVASCRIPT")) return "JavaScript";
+        if (raw.equalsIgnoreCase("HTML")) return "HTML";
+        if (raw.equalsIgnoreCase("CSS")) return "CSS";
+
+        return capitalize(raw);
+    }
+
+    private String displayCourse(Object course) {
+        if (course == null) return "N/A";
+        String raw = course.toString().trim();
+        if (raw.isEmpty()) return "N/A";
+
+        raw = raw.replace('_', ' ');
+        raw = raw.replaceAll("(?i)([A-Z]+)(\\d+)", "$1 $2");
+        return raw;
+    }
+
+    private String capitalize(String s) {
+        if (s == null || s.isEmpty()) return s;
+        return s.charAt(0) + s.substring(1).toLowerCase();
     }
 }
