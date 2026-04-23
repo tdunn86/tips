@@ -107,79 +107,15 @@ public class LoginController implements Initializable {
      */
     @FXML
     private void handleCreateAccount() {
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Create Account");
-        dialog.setHeaderText("Fill in your details to register");
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-        VBox form = new VBox(10);
-        form.setPadding(new Insets(16));
-
-        TextField     tfNewUsername = new TextField();
-        tfNewUsername.setPromptText("Username");
-
-        PasswordField pfNewPassword = new PasswordField();
-        pfNewPassword.setPromptText("Password");
-
-        PasswordField pfConfirm = new PasswordField();
-        pfConfirm.setPromptText("Confirm Password");
-
-        TextField tfEmail = new TextField();
-        tfEmail.setPromptText("Email address");
-
-        TextField tfType = new TextField();
-        tfType.setPromptText("Account type: STUDENT / EDITOR / ADMIN");
-
-        Label lblFormError = new Label();
-        lblFormError.setStyle("-fx-text-fill: #c0392b; -fx-font-size: 11;");
-        lblFormError.setVisible(false);
-
-        form.getChildren().addAll(
-            bold("Username"),    tfNewUsername,
-            bold("Password"),    pfNewPassword,
-            bold("Confirm Password"), pfConfirm,
-            bold("Email"),       tfEmail,
-            bold("Account Type"), tfType,
-            lblFormError
-        );
-
-        dialog.getDialogPane().setContent(form);
-
-        dialog.showAndWait().ifPresent(result -> {
-            if (result != ButtonType.OK) return;
-
-            String newUser  = tfNewUsername.getText().trim();
-            String newPass  = pfNewPassword.getText();
-            String confirm  = pfConfirm.getText();
-            String email    = tfEmail.getText().trim();
-            String typeStr  = tfType.getText().trim().toUpperCase();
-
-            // Basic validation
-            if (newUser.isEmpty() || newPass.isEmpty() || email.isEmpty() || typeStr.isEmpty()) {
-                showError("All fields are required.");
-                return;
-            }
-            if (!newPass.equals(confirm)) {
-                showError("Passwords do not match.");
-                return;
-            }
-
-            AccountType accountType;
-            try {
-                accountType = AccountType.valueOf(typeStr);
-            } catch (IllegalArgumentException e) {
-                showError("Account type must be STUDENT, EDITOR, or ADMIN.");
-                return;
-            }
-
-            // Delegate to facade — registerUser handles duplicate checks internally
-            try {
-                facade.registerUser(newUser, newPass, email, accountType);
-                showInfo("Account created! You can now log in.");
-            } catch (Exception e) {
-                showError("Could not create account: " + e.getMessage());
-            }
-        });
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/com/csce247/createAccount.fxml"));
+            Stage stage = (Stage) tfUsername.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            System.err.println("Failed to load createAccount.fxml: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     // ------------------------------------------------------------------ //
