@@ -128,7 +128,7 @@
             <content>
                 <AnchorPane style="-fx-background-color: #f6f6f6;">
                     <children>
-                        <VBox layoutX="18.0" layoutY="18.0" spacing="18" prefWidth="1328.0">
+                        <VBox spacing="18" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="18.0" AnchorPane.topAnchor="18.0">
                             <children>
 
                                 <HBox alignment="CENTER_LEFT">
@@ -167,7 +167,7 @@
                                 <HBox spacing="18">
                                     <children>
 
-                                        <VBox prefWidth="420" prefHeight="78" spacing="2"
+                                        <VBox HBox.hgrow="ALWAYS" prefHeight="78" spacing="2"
                                               style="-fx-background-color: white;
                                                      -fx-background-radius: 10;
                                                      -fx-border-color: #e4e4e4;
@@ -197,7 +197,7 @@
                                             </children>
                                         </VBox>
 
-                                        <VBox prefWidth="420" prefHeight="78" spacing="2"
+                                        <VBox HBox.hgrow="ALWAYS" prefHeight="78" spacing="2"
                                               style="-fx-background-color: white;
                                                      -fx-background-radius: 10;
                                                      -fx-border-color: #e4e4e4;
@@ -227,7 +227,7 @@
                                             </children>
                                         </VBox>
 
-                                        <VBox prefWidth="420" prefHeight="78" spacing="2"
+                                        <VBox HBox.hgrow="ALWAYS" prefHeight="78" spacing="2"
                                               style="-fx-background-color: white;
                                                      -fx-background-radius: 10;
                                                      -fx-border-color: #e4e4e4;
