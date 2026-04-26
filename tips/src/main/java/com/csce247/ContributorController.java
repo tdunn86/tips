@@ -9,18 +9,14 @@ import com.model.Course;
 import com.model.Difficulty;
 import com.model.Language;
 import com.model.Question;
+import com.model.Solution;
 import com.model.TIPSFacade;
 import com.model.User;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -32,18 +28,12 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 /**
- * Controller for the Contributor Dashboard (contributor.fxml).
- *
- * Supports both Editor and Admin account types (both have createQuestion /
- * editQuestion / deleteQuestion). All data flows through TIPSFacade so this
- * controller never touches persistence directly.
+ * Contributor page content controller.
+ * Navigation is handled by main.fxml / MainController.
  */
 public class ContributorController implements Initializable {
-
-    @FXML private Label lblUsername;
 
     @FXML private Label lblProblemsSubmitted;
     @FXML private Label lblSolutionsWritten;
@@ -59,32 +49,22 @@ public class ContributorController implements Initializable {
 
     @FXML private VBox questionListVBox;
 
-    @FXML private StackPane btnAddQuestion;
-
-    private TIPSFacade facade;
+    private final TIPSFacade facade = TIPSFacade.getInstance();
     private User currentUser;
 
     private String activeTab = "approved";
 
-    private List<Question> approvedQuestions = new ArrayList<>();
-    private List<Question> pendingQuestions = new ArrayList<>();
-    private List<Question> rejectedQuestions = new ArrayList<>();
+    private final List<Question> approvedQuestions = new ArrayList<>();
+    private final List<Question> pendingQuestions = new ArrayList<>();
+    private final List<Question> rejectedQuestions = new ArrayList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        facade = TIPSFacade.getInstance();
         currentUser = facade.getCurrentUser();
 
-        populateUserInfo();
         loadQuestions();
         updateStatCards();
         renderTab(activeTab);
-    }
-
-    private void populateUserInfo() {
-        if (currentUser != null && lblUsername != null) {
-            lblUsername.setText(currentUser.getUsername());
-        }
     }
 
     private void loadQuestions() {
@@ -92,12 +72,18 @@ public class ContributorController implements Initializable {
         pendingQuestions.clear();
         rejectedQuestions.clear();
 
-        if (currentUser == null) return;
+        if (currentUser == null) {
+            return;
+        }
 
-        ArrayList<Question> all = facade.getQuestions("");
+        List<Question> all = facade.getQuestions("");
         for (Question q : all) {
-            if (q.getAuthor() == null) continue;
-            if (q.getAuthor().getUserId() != currentUser.getUserId()) continue;
+            if (q.getAuthor() == null) {
+                continue;
+            }
+            if (q.getAuthor().getUserId() != currentUser.getUserId()) {
+                continue;
+            }
 
             if (q.isSolutionRevealed()) {
                 approvedQuestions.add(q);
@@ -123,14 +109,19 @@ public class ContributorController implements Initializable {
     }
 
     private int countSolutionsWritten() {
-        if (currentUser == null) return 0;
+        if (currentUser == null) {
+            return 0;
+        }
 
-        ArrayList<Question> all = facade.getQuestions("");
+        List<Question> all = facade.getQuestions("");
         int count = 0;
 
         for (Question q : all) {
-            if (q.getSolutions() == null) continue;
-            for (var s : q.getSolutions()) {
+            if (q.getSolutions() == null) {
+                continue;
+            }
+
+            for (Solution s : q.getSolutions()) {
                 if (s.getAuthor() != null && s.getAuthor().getUserId() == currentUser.getUserId()) {
                     count++;
                 }
@@ -192,24 +183,42 @@ public class ContributorController implements Initializable {
     }
 
     private HBox buildQuestionRow(Question question, String tab) {
-        String rowBg, rowBorder, badgeBg, badgeBorder, badgeText, badgeColor;
-        String diffBg, diffColor;
+        String rowBg;
+        String rowBorder;
+        String badgeBg;
+        String badgeBorder;
+        String badgeText;
+        String badgeColor;
+        String diffBg;
+        String diffColor;
 
         if (tab.equals("pending")) {
-            rowBg = "#fffdf2"; rowBorder = "#f0e09c";
-            badgeBg = "#fff8e1"; badgeBorder = "#f5d76e"; badgeText = "◔ Pending";
+            rowBg = "#fffdf2";
+            rowBorder = "#f0e09c";
+            badgeBg = "#fff8e1";
+            badgeBorder = "#f5d76e";
+            badgeText = "◔ Pending";
             badgeColor = "#c68400";
-            diffBg = "#fff3cd"; diffColor = "#856404";
+            diffBg = "#fff3cd";
+            diffColor = "#856404";
         } else if (tab.equals("rejected")) {
-            rowBg = "#fff4f4"; rowBorder = "#f5bcbc";
-            badgeBg = "#ffe4e4"; badgeBorder = "#f5a0a0"; badgeText = "⊗ Rejected";
+            rowBg = "#fff4f4";
+            rowBorder = "#f5bcbc";
+            badgeBg = "#ffe4e4";
+            badgeBorder = "#f5a0a0";
+            badgeText = "⊗ Rejected";
             badgeColor = "#c0392b";
-            diffBg = "#ffe4e4"; diffColor = "#c0392b";
+            diffBg = "#ffe4e4";
+            diffColor = "#c0392b";
         } else {
-            rowBg = "#f2faf4"; rowBorder = "#b8efc6";
-            badgeBg = "#e8f9ee"; badgeBorder = "#a6dfb4"; badgeText = "◔ Approved";
+            rowBg = "#f2faf4";
+            rowBorder = "#b8efc6";
+            badgeBg = "#e8f9ee";
+            badgeBorder = "#a6dfb4";
+            badgeText = "◔ Approved";
             badgeColor = "#28a745";
-            diffBg = "#def7e6"; diffColor = "#28a745";
+            diffBg = "#def7e6";
+            diffColor = "#28a745";
         }
 
         HBox row = new HBox(10);
@@ -240,6 +249,7 @@ public class ContributorController implements Initializable {
           + "-fx-border-radius: 6; -fx-border-width: 1;"
         );
         statusBadge.setPadding(new Insets(2, 8, 2, 8));
+
         Label statusLbl = new Label(badgeText);
         statusLbl.setStyle("-fx-font-size: 11; -fx-text-fill: " + badgeColor + ";");
         statusBadge.getChildren().add(statusLbl);
@@ -250,6 +260,7 @@ public class ContributorController implements Initializable {
                 ? question.getCourse().toString().replace("_", " ") + " • " : "";
         String langStr = question.getLanguage() != null
                 ? question.getLanguage().toString() + " • " : "";
+
         Label subLbl = new Label(courseStr + langStr + "Problem");
         subLbl.setStyle("-fx-font-size: 13; -fx-text-fill: #6d6d6d;");
 
@@ -258,16 +269,20 @@ public class ContributorController implements Initializable {
         StackPane diffBadge = new StackPane();
         diffBadge.setStyle("-fx-background-color: " + diffBg + "; -fx-background-radius: 6;");
         diffBadge.setPadding(new Insets(2, 8, 2, 8));
+
         String diffText = question.getDifficulty() != null
                 ? capitalize(question.getDifficulty().toString()) : "N/A";
+
         Label diffLbl = new Label(diffText);
         diffLbl.setStyle("-fx-font-size: 11; -fx-text-fill: " + diffColor + ";");
         diffBadge.getChildren().add(diffLbl);
 
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
         StackPane editBtn = new StackPane();
         editBtn.setStyle(
-            "-fx-background-color: #f0f0f0; -fx-background-radius: 6; "
-          + "-fx-cursor: hand;"
+            "-fx-background-color: #f0f0f0; -fx-background-radius: 6; -fx-cursor: hand;"
         );
         editBtn.setPadding(new Insets(4, 12, 4, 12));
         Label editLbl = new Label("✎ Edit");
@@ -277,17 +292,13 @@ public class ContributorController implements Initializable {
 
         StackPane deleteBtn = new StackPane();
         deleteBtn.setStyle(
-            "-fx-background-color: #ffe4e4; -fx-background-radius: 6; "
-          + "-fx-cursor: hand;"
+            "-fx-background-color: #ffe4e4; -fx-background-radius: 6; -fx-cursor: hand;"
         );
         deleteBtn.setPadding(new Insets(4, 12, 4, 12));
         Label deleteLbl = new Label("🗑 Delete");
         deleteLbl.setStyle("-fx-font-size: 12; -fx-text-fill: #c0392b;");
         deleteBtn.getChildren().add(deleteLbl);
         deleteBtn.setOnMouseClicked(e -> handleDelete(question));
-
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
 
         row.getChildren().addAll(info, spacer, editBtn, deleteBtn, diffBadge);
         return row;
@@ -329,7 +340,9 @@ public class ContributorController implements Initializable {
         dialog.getDialogPane().setContent(form);
 
         dialog.showAndWait().ifPresent(result -> {
-            if (result != ButtonType.OK) return;
+            if (result != ButtonType.OK) {
+                return;
+            }
 
             try {
                 Difficulty diff = Difficulty.valueOf(tfDiff.getText().trim().toUpperCase());
@@ -373,7 +386,9 @@ public class ContributorController implements Initializable {
         dialog.getDialogPane().setContent(form);
 
         dialog.showAndWait().ifPresent(result -> {
-            if (result != ButtonType.OK) return;
+            if (result != ButtonType.OK) {
+                return;
+            }
 
             String newTitle = tfTitle.getText().trim();
             String newPrompt = tfPrompt.getText().trim();
@@ -392,9 +407,11 @@ public class ContributorController implements Initializable {
     }
 
     private void handleDelete(Question question) {
-        Alert confirm = new Alert(AlertType.CONFIRMATION,
+        Alert confirm = new Alert(
+            AlertType.CONFIRMATION,
             "Delete \"" + question.getTitle() + "\"? This cannot be undone.",
-            ButtonType.YES, ButtonType.NO);
+            ButtonType.YES, ButtonType.NO
+        );
         confirm.setTitle("Confirm Delete");
 
         confirm.showAndWait().ifPresent(btn -> {
@@ -407,32 +424,6 @@ public class ContributorController implements Initializable {
         });
     }
 
-    @FXML
-    private void goDashboard(ActionEvent event) {
-        navigate(event, "dashboard.fxml");
-    }
-
-    @FXML
-    private void goQuestions(ActionEvent event) {
-        navigate(event, "question.fxml");
-    }
-
-    @FXML
-    private void goDailyChallenge(ActionEvent event) {
-        navigate(event, "dailychallenge.fxml");
-    }
-
-    @FXML
-    private void goContributor(ActionEvent event) {
-        navigate(event, "contributor.fxml");
-    }
-
-    @FXML
-    private void handleLogout(ActionEvent event) {
-        facade.logout();
-        navigate(event, "login.fxml");
-    }
-
     private Label labelFor(String text) {
         Label l = new Label(text);
         l.setStyle("-fx-font-weight: bold; -fx-font-size: 12;");
@@ -440,7 +431,9 @@ public class ContributorController implements Initializable {
     }
 
     private String capitalize(String s) {
-        if (s == null || s.isEmpty()) return s;
+        if (s == null || s.isEmpty()) {
+            return s;
+        }
         return s.charAt(0) + s.substring(1).toLowerCase();
     }
 
@@ -448,17 +441,5 @@ public class ContributorController implements Initializable {
         Alert alert = new Alert(AlertType.ERROR, msg, ButtonType.OK);
         alert.setTitle(title);
         alert.showAndWait();
-    }
-
-    private void navigate(ActionEvent event, String fxmlFile) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/csce247/" + fxmlFile));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (Exception e) {
-            System.err.println("Navigation failed: " + fxmlFile + " — " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 }

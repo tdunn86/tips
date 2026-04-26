@@ -17,7 +17,15 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("login"), 640, 480);
+
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("main.fxml"));
+        Parent root = loader.load();
+
+        MainController controller = loader.getController();
+        root.setUserData(controller);   // 🔥 THIS FIXES EVERYTHING
+
+        Scene scene = new Scene(root, 1000, 700); // pick a stable size
+
         stage.setScene(scene);
         stage.show();
     }

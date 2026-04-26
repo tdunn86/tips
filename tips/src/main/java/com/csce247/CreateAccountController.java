@@ -1,14 +1,21 @@
 package com.csce247;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import com.model.AccountType;
+import com.model.TIPSFacade;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 
-public class CreateAccountController {
+public class CreateAccountController implements Initializable {
 
     @FXML private TextField tfUsername;
     @FXML private TextField tfEmail;
@@ -17,27 +24,74 @@ public class CreateAccountController {
     @FXML private RadioButton rbEditor;
     @FXML private Label lblError;
 
+    private final TIPSFacade facade = TIPSFacade.getInstance();
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        if (lblError != null) {
+            lblError.setVisible(false);
+            lblError.setManaged(false);
+        }
+
+        if (rbStudent != null) {
+            rbStudent.setSelected(true);
+        }
+    }
+
     @FXML
     private void handleCreateAccount() {
-        String username = tfUsername.getText().trim();
-        String email    = tfEmail.getText().trim();
-        String password = pfPassword.getText();
+        String username = tfUsername.getText() == null ? "" : tfUsername.getText().trim();
+        String email = tfEmail.getText() == null ? "" : tfEmail.getText().trim();
+        String password = pfPassword.getText() == null ? "" : pfPassword.getText();
 
         if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            lblError.setText("Please fill in all fields.");
-            lblError.setVisible(true);
+            showError("Please fill in all fields.");
             return;
         }
 
-        lblError.setVisible(false);
-        String accountType = rbStudent.isSelected() ? "student" : "editor";
+        AccountType accountType = rbEditor.isSelected() ? AccountType.EDITOR : AccountType.STUDENT;
 
-        // TODO: save the new user, then switch to login or dashboard
-        System.out.println("Creating account: " + username + " / " + accountType);
+        try {
+            facade.registerUser(username, password, email, accountType);
+            showInfo("Account created successfully. You can now log in.");
+            handleBackToLogin();
+        } catch (Exception e) {
+            showError("Could not create account: " + e.getMessage());
+        }
     }
 
     @FXML
     private void handleBackToLogin() throws IOException {
-        App.setRoot("contributor");
+        MainController main = getMainController();
+        if (main != null) {
+            main.showAuthPage("login.fxml");
+        }
+    }
+
+    private MainController getMainController() {
+        if (tfUsername == null || tfUsername.getScene() == null) {
+            return null;
+        }
+        Object controller = tfUsername.getScene().getRoot().getUserData();
+        if (controller instanceof MainController) {
+            return (MainController) controller;
+        }
+        return null;
+    }
+
+    private void showError(String message) {
+        if (lblError != null) {
+            lblError.setText(message);
+            lblError.setVisible(true);
+            lblError.setManaged(true);
+        }
+    }
+
+    private void showInfo(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText("Account Created");
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

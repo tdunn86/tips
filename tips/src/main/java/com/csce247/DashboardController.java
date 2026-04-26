@@ -15,14 +15,16 @@ import com.model.Student;
 import com.model.TIPSFacade;
 import com.model.User;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 
-/**
- * Controller for the dashboard content.
- * Pulls all user-facing dashboard data from the facade/model layer.
- */
 public class DashboardController implements Initializable {
 
     @FXML private Label greetingLabel;
@@ -83,8 +85,7 @@ public class DashboardController implements Initializable {
 
     private int getDisplayedStreak(User currentUser) {
         if (currentUser instanceof Student) {
-            Student student = (Student) currentUser;
-            return student.getStreak();
+            return ((Student) currentUser).getStreak();
         }
         return 0;
     }
@@ -247,5 +248,34 @@ public class DashboardController implements Initializable {
         }
 
         return count;
+    }
+
+    @FXML
+    private void goQuestions(ActionEvent event) {
+        navigateWithinShell(event, "question.fxml");
+    }
+
+    @FXML
+    private void goDailyChallenge(ActionEvent event) {
+        navigateWithinShell(event, "dailychallenge.fxml");
+    }
+
+    @FXML
+    private void goContributor(ActionEvent event) {
+        navigateWithinShell(event, "contributor.fxml");
+    }
+
+    private void navigateWithinShell(ActionEvent event, String fxmlFile) {
+        try {
+            Parent page = FXMLLoader.load(getClass().getResource("/com/csce247/" + fxmlFile));
+
+            BorderPane shell = (BorderPane) ((Node) event.getSource()).getScene().getRoot();
+            StackPane contentArea = (StackPane) shell.getCenter();
+
+            contentArea.getChildren().setAll(page);
+        } catch (Exception e) {
+            System.err.println("Failed to load " + fxmlFile + ": " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

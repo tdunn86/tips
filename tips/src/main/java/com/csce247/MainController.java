@@ -13,14 +13,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 
 public class MainController implements Initializable {
 
+    @FXML private HBox topNavBar;
     @FXML private StackPane contentArea;
 
     @FXML private Button logoButton;
@@ -46,11 +46,18 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadUsername();
-        showPage("dashboard.fxml");
+
+        if (facade.getCurrentUser() == null) {
+            showAuthPage("login.fxml");
+        } else {
+            showPage("dashboard.fxml");
+        }
     }
 
     public void showPage(String fxmlFile) {
         try {
+            showTopNav(true);
+
             Parent page = FXMLLoader.load(getClass().getResource("/com/csce247/" + fxmlFile));
             contentArea.getChildren().setAll(page);
             updateActiveNav(fxmlFile);
@@ -60,8 +67,22 @@ public class MainController implements Initializable {
         }
     }
 
+    public void showAuthPage(String fxmlFile) {
+        try {
+            showTopNav(false);
+
+            Parent page = FXMLLoader.load(getClass().getResource("/com/csce247/" + fxmlFile));
+            contentArea.getChildren().setAll(page);
+        } catch (IOException e) {
+            System.err.println("Failed to load auth page " + fxmlFile + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     public void showQuestionDetail(Question question) {
         try {
+            showTopNav(true);
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/csce247/questiondetail.fxml"));
             Parent page = loader.load();
 
@@ -99,25 +120,20 @@ public class MainController implements Initializable {
     @FXML
     private void handleLogout(ActionEvent event) {
         facade.logout();
-        navigateToLogin();
-    }
-
-    private void navigateToLogin() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/csce247/login.fxml"));
-            Stage stage = (Stage) contentArea.getScene().getWindow();
-            stage.setScene(new Scene(root, 600, 400));
-            stage.show();
-        } catch (Exception e) {
-            System.err.println("Failed to load login.fxml: " + e.getMessage());
-            e.printStackTrace();
-        }
+        showAuthPage("login.fxml");
     }
 
     private void loadUsername() {
         User currentUser = facade.getCurrentUser();
         if (usernameLabel != null) {
             usernameLabel.setText(currentUser != null ? currentUser.getUsername() : "Guest");
+        }
+    }
+
+    private void showTopNav(boolean visible) {
+        if (topNavBar != null) {
+            topNavBar.setVisible(visible);
+            topNavBar.setManaged(visible);
         }
     }
 
