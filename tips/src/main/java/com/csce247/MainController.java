@@ -16,7 +16,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class MainController implements Initializable {
@@ -41,11 +43,19 @@ public class MainController implements Initializable {
     @FXML private Label contributorIconLabel;
     @FXML private Label contributorTextLabel;
 
+    @FXML private StackPane profileOverlay;
+    @FXML private VBox profilePopup;
+    @FXML private Label accountTypeValueLabel;
+    @FXML private Label usernameValueLabel;
+    @FXML private Label emailValueLabel;
+    @FXML private Label userIdValueLabel;
+
     private final TIPSFacade facade = TIPSFacade.getInstance();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadUsername();
+<<<<<<< Updated upstream
 
         User currentUser = facade.getCurrentUser();
 
@@ -57,6 +67,10 @@ public class MainController implements Initializable {
             contributorNavButton.setManaged(false);
         }
 
+=======
+        loadProfileInfo();
+        hideProfilePopup();
+>>>>>>> Stashed changes
         showPage("dashboard.fxml");
     }
 
@@ -65,6 +79,7 @@ public class MainController implements Initializable {
             Parent page = FXMLLoader.load(getClass().getResource("/com/csce247/" + fxmlFile));
             contentArea.getChildren().setAll(page);
             updateActiveNav(fxmlFile);
+            hideProfilePopup();
         } catch (IOException e) {
             System.err.println("Failed to load " + fxmlFile + ": " + e.getMessage());
             e.printStackTrace();
@@ -81,6 +96,7 @@ public class MainController implements Initializable {
 
             contentArea.getChildren().setAll(page);
             updateActiveNav("question.fxml");
+            hideProfilePopup();
         } catch (IOException e) {
             System.err.println("Failed to load questiondetail.fxml: " + e.getMessage());
             e.printStackTrace();
@@ -108,9 +124,37 @@ public class MainController implements Initializable {
     }
 
     @FXML
+    private void toggleProfilePopup(ActionEvent event) {
+        if (profileOverlay.isVisible()) {
+            hideProfilePopup();
+        } else {
+            loadProfileInfo();
+            profileOverlay.setVisible(true);
+            profileOverlay.setManaged(true);
+        }
+    }
+
+    @FXML
+    private void closeProfilePopup(MouseEvent event) {
+        hideProfilePopup();
+    }
+
+    @FXML
+    private void consumeProfilePopupClick(MouseEvent event) {
+        event.consume();
+    }
+
+    @FXML
     private void handleLogout(ActionEvent event) {
         facade.logout();
         navigateToLogin();
+    }
+
+    private void hideProfilePopup() {
+        if (profileOverlay != null) {
+            profileOverlay.setVisible(false);
+            profileOverlay.setManaged(false);
+        }
     }
 
     private void navigateToLogin() {
@@ -127,9 +171,40 @@ public class MainController implements Initializable {
 
     private void loadUsername() {
         User currentUser = facade.getCurrentUser();
+
         if (usernameLabel != null) {
             usernameLabel.setText(currentUser != null ? currentUser.getUsername() : "Guest");
         }
+
+        if (profileButton != null && currentUser != null && currentUser.getUsername() != null
+                && !currentUser.getUsername().isBlank()) {
+            profileButton.setText(currentUser.getUsername().substring(0, 1).toUpperCase());
+        } else if (profileButton != null) {
+            profileButton.setText("G");
+        }
+    }
+
+    private void loadProfileInfo() {
+        User currentUser = facade.getCurrentUser();
+
+        if (currentUser == null) {
+            accountTypeValueLabel.setText("Guest");
+            usernameValueLabel.setText("Guest");
+            emailValueLabel.setText("No email available");
+            userIdValueLabel.setText("-");
+            return;
+        }
+
+        accountTypeValueLabel.setText(
+            currentUser.getAccountType() != null ? currentUser.getAccountType().toString() : "Unknown"
+        );
+        usernameValueLabel.setText(
+            currentUser.getUsername() != null ? currentUser.getUsername() : "Unknown"
+        );
+        emailValueLabel.setText(
+            currentUser.getEmail() != null ? currentUser.getEmail() : "No email available"
+        );
+        userIdValueLabel.setText(String.valueOf(currentUser.getUserId()));
     }
 
     private void updateActiveNav(String fxmlFile) {
