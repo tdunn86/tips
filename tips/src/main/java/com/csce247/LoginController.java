@@ -7,16 +7,12 @@ import com.model.AccountType;
 import com.model.TIPSFacade;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 public class LoginController implements Initializable {
 
@@ -53,6 +49,7 @@ public class LoginController implements Initializable {
         }
 
         AccountType type = facade.getCurrentUser().getAccountType();
+
         String firstPage;
         switch (type) {
             case ADMIN:
@@ -65,38 +62,28 @@ public class LoginController implements Initializable {
                 break;
         }
 
-        navigateToMain(firstPage);
+        MainController main = getMainController();
+        if (main != null) {
+            main.showPage(firstPage);
+        }
     }
 
     @FXML
     private void handleCreateAccount() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/csce247/createaccount.fxml"));
-            Stage stage = (Stage) tfUsername.getScene().getWindow();
-            stage.setScene(new Scene(root, 600, 700));
-            stage.show();
-        } catch (Exception e) {
-            System.err.println("Failed to load createaccount.fxml: " + e.getMessage());
-            e.printStackTrace();
+        MainController main = getMainController();
+        if (main != null) {
+            main.showAuthPage("createaccount.fxml");
         }
     }
 
-    private void navigateToMain(String firstPage) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/csce247/main.fxml"));
-            Parent root = loader.load();
+    private MainController getMainController() {
+        if (tfUsername == null || tfUsername.getScene() == null) return null;
 
-            MainController controller = loader.getController();
-            root.setUserData(controller);
-            controller.showPage(firstPage);
-
-            Stage stage = (Stage) tfUsername.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (Exception e) {
-            System.err.println("Navigation failed to main.fxml — " + e.getMessage());
-            e.printStackTrace();
+        Object controller = tfUsername.getScene().getRoot().getUserData();
+        if (controller instanceof MainController) {
+            return (MainController) controller;
         }
+        return null;
     }
 
     private void showError(String message) {

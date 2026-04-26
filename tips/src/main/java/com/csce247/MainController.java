@@ -13,13 +13,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 public class MainController implements Initializable {
 
@@ -45,6 +44,7 @@ public class MainController implements Initializable {
 
     @FXML private StackPane profileOverlay;
     @FXML private VBox profilePopup;
+    @FXML private HBox topNavBar;
     @FXML private Label accountTypeValueLabel;
     @FXML private Label usernameValueLabel;
     @FXML private Label emailValueLabel;
@@ -57,17 +57,36 @@ public class MainController implements Initializable {
         loadUsername();
         loadProfileInfo();
         hideProfilePopup();
-        showPage("dashboard.fxml");
+
+        if (facade.getCurrentUser() == null) {
+            showAuthPage("login.fxml");
+        } else {
+            showPage("dashboard.fxml");
+        }
     }
 
     public void showPage(String fxmlFile) {
         try {
+            showTopNav(true);
+            loadUsername();
+
             Parent page = FXMLLoader.load(getClass().getResource("/com/csce247/" + fxmlFile));
             contentArea.getChildren().setAll(page);
             updateActiveNav(fxmlFile);
             hideProfilePopup();
         } catch (IOException e) {
-            System.err.println("Failed to load " + fxmlFile + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void showAuthPage(String fxmlFile) {
+        try {
+            showTopNav(false);  // 🔥 HIDE NAV
+
+            Parent page = FXMLLoader.load(getClass().getResource("/com/csce247/" + fxmlFile));
+            contentArea.getChildren().setAll(page);
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -133,25 +152,13 @@ public class MainController implements Initializable {
     @FXML
     private void handleLogout(ActionEvent event) {
         facade.logout();
-        navigateToLogin();
+        showAuthPage("login.fxml");
     }
 
     private void hideProfilePopup() {
         if (profileOverlay != null) {
             profileOverlay.setVisible(false);
             profileOverlay.setManaged(false);
-        }
-    }
-
-    private void navigateToLogin() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/csce247/login.fxml"));
-            Stage stage = (Stage) contentArea.getScene().getWindow();
-            stage.setScene(new Scene(root, 600, 400));
-            stage.show();
-        } catch (Exception e) {
-            System.err.println("Failed to load login.fxml: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -162,8 +169,8 @@ public class MainController implements Initializable {
             usernameLabel.setText(currentUser != null ? currentUser.getUsername() : "Guest");
         }
 
-        if (profileButton != null && currentUser != null && currentUser.getUsername() != null
-                && !currentUser.getUsername().isBlank()) {
+        if (profileButton != null && currentUser != null &&
+            currentUser.getUsername() != null && !currentUser.getUsername().isBlank()) {
             profileButton.setText(currentUser.getUsername().substring(0, 1).toUpperCase());
         } else if (profileButton != null) {
             profileButton.setText("G");
@@ -171,6 +178,8 @@ public class MainController implements Initializable {
     }
 
     private void loadProfileInfo() {
+        if (accountTypeValueLabel == null) return;
+
         User currentUser = facade.getCurrentUser();
 
         if (currentUser == null) {
@@ -226,7 +235,7 @@ public class MainController implements Initializable {
             );
         }
         if (icon != null) {
-            icon.setStyle("-fx-font-size: 18px; -fx-min-width: 20; -fx-min-height: 20; -fx-text-fill: white;");
+            icon.setStyle("-fx-font-size: 18px; -fx-text-fill: white;");
         }
         if (text != null) {
             text.setStyle("-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: white;");
@@ -245,10 +254,19 @@ public class MainController implements Initializable {
             );
         }
         if (icon != null) {
-            icon.setStyle("-fx-font-size: 18px; -fx-min-width: 20; -fx-min-height: 20; -fx-text-fill: #111111;");
+            icon.setStyle("-fx-font-size: 18px; -fx-text-fill: #111111;");
         }
         if (text != null) {
             text.setStyle("-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #111111;");
         }
     }
+
+    private void showTopNav(boolean visible) {
+        if (topNavBar != null) {
+            topNavBar.setVisible(visible);
+            topNavBar.setManaged(visible);
+        }
+    }
+
+
 }

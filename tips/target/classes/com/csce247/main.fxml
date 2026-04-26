@@ -18,7 +18,8 @@
     <BorderPane style="-fx-background-color: #f6f6f6;">
 
         <top>
-            <HBox alignment="CENTER_LEFT"
+            <HBox fx:id="topNavBar"
+                  alignment="CENTER_LEFT"
                   spacing="14.0"
                   style="-fx-background-color: white; -fx-border-color: transparent transparent #dfdfdf transparent; -fx-border-width: 0 0 1 0; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 8, 0.15, 0, 2);">
                 <padding>
