@@ -15,9 +15,9 @@ public class App extends Application {
         Parent root = loader.load();
 
         MainController controller = loader.getController();
-        root.setUserData(controller);   // 🔥 REQUIRED FOR LOGIN TO WORK
+        root.setUserData(controller); 
 
-        Scene scene = new Scene(root, 1000, 700); // stable size
+        Scene scene = new Scene(root, 1000, 700); 
 
         stage.setScene(scene);
         stage.show();

@@ -5,18 +5,13 @@ import java.util.ResourceBundle;
 
 import com.model.Question;
 import com.model.TIPSFacade;
-import com.model.User;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.VBox;
 
-/**
- * Daily Challenge content controller.
- * Navigation is handled by main.fxml / MainController.
- */
 public class DailyChallengeController implements Initializable {
 
     @FXML private Label challengeDateLabel;
@@ -24,77 +19,64 @@ public class DailyChallengeController implements Initializable {
     @FXML private Label difficultyLabel;
     @FXML private Label courseLabel;
     @FXML private Label languageLabel;
-    @FXML private Label statusLabel;
     @FXML private TextArea challengePromptArea;
-    @FXML private ListView<String> leaderboardListView;
+
+    @FXML private Label lblSampleSolution;
+    @FXML private Label lblSampleExplanation;
+    @FXML private VBox solutionBox;
 
     private final TIPSFacade facade = TIPSFacade.getInstance();
     private Question dailyQuestion;
 
+    private boolean solutionVisible = false;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadDailyChallenge();
-        populateLeaderboard();
-        wireInitialViewState();
     }
 
     private void loadDailyChallenge() {
-        User currentUser = facade.getCurrentUser();
         dailyQuestion = facade.getDailyChallenge();
 
-        if (challengeDateLabel != null) {
-            challengeDateLabel.setText("Today's Challenge");
-        }
+        challengeDateLabel.setText("Today's Challenge");
 
         if (dailyQuestion == null) {
-            if (challengeTitleLabel != null) challengeTitleLabel.setText("No challenge available");
-            if (challengePromptArea != null) {
-                challengePromptArea.setText(
-                    "No daily challenge is available for the current user.\n\n"
-                  + "If this should be available, make sure a student is logged in."
-                );
-            }
-            if (difficultyLabel != null) difficultyLabel.setText("Difficulty: N/A");
-            if (courseLabel != null) courseLabel.setText("Course: N/A");
-            if (languageLabel != null) languageLabel.setText("Language: N/A");
-            if (statusLabel != null) {
-                statusLabel.setText(
-                    currentUser == null
-                            ? "Please log in to see a personalized daily challenge."
-                            : "The daily challenge will appear here once a student is logged in."
-                );
-            }
+            challengeTitleLabel.setText("No challenge available");
+            challengePromptArea.setText("No daily challenge available.");
             return;
         }
 
-        if (challengeTitleLabel != null) challengeTitleLabel.setText(nullToNA(dailyQuestion.getTitle()));
-        if (challengePromptArea != null) challengePromptArea.setText(nullToNA(dailyQuestion.getPrompt()));
-        if (difficultyLabel != null) difficultyLabel.setText("Difficulty: " + nullToNA(String.valueOf(dailyQuestion.getDifficulty())));
-        if (courseLabel != null) courseLabel.setText("Course: " + nullToNA(String.valueOf(dailyQuestion.getCourse())));
-        if (languageLabel != null) languageLabel.setText("Language: " + nullToNA(String.valueOf(dailyQuestion.getLanguage())));
-        if (statusLabel != null) statusLabel.setText("Your daily challenge is ready.");
-    }
+        challengeTitleLabel.setText(dailyQuestion.getTitle());
+        challengePromptArea.setText(dailyQuestion.getPrompt());
 
-    private void populateLeaderboard() {
-        if (leaderboardListView == null) return;
+        difficultyLabel.setText("Difficulty: " + dailyQuestion.getDifficulty());
+        courseLabel.setText("Course: " + dailyQuestion.getCourse());
+        languageLabel.setText("Language: " + dailyQuestion.getLanguage());
 
-        leaderboardListView.getItems().setAll(
-            "No leaderboard entries yet"
-        );
-    }
-
-    private void wireInitialViewState() {
-        if (challengePromptArea != null) {
-            challengePromptArea.setEditable(false);
-            challengePromptArea.setWrapText(true);
+        if (dailyQuestion.getSampleSolution() != null) {
+            lblSampleSolution.setText(dailyQuestion.getSampleSolution());
         }
+
+        if (dailyQuestion.getSampleExplanation() != null) {
+            lblSampleExplanation.setText(dailyQuestion.getSampleExplanation());
+        }
+
+        lblSampleSolution.setVisible(false);
+        lblSampleSolution.setManaged(false);
+        lblSampleExplanation.setVisible(false);
+        lblSampleExplanation.setManaged(false);
     }
 
-    private String nullToNA(String value) {
-        return (value == null || value.isBlank()) ? "N/A" : value;
-    }
+    @FXML
+    private void handleViewSolution() {
+        solutionVisible = !solutionVisible;
 
-    public Question getDailyQuestion() {
-        return dailyQuestion;
+        System.out.println("Toggled solution: " + solutionVisible); // DEBUG
+
+        lblSampleSolution.setVisible(solutionVisible);
+        lblSampleSolution.setManaged(solutionVisible);
+
+        lblSampleExplanation.setVisible(solutionVisible);
+        lblSampleExplanation.setManaged(solutionVisible);
     }
 }
