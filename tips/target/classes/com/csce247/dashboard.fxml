@@ -11,13 +11,14 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<ScrollPane xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.csce247.DashboardController"
+<ScrollPane fx:id="rootPane"
             fitToWidth="true"
             hbarPolicy="NEVER"
             vbarPolicy="AS_NEEDED"
-            style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
+            style="-fx-background-color: transparent; -fx-border-color: transparent;"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.csce247.DashboardController">
 
     <content>
         <VBox spacing="34.0"
@@ -84,6 +85,7 @@
                     <Region VBox.vgrow="ALWAYS" />
                     <Button fx:id="exploreQuestionsButton"
                             mnemonicParsing="false"
+                            onAction="#goQuestions"
                             text="Explore Questions"
                             maxWidth="1.7976931348623157E308"
                             style="-fx-min-height: 52; -fx-background-color: #8a0011; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-size: 18px; -fx-font-weight: 600;" />
@@ -107,6 +109,7 @@
                     <Region VBox.vgrow="ALWAYS" />
                     <Button fx:id="startChallengeButton"
                             mnemonicParsing="false"
+                            onAction="#goDailyChallenge"
                             text="Start Challenge"
                             maxWidth="1.7976931348623157E308"
                             style="-fx-min-height: 52; -fx-background-color: #8a0011; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-size: 18px; -fx-font-weight: 600;" />
@@ -130,6 +133,7 @@
                     <Region VBox.vgrow="ALWAYS" />
                     <Button fx:id="createQuestionButton"
                             mnemonicParsing="false"
+                            onAction="#goContributor"
                             text="Create Question"
                             maxWidth="1.7976931348623157E308"
                             style="-fx-min-height: 52; -fx-background-color: #f5f5f5; -fx-text-fill: #111111; -fx-border-color: rgba(0,0,0,0.15); -fx-border-radius: 10; -fx-background-radius: 10; -fx-background-insets: 0; -fx-font-size: 18px; -fx-font-weight: 600;" />
