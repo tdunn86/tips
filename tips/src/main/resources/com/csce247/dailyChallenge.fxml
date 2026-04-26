@@ -73,7 +73,7 @@
                 <Button fx:id="btnViewSolution"
                         text="View Solution"
                         onAction="#handleViewSolution"
-                        style="-fx-background-color: #8b1a1a; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 12 16; -fx-font-size: 13px; -fx-font-weight: bold;" />
+                        style="-fx-background-color: #8a0011; -fx-text-fill: white; -fx-cursor: hand;" />
 
                 <Label fx:id="lblSampleSolution"
                        visible="false"
@@ -86,6 +86,30 @@
                        managed="false"
                        wrapText="true"
                        style="-fx-font-size: 12px; -fx-text-fill: #555555;" />
+            </VBox>
+
+            <VBox spacing="12"
+                style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #e0e0e0;">
+                <padding>
+                    <Insets top="22" right="22" bottom="22" left="22"/>
+                </padding>
+
+                <Label text="Discussion"
+                    style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+                <!-- Replies list -->
+                <VBox fx:id="repliesContainer" spacing="10"/>
+
+                <!-- Input -->
+                <TextArea fx:id="replyInput"
+                        promptText="Write a reply..."
+                        prefRowCount="3"
+                        wrapText="true"/>
+
+                <!-- Button -->
+                <Button text="Post Reply"
+                        onAction="#handleAddReply"
+                        style="-fx-background-color: #8a0011; -fx-text-fill: white; -fx-cursor: hand;" />
             </VBox>
 
         </VBox>

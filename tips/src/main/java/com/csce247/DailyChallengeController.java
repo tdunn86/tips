@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.model.Question;
+import com.model.Reply;
 import com.model.TIPSFacade;
 
 import javafx.fxml.FXML;
@@ -24,6 +25,9 @@ public class DailyChallengeController implements Initializable {
     @FXML private Label lblSampleSolution;
     @FXML private Label lblSampleExplanation;
     @FXML private VBox solutionBox;
+
+    @FXML private VBox repliesContainer;
+    @FXML private TextArea replyInput;
 
     private final TIPSFacade facade = TIPSFacade.getInstance();
     private Question dailyQuestion;
@@ -65,18 +69,72 @@ public class DailyChallengeController implements Initializable {
         lblSampleSolution.setManaged(false);
         lblSampleExplanation.setVisible(false);
         lblSampleExplanation.setManaged(false);
+
+        loadReplies();
     }
 
     @FXML
     private void handleViewSolution() {
         solutionVisible = !solutionVisible;
 
-        System.out.println("Toggled solution: " + solutionVisible); // DEBUG
-
         lblSampleSolution.setVisible(solutionVisible);
         lblSampleSolution.setManaged(solutionVisible);
 
         lblSampleExplanation.setVisible(solutionVisible);
         lblSampleExplanation.setManaged(solutionVisible);
+    }
+
+    private void loadReplies() {
+        repliesContainer.getChildren().clear();
+
+        if (dailyQuestion == null || dailyQuestion.getReplies() == null) return;
+
+        for (Reply r : dailyQuestion.getReplies()) {
+            repliesContainer.getChildren().add(buildReplyNode(r, 0));
+        }
+    }
+
+    private VBox buildReplyNode(Reply reply, int depth) {
+        VBox box = new VBox(3);
+
+        Label author = new Label(
+            reply.getAuthor().getUsername() + " • " + reply.getDatePosted()
+        );
+        author.setStyle("-fx-font-size: 11px; -fx-text-fill: #777;");
+
+        Label content = new Label(reply.getContent());
+        content.setWrapText(true);
+
+        box.getChildren().addAll(author, content);
+
+        box.setStyle(
+            "-fx-background-color: #f6f6f6;" +
+            "-fx-padding: 8;" +
+            "-fx-background-radius: 6;" +
+            "-fx-border-color: #e0e0e0;" +
+            "-fx-border-radius: 6;" +
+            "-fx-translate-x: " + (depth * 20) + ";"
+        );
+
+        if (reply.getReplies() != null) {
+            for (Reply child : reply.getReplies()) {
+                box.getChildren().add(buildReplyNode(child, depth + 1));
+            }
+        }
+
+        return box;
+    }
+
+    @FXML
+    private void handleAddReply() {
+        if (dailyQuestion == null) return;
+
+        String text = replyInput.getText();
+        if (text == null || text.isBlank()) return;
+
+        facade.addComment(dailyQuestion, "", text);
+
+        replyInput.clear();
+        loadReplies();
     }
 }
