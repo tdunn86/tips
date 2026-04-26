@@ -15,11 +15,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 
 public class DashboardController implements Initializable {
 
@@ -27,23 +25,11 @@ public class DashboardController implements Initializable {
     @FXML private Label subtitleLabel;
     @FXML private Label streakValueLabel;
     @FXML private Label streakLabel;
-    @FXML private Label problemsSolvedLabel;
-    @FXML private Label coursesActiveLabel;
-    @FXML private Label achievementsLabel;
 
     private final TIPSFacade facade = TIPSFacade.getInstance();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        User currentUser = facade.getCurrentUser();
-
-        if (currentUser != null &&
-            currentUser.getAccountType() == com.model.AccountType.STUDENT) {
-
-            addQuestionCard.setVisible(false);
-            addQuestionCard.setManaged(false);
-        }
-
         loadDashboardData();
     }
 
@@ -112,13 +98,6 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void goContributor(ActionEvent event) {
-        User currentUser = facade.getCurrentUser();
-
-        if (currentUser == null ||
-            currentUser.getAccountType() == com.model.AccountType.STUDENT) {
-            return;
-        }
-
         navigateWithinShell(event, "contributor.fxml");
     }
 
