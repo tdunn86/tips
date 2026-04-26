@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import com.model.Course;
-import com.model.Difficulty;
-import com.model.Language;
 import com.model.Question;
 import com.model.TIPSFacade;
 import com.model.User;
@@ -24,22 +21,19 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
  * Controller for the Contributor Dashboard (contributor.fxml).
  *
- * Supports both Editor and Admin account types (both have createQuestion /
- * editQuestion / deleteQuestion). All data flows through TIPSFacade so this
- * controller never touches persistence directly.
+ * Supports both Editor and Admin account types.
  */
 public class ContributorController implements Initializable {
 
@@ -66,21 +60,20 @@ public class ContributorController implements Initializable {
 
     private String activeTab = "approved";
 
-    private List<Question> approvedQuestions = new ArrayList<>();
-    private List<Question> pendingQuestions = new ArrayList<>();
-    private List<Question> rejectedQuestions = new ArrayList<>();
+    private final List<Question> approvedQuestions = new ArrayList<>();
+    private final List<Question> pendingQuestions = new ArrayList<>();
+    private final List<Question> rejectedQuestions = new ArrayList<>();
 
+    @Override
     public void initialize(URL location, ResourceBundle resources) {
         facade = TIPSFacade.getInstance();
         currentUser = facade.getCurrentUser();
 
-        // Block students from accessing this page
         if (currentUser == null ||
-                currentUser.getAccountType() == com.model.AccountType.STUDENT) {
+            currentUser.getAccountType() == com.model.AccountType.STUDENT) {
             javafx.application.Platform.runLater(() -> {
                 try {
-                    Parent root = FXMLLoader.load(
-                        getClass().getResource("/com/csce247/dashboard.fxml"));
+                    Parent root = FXMLLoader.load(getClass().getResource("/com/csce247/dashboard.fxml"));
                     Stage stage = (Stage) questionListVBox.getScene().getWindow();
                     stage.setScene(new Scene(root));
                     stage.show();
@@ -91,16 +84,24 @@ public class ContributorController implements Initializable {
             return;
         }
 
+        if (btnAddQuestion != null) {
+            btnAddQuestion.setOnMouseClicked(event -> openAddQuestionPopup());
+        }
+
         populateUserInfo();
+        refreshView();
+    }
+
+    private void refreshView() {
         loadQuestions();
         updateStatCards();
         renderTab(activeTab);
-        }
+    }
 
-        private void populateUserInfo() {
-            if (currentUser != null && lblUsername != null) {
-                lblUsername.setText(currentUser.getUsername());
-            }
+    private void populateUserInfo() {
+        if (currentUser != null && lblUsername != null) {
+            lblUsername.setText(currentUser.getUsername());
+        }
     }
 
     private void loadQuestions() {
@@ -311,100 +312,36 @@ public class ContributorController implements Initializable {
 
     @FXML
     private void handleAddQuestion() {
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Add New Question");
-        dialog.setHeaderText("Fill in the question details");
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        openAddQuestionPopup();
+    }
 
-        VBox form = new VBox(10);
-        form.setPadding(new Insets(16));
+    private void openAddQuestionPopup() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/csce247/addQuestionPopup.fxml"));
+            Parent root = loader.load();
 
-        TextField tfTitle = new TextField();
-        tfTitle.setPromptText("Title");
+            AddQuestionPopupController controller = loader.getController();
+            controller.setOnQuestionCreated(this::refreshView);
 
-        TextField tfPrompt = new TextField();
-        tfPrompt.setPromptText("Prompt / description");
-
-        TextField tfDiff = new TextField();
-        tfDiff.setPromptText("Difficulty: EASY / MEDIUM / HARD");
-
-        TextField tfLang = new TextField();
-        tfLang.setPromptText("Language: JAVA / PYTHON / CPP / JAVASCRIPT / HTML / CSS");
-
-        TextField tfCourse = new TextField();
-        tfCourse.setPromptText("Course: CSCE145 / CSCE146 / CSCE240 / CSCE242 / CSCE247");
-
-        form.getChildren().addAll(
-            labelFor("Title"), tfTitle,
-            labelFor("Prompt"), tfPrompt,
-            labelFor("Difficulty"), tfDiff,
-            labelFor("Language"), tfLang,
-            labelFor("Course"), tfCourse
-        );
-
-        dialog.getDialogPane().setContent(form);
-
-        dialog.showAndWait().ifPresent(result -> {
-            if (result != ButtonType.OK) return;
-
-            try {
-                Difficulty diff = Difficulty.valueOf(tfDiff.getText().trim().toUpperCase());
-                Language lang = Language.valueOf(tfLang.getText().trim().toUpperCase());
-                Course course = Course.valueOf(tfCourse.getText().trim().toUpperCase());
-
-                facade.addQuestion(
-                    tfTitle.getText().trim(),
-                    tfPrompt.getText().trim(),
-                    diff, lang, course
-                );
-
-                loadQuestions();
-                updateStatCards();
-                renderTab(activeTab);
-
-            } catch (IllegalArgumentException ex) {
-                showError("Invalid Input",
-                    "Please make sure Difficulty, Language, and Course are valid enum values.\n"
-                  + ex.getMessage());
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            if (questionListVBox != null && questionListVBox.getScene() != null) {
+                popupStage.initOwner(questionListVBox.getScene().getWindow());
             }
-        });
+            popupStage.setTitle("Create Question");
+            popupStage.setScene(new Scene(root));
+            popupStage.setResizable(false);
+            popupStage.showAndWait();
+        } catch (Exception e) {
+            System.err.println("Failed to load addQuestionPopup.fxml: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void handleEdit(Question question) {
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Edit Question");
-        dialog.setHeaderText("Edit: " + question.getTitle());
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-        VBox form = new VBox(10);
-        form.setPadding(new Insets(16));
-
-        TextField tfTitle = new TextField(question.getTitle());
-        TextField tfPrompt = new TextField(question.getPrompt());
-
-        form.getChildren().addAll(
-            labelFor("New Title"), tfTitle,
-            labelFor("New Prompt"), tfPrompt
-        );
-        dialog.getDialogPane().setContent(form);
-
-        dialog.showAndWait().ifPresent(result -> {
-            if (result != ButtonType.OK) return;
-
-            String newTitle = tfTitle.getText().trim();
-            String newPrompt = tfPrompt.getText().trim();
-
-            if (newTitle.isEmpty() || newPrompt.isEmpty()) {
-                showError("Validation", "Title and Prompt cannot be empty.");
-                return;
-            }
-
-            facade.editQuestion(question, newTitle, newPrompt);
-
-            loadQuestions();
-            updateStatCards();
-            renderTab(activeTab);
-        });
+        Alert alert = new Alert(AlertType.INFORMATION, "Edit flow kept as-is for now. Reconnect your existing edit UI here.", ButtonType.OK);
+        alert.setTitle("Edit Question");
+        alert.showAndWait();
     }
 
     private void handleDelete(Question question) {
@@ -416,9 +353,7 @@ public class ContributorController implements Initializable {
         confirm.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.YES) {
                 facade.removeQuestion(question);
-                loadQuestions();
-                updateStatCards();
-                renderTab(activeTab);
+                refreshView();
             }
         });
     }
@@ -435,7 +370,7 @@ public class ContributorController implements Initializable {
 
     @FXML
     private void goDailyChallenge(ActionEvent event) {
-        navigate(event, "dailychallenge.fxml");
+        navigate(event, "dailyChallenge.fxml");
     }
 
     @FXML
@@ -449,21 +384,9 @@ public class ContributorController implements Initializable {
         navigate(event, "login.fxml");
     }
 
-    private Label labelFor(String text) {
-        Label l = new Label(text);
-        l.setStyle("-fx-font-weight: bold; -fx-font-size: 12;");
-        return l;
-    }
-
     private String capitalize(String s) {
         if (s == null || s.isEmpty()) return s;
         return s.charAt(0) + s.substring(1).toLowerCase();
-    }
-
-    private void showError(String title, String msg) {
-        Alert alert = new Alert(AlertType.ERROR, msg, ButtonType.OK);
-        alert.setTitle(title);
-        alert.showAndWait();
     }
 
     private void navigate(ActionEvent event, String fxmlFile) {

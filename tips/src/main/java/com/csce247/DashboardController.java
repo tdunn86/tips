@@ -15,9 +15,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class DashboardController implements Initializable {
 
@@ -26,11 +29,39 @@ public class DashboardController implements Initializable {
     @FXML private Label streakValueLabel;
     @FXML private Label streakLabel;
 
+    @FXML private VBox createQuestionPanel;
+    @FXML private Button createQuestionButton;
+    @FXML private Button exploreQuestionsButton;
+    @FXML private Button startChallengeButton;
+
     private final TIPSFacade facade = TIPSFacade.getInstance();
+
+    private static final String PRIMARY_BUTTON_STYLE =
+        "-fx-min-height: 52; -fx-background-color: #8a0011; -fx-text-fill: white; "
+      + "-fx-background-radius: 10; -fx-font-size: 18px; -fx-font-weight: 600;";
+
+    private static final String PRIMARY_BUTTON_HOVER_STYLE =
+        "-fx-min-height: 52; -fx-background-color: #a30014; -fx-text-fill: white; "
+      + "-fx-background-radius: 10; -fx-font-size: 18px; -fx-font-weight: 600; "
+      + "-fx-cursor: hand;";
+
+    private static final String SECONDARY_BUTTON_STYLE =
+        "-fx-min-height: 52; -fx-background-color: #f5f5f5; -fx-text-fill: #111111; "
+      + "-fx-border-color: rgba(0,0,0,0.15); -fx-border-radius: 10; "
+      + "-fx-background-radius: 10; -fx-background-insets: 0; "
+      + "-fx-font-size: 18px; -fx-font-weight: 600;";
+
+    private static final String SECONDARY_BUTTON_HOVER_STYLE =
+        "-fx-min-height: 52; -fx-background-color: #ececec; -fx-text-fill: #111111; "
+      + "-fx-border-color: rgba(0,0,0,0.22); -fx-border-radius: 10; "
+      + "-fx-background-radius: 10; -fx-background-insets: 0; "
+      + "-fx-font-size: 18px; -fx-font-weight: 600; -fx-cursor: hand;";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadDashboardData();
+        configureCreateQuestionAccess();
+        configureButtonHoverEffects();
     }
 
     private void loadDashboardData() {
@@ -86,32 +117,110 @@ public class DashboardController implements Initializable {
         return "Current Streak";
     }
 
+    private void configureCreateQuestionAccess() {
+        User currentUser = facade.getCurrentUser();
+        boolean canCreate = currentUser instanceof Admin || currentUser instanceof Editor;
+
+        if (createQuestionPanel != null) {
+            createQuestionPanel.setVisible(canCreate);
+            createQuestionPanel.setManaged(canCreate);
+        }
+
+        if (createQuestionButton != null) {
+            createQuestionButton.setVisible(canCreate);
+            createQuestionButton.setManaged(canCreate);
+        }
+    }
+
+    private void configureButtonHoverEffects() {
+        addHoverEffect(exploreQuestionsButton, PRIMARY_BUTTON_STYLE, PRIMARY_BUTTON_HOVER_STYLE);
+        addHoverEffect(startChallengeButton, PRIMARY_BUTTON_STYLE, PRIMARY_BUTTON_HOVER_STYLE);
+        addHoverEffect(createQuestionButton, SECONDARY_BUTTON_STYLE, SECONDARY_BUTTON_HOVER_STYLE);
+    }
+
+    private void addHoverEffect(Button button, String normalStyle, String hoverStyle) {
+        if (button == null) return;
+
+        button.setStyle(normalStyle);
+
+        button.setOnMouseEntered(e -> button.setStyle(hoverStyle));
+        button.setOnMouseExited(e -> button.setStyle(normalStyle));
+    }
+
+    @FXML
+    private void handleCreateQuestion(ActionEvent event) {
+        openAddQuestionPopup();
+    }
+
+    private void openAddQuestionPopup() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/csce247/addQuestionPopup.fxml"));
+            Parent root = loader.load();
+
+            AddQuestionPopupController controller = loader.getController();
+            controller.setOnQuestionCreated(this::loadDashboardData);
+
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+
+            if (greetingLabel != null && greetingLabel.getScene() != null) {
+                popupStage.initOwner(greetingLabel.getScene().getWindow());
+            }
+
+            popupStage.setTitle("Create Question");
+            popupStage.setScene(new Scene(root));
+            popupStage.setResizable(false);
+            popupStage.showAndWait();
+        } catch (Exception e) {
+            System.err.println("Failed to load addQuestionPopup.fxml: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     @FXML
     private void goQuestions(ActionEvent event) {
-        navigateWithinShell(event, "question.fxml");
+        showPageInShell(event, "question.fxml");
     }
 
     @FXML
     private void goDailyChallenge(ActionEvent event) {
-        navigateWithinShell(event, "dailychallenge.fxml");
+        showPageInShell(event, "dailyChallenge.fxml");
     }
 
     @FXML
     private void goContributor(ActionEvent event) {
-        navigateWithinShell(event, "contributor.fxml");
+        showPageInShell(event, "contributor.fxml");
     }
 
-    private void navigateWithinShell(ActionEvent event, String fxmlFile) {
+    private void showPageInShell(ActionEvent event, String fxmlFile) {
+        MainController main = getMainController(event);
+        if (main != null) {
+            main.showPage(fxmlFile);
+            return;
+        }
+
         try {
-            Parent page = FXMLLoader.load(getClass().getResource("/com/csce247/" + fxmlFile));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/csce247/main.fxml"));
+            Parent root = loader.load();
 
-            BorderPane shell = (BorderPane) ((Node) event.getSource()).getScene().getRoot();
-            StackPane contentArea = (StackPane) shell.getCenter();
+            MainController controller = loader.getController();
+            root.setUserData(controller);
+            controller.showPage(fxmlFile);
 
-            contentArea.getChildren().setAll(page);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
         } catch (Exception e) {
-            System.err.println("Failed to load " + fxmlFile + ": " + e.getMessage());
+            System.err.println("Failed to open " + fxmlFile + ": " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private MainController getMainController(ActionEvent event) {
+        Object controller = ((Node) event.getSource()).getScene().getRoot().getUserData();
+        if (controller instanceof MainController) {
+            return (MainController) controller;
+        }
+        return null;
     }
 }
