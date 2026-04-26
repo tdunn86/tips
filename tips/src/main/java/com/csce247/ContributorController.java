@@ -70,21 +70,37 @@ public class ContributorController implements Initializable {
     private List<Question> pendingQuestions = new ArrayList<>();
     private List<Question> rejectedQuestions = new ArrayList<>();
 
-    @Override
     public void initialize(URL location, ResourceBundle resources) {
         facade = TIPSFacade.getInstance();
         currentUser = facade.getCurrentUser();
+
+        // Block students from accessing this page
+        if (currentUser == null ||
+                currentUser.getAccountType() == com.model.AccountType.STUDENT) {
+            javafx.application.Platform.runLater(() -> {
+                try {
+                    Parent root = FXMLLoader.load(
+                        getClass().getResource("/com/csce247/dashboard.fxml"));
+                    Stage stage = (Stage) questionListVBox.getScene().getWindow();
+                    stage.setScene(new Scene(root));
+                    stage.show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            return;
+        }
 
         populateUserInfo();
         loadQuestions();
         updateStatCards();
         renderTab(activeTab);
-    }
-
-    private void populateUserInfo() {
-        if (currentUser != null && lblUsername != null) {
-            lblUsername.setText(currentUser.getUsername());
         }
+
+        private void populateUserInfo() {
+            if (currentUser != null && lblUsername != null) {
+                lblUsername.setText(currentUser.getUsername());
+            }
     }
 
     private void loadQuestions() {

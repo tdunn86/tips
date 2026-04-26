@@ -46,6 +46,17 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadUsername();
+
+        User currentUser = facade.getCurrentUser();
+
+        // Hide contributor button for students
+        if (currentUser != null &&
+            currentUser.getAccountType() == com.model.AccountType.STUDENT) {
+
+            contributorNavButton.setVisible(false);
+            contributorNavButton.setManaged(false);
+        }
+
         showPage("dashboard.fxml");
     }
 

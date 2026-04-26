@@ -262,6 +262,13 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void goContributor(ActionEvent event) {
+        User currentUser = facade.getCurrentUser();
+
+        if (currentUser == null ||
+            currentUser.getAccountType() == com.model.AccountType.STUDENT) {
+            return;
+        }
+
         navigateWithinShell(event, "contributor.fxml");
     }
 
