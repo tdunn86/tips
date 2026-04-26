@@ -1,6 +1,5 @@
 package com.csce247;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -8,16 +7,12 @@ import com.model.AccountType;
 import com.model.TIPSFacade;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 public class CreateAccountController implements Initializable {
 
@@ -58,27 +53,35 @@ public class CreateAccountController implements Initializable {
         try {
             facade.registerUser(username, password, email, accountType);
             showInfo("Account created successfully. You can now log in.");
-            navigateToLogin();
+
+            goBackToLogin();   // 🔥 FIXED
+
         } catch (Exception e) {
             showError("Could not create account: " + e.getMessage());
         }
     }
 
     @FXML
-    private void handleBackToLogin() throws IOException {
-        navigateToLogin();
+    private void handleBackToLogin() {
+        goBackToLogin();   // 🔥 FIXED
     }
 
-    private void navigateToLogin() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/csce247/login.fxml"));
-            Stage stage = (Stage) tfUsername.getScene().getWindow();
-            stage.setScene(new Scene(root, 600, 400));
-            stage.show();
-        } catch (Exception e) {
-            System.err.println("Failed to load login.fxml: " + e.getMessage());
-            e.printStackTrace();
+    // 🔥 USE MAIN CONTROLLER (NO SCENE CHANGE)
+    private void goBackToLogin() {
+        MainController main = getMainController();
+        if (main != null) {
+            main.showAuthPage("login.fxml");
         }
+    }
+
+    private MainController getMainController() {
+        if (tfUsername == null || tfUsername.getScene() == null) return null;
+
+        Object controller = tfUsername.getScene().getRoot().getUserData();
+        if (controller instanceof MainController) {
+            return (MainController) controller;
+        }
+        return null;
     }
 
     private void showError(String message) {
