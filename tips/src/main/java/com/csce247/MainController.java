@@ -57,6 +57,7 @@ public class MainController implements Initializable {
         loadUsername();
         loadProfileInfo();
         hideProfilePopup();
+        updateContributorVisibility(); // ADD THIS
 
         if (facade.getCurrentUser() == null) {
             showAuthPage("login.fxml");
@@ -69,6 +70,7 @@ public class MainController implements Initializable {
         try {
             showTopNav(true);
             loadUsername();
+            updateContributorVisibility(); // ADD THIS
 
             Parent page = FXMLLoader.load(getClass().getResource("/com/csce247/" + fxmlFile));
             contentArea.getChildren().setAll(page);
@@ -151,6 +153,7 @@ public class MainController implements Initializable {
 
     @FXML
     private void handleLogout(ActionEvent event) {
+        hideProfilePopup();
         facade.logout();
         showAuthPage("login.fxml");
     }
@@ -266,6 +269,18 @@ public class MainController implements Initializable {
             topNavBar.setVisible(visible);
             topNavBar.setManaged(visible);
         }
+    }
+
+    private void updateContributorVisibility() {
+        if (contributorNavButton == null) return;
+
+        User currentUser = facade.getCurrentUser();
+        boolean canContribute = currentUser != null &&
+            (currentUser.getAccountType() == com.model.AccountType.EDITOR ||
+            currentUser.getAccountType() == com.model.AccountType.ADMIN);
+
+        contributorNavButton.setVisible(canContribute);
+        contributorNavButton.setManaged(canContribute);
     }
 
 

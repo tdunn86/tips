@@ -114,7 +114,7 @@
                         mnemonicParsing="false"
                         onAction="#toggleProfilePopup"
                         text="U"
-                        style="-fx-background-color: #8a0011; -fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: 700; -fx-background-radius: 999; -fx-min-width: 46; -fx-min-height: 46; -fx-pref-width: 46; -fx-pref-height: 46; -fx-padding: 0;" />
+                        style="-fx-background-color: #8a0011; -fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: 700; -fx-background-radius: 999; -fx-min-width: 46; -fx-min-height: 46; -fx-pref-width: 46; -fx-pref-height: 46; -fx-padding: 0;  -fx-cursor: hand;" />
             </HBox>
         </top>
 
@@ -192,7 +192,7 @@
                     <Button text="Log Out"
                             onAction="#handleLogout"
                             maxWidth="1.7976931348623157E308"
-                            style="-fx-min-height: 48; -fx-background-color: #8a0011; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-size: 17px; -fx-font-weight: 700;" />
+                            style="-fx-min-height: 48; -fx-background-color: #8a0011; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-size: 17px; -fx-font-weight: 700;  -fx-cursor: hand;" />
                 </VBox>
             </children>
         </VBox>
