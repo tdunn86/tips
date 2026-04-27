@@ -9,9 +9,9 @@ import com.model.TIPSFacade;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 
 public class CreateAccountController implements Initializable {
@@ -19,8 +19,7 @@ public class CreateAccountController implements Initializable {
     @FXML private TextField tfUsername;
     @FXML private TextField tfEmail;
     @FXML private PasswordField pfPassword;
-    @FXML private RadioButton rbStudent;
-    @FXML private RadioButton rbEditor;
+    @FXML private ComboBox<String> cbAccountType;
     @FXML private Label lblError;
 
     private final TIPSFacade facade = TIPSFacade.getInstance();
@@ -31,9 +30,9 @@ public class CreateAccountController implements Initializable {
             lblError.setVisible(false);
             lblError.setManaged(false);
         }
-
-        if (rbStudent != null) {
-            rbStudent.setSelected(true);
+        if (cbAccountType != null) {
+            cbAccountType.getItems().addAll("Student", "Editor");
+            cbAccountType.setValue("Student");
         }
     }
 
@@ -48,13 +47,20 @@ public class CreateAccountController implements Initializable {
             return;
         }
 
-        AccountType accountType = rbEditor.isSelected() ? AccountType.EDITOR : AccountType.STUDENT;
+        AccountType accountType;
+        String selected = cbAccountType.getValue();
+
+        if ("Editor".equalsIgnoreCase(selected)) {
+            accountType = AccountType.EDITOR;
+        } else {
+            accountType = AccountType.STUDENT;
+        }
 
         try {
             facade.registerUser(username, password, email, accountType);
             showInfo("Account created successfully. You can now log in.");
 
-            goBackToLogin();   // 🔥 FIXED
+            goBackToLogin();
 
         } catch (Exception e) {
             showError("Could not create account: " + e.getMessage());
@@ -63,10 +69,9 @@ public class CreateAccountController implements Initializable {
 
     @FXML
     private void handleBackToLogin() {
-        goBackToLogin();   // 🔥 FIXED
+        goBackToLogin();
     }
 
-    // 🔥 USE MAIN CONTROLLER (NO SCENE CHANGE)
     private void goBackToLogin() {
         MainController main = getMainController();
         if (main != null) {
